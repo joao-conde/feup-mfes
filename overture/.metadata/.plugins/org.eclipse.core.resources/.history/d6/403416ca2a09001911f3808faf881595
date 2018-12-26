@@ -1,17 +1,19 @@
-class Github
+class Account
 types
-	public Accounts = seq of Account;
-	
+-- TODO Define types here
 values
 -- TODO Define values here
-
 instance variables
-	public accounts: Accounts;
-	
+-- TODO Define instance variables here
+-- username;
+-- name;
+-- location;
+-- description;
+-- site;
 operations
 -- TODO Define operations here
 functions
 -- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
-end Github
+end Account

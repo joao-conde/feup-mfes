@@ -1,13 +1,10 @@
 class Github
 types
 	public Accounts = seq of Account;
-	
 values
 -- TODO Define values here
-
 instance variables
-	public accounts: Accounts;
-	
+-- TODO Define instance variables here
 operations
 -- TODO Define operations here
 functions
