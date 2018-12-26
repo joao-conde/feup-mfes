@@ -1,0 +1,9 @@
+!SESSION 2018-12-26 13:20:06.053 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_192
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86_64, WS=gtk, NL=en_US
+Command-line arguments:  -data /home/edgar/Documents/University/mfes/feup-mfes/overture -os linux -ws gtk -arch x86_64
+
+!ENTRY org.eclipse.ui.navigator 4 0 2018-12-26 13:21:58.144
+!MESSAGE Cannot find navigator content extension (using triggerPoints) for object "<null>" parent path: "P/Github".  Check that you have an expression for this object in a navigatorContent triggerPoints or enablement.
