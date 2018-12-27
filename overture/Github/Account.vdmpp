@@ -7,13 +7,13 @@ values
 
 instance variables
 	public username: Utils`String;
-	public name: Utils`String;
+	public name: Utils`String := [];
 -- location;
-	public description: Utils`String;
+	public description: Utils`String := [];
 -- site;
 
 operations
--- TODO Define operations here
+
 functions
 -- TODO Define functiones here
 traces

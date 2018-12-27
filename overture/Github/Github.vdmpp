@@ -7,13 +7,17 @@ values
 -- TODO Define values here
 
 instance variables
-	public accounts: Accounts;
+	public accounts: Accounts := { |-> };
 	
 operations
 	public Github: () ==> Github
 	Github() == (
-		accounts := { |-> };
 		return self;
+	);
+	
+	public addAccount: Account ==> ()
+	addAccount(acc) == (
+		accounts(acc.username) := acc;
 	);
 
 functions

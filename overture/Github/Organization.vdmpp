@@ -6,12 +6,13 @@ values
 -- TODO Define values here
 
 instance variables
--- TODO Define instance variables here
+	public members: set of User := {};	-- Sets do not allow duplicates
 
 operations
 	public Organization: Utils`String ==> Organization
 	Organization(un) == (
 		username := un;
+		return self;
 	);
 
 functions
