@@ -1,12 +1,19 @@
-class Organization
+class Organization is subclass of Account
 types
 -- TODO Define types here
+
 values
 -- TODO Define values here
+
 instance variables
 -- TODO Define instance variables here
+
 operations
--- TODO Define operations here
+	public Organization: Utils`String ==> Organization
+	Organization(un) == (
+		username := un;
+	);
+
 functions
 -- TODO Define functiones here
 traces

@@ -1,6 +1,7 @@
 class Github
 types
-	public Accounts = seq of Account;
+	-- Map of username to Account
+	public Accounts = map Utils`String to Account;
 	
 values
 -- TODO Define values here
@@ -9,7 +10,12 @@ instance variables
 	public accounts: Accounts;
 	
 operations
--- TODO Define operations here
+	public Github: () ==> Github
+	Github() == (
+		accounts := { |-> };
+		return self;
+	);
+
 functions
 -- TODO Define functiones here
 traces
