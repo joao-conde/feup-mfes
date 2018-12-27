@@ -18,7 +18,8 @@ operations
 	public addAccount: Account ==> ()
 	addAccount(acc) == (
 		accounts(acc.username) := acc;
-	);
+	)
+	post accounts(acc.username) = acc;
 
 functions
 -- TODO Define functiones here

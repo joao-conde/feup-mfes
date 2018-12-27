@@ -10,8 +10,8 @@ instance variables
 	public followers: set of User := {};
 	public following: set of User := {};
 	
-	inv not selfUser in set followers;
-	inv not selfUser in set following;
+	inv not selfUser in set followers; -- makes pre self <> user unecessary
+	inv not selfUser in set following; -- makes pre self <> user unecessary
 	
 operations
 	public User: Utils`String ==> User
@@ -20,6 +20,24 @@ operations
 		selfUser := self;
 		return self;
 	);
+	
+	
+	-- Only to be called by follow() -> assured by post condition
+	public addFollower: User ==> ()
+	addFollower(follower) == (
+		followers := followers union {follower};
+	)
+	post follower in set self.followers and
+				self in set follower.following;
+	
+	
+	public follow: User ==> ()
+	follow(user) == (
+		following := following union {user};
+		user.addFollower(self);
+	)
+	post user in set self.following and
+				self in set user.followers;
 	
 functions
 -- TODO Define functiones here
