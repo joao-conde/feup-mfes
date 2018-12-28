@@ -1,0 +1,27 @@
+class Github
+types
+	-- Map of username to Account
+	public Accounts = map Utils`String to Account;
+	
+values
+-- TODO Define values here
+
+instance variables
+	public accounts: Accounts := { |-> };
+	
+operations
+	public Github: () ==> Github
+	Github() == (
+		return self;
+	);
+	
+	public addAccount: Account ==> ()
+	addAccount(acc) == (
+		accounts(acc.username) := acc;
+	);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Github

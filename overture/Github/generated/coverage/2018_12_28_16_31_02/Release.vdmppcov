@@ -1,0 +1,17 @@
+class Release
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public tag: Utils`String; -- Shall this be a tag?
+	public title: Utils`String := [];
+	public timestamp: Utils`Date; --Utils function to get now()?
+
+operations
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Release

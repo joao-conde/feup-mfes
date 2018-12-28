@@ -14,7 +14,7 @@ instance variables
 operations
 -- TODO Define operations here
 functions
--- TODO Define functions here
+
 traces
 -- TODO Define Combinatorial Test Traces here
 end Utils

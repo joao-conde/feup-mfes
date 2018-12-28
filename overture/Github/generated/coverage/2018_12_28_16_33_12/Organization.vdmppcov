@@ -1,0 +1,22 @@
+class Organization is subclass of Account
+types
+-- TODO Define types here
+
+values
+-- TODO Define values here
+
+instance variables
+	public members: set of User := {};	-- Sets do not allow duplicates
+
+operations
+	public Organization: Utils`String ==> Organization
+	Organization(un) == (
+		username := un;
+		return self;
+	);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Organization

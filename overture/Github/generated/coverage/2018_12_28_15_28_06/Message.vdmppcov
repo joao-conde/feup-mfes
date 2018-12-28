@@ -4,23 +4,14 @@ types
 values
 -- TODO Define values here
 instance variables
-	public id: Utils`String;
 	public content: Utils`String;
 	public timestamp: Utils`Date; --Utils function to get now()?
 
 operations
-	--public Message:  Utils`String * Utils`String * Utils`Date ==> Message
-	--Message(msgID, cont, ts) == (
-	--	id := msgID;
-	--	content := cont;
-	--	timestamp := ts;
-	--	return self;
-	--);
-	
-	public Message:  Utils`String * Utils`String ==> Message
-	Message(msgID, cont) == (
-		id := msgID;
+	public Message: Utils`String ==> Message
+	Message(cont) == (
 		content := cont;
+		timestamp := Utils`now();
 		return self;
 	);
 

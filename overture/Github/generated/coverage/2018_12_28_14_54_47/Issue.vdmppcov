@@ -1,0 +1,22 @@
+class Issue
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public id: Utils`String;
+	public title: Utils`String;
+	public description: Utils`String;
+
+operations
+	public Issue: Utils`String ==> Issue
+	Issue(identifier) == (
+		id := identifier;
+		return self;
+	);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Issue

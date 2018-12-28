@@ -1,0 +1,17 @@
+class Repository
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public name: Utils`String := [];
+	public description: Utils`String := [];
+	public isPrivate: bool; -- Should it default to true or be passed as arg?
+
+operations
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Repository

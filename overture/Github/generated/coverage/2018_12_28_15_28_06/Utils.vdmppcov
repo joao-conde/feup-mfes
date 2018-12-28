@@ -1,11 +1,13 @@
 class Utils
 types
 	public String = seq of char;
-	public Date :: year: nat
-							 	 month: nat
-								 day: nat
-								 hour: nat
-								 minute: nat;
+	--public Date :: year: nat
+		--					 	 month: nat
+			--					 day: nat
+				--				 hour: nat
+					--			 minute: nat;
+								 
+	public Date :: day:nat1 month:nat1 year:nat inv mk_Date(d,m,y) == d <=31 and m<=12
 
 values
 -- TODO Define values here
@@ -14,7 +16,9 @@ instance variables
 operations
 -- TODO Define operations here
 functions
--- TODO Define functions here
+
+	public now()
+
 traces
 -- TODO Define Combinatorial Test Traces here
 end Utils
