@@ -17,9 +17,25 @@ operations
 		TestUtils`assertTrue(r.description = "description");
 	);
 	
+	private testAddCollaborator: () ==> ()
+	testAddCollaborator() == (
+		let u1 = new User("one") in (
+			r.addCollaborator(u1);
+			TestUtils`assertTrue(r.collaborators = {u1});
+			
+			let u2 = new User("two") in (
+				r.addCollaborator(u2);
+				TestUtils`assertTrue(r.collaborators = {u1, u2});
+			);
+		);
+	);
+	
 	public static main: () ==> ()
 	main() == (
-		new RepositoryTest().testSetDescription();
+		let r = new RepositoryTest() in (
+			r.testSetDescription();
+			r.testAddCollaborator();
+		);
 	);
 
 functions

@@ -34,7 +34,6 @@ operations
 	pre usr <> owner -- Owner > collaborator
 	post usr in set collaborators;
 
-
 functions
 -- TODO Define functiones here
 traces
