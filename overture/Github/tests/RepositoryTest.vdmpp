@@ -1,0 +1,29 @@
+class RepositoryTest
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	o : Account := new Organization("feup");
+	r : Repository := new Repository("mfes", o, false);
+
+operations
+	private testSetDescription: () ==> ()
+	testSetDescription() == (
+		r.setDescription(o, "Projeto de MFES");
+		TestUtils`assertTrue(r.description = "Projeto de MFES");
+		
+		r.setDescription(o, "description");
+		TestUtils`assertTrue(r.description = "description");
+	);
+	
+	public static main: () ==> ()
+	main() == (
+		new RepositoryTest().testSetDescription();
+	);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end RepositoryTest

@@ -1,15 +1,40 @@
 class Repository
 types
--- TODO Define types here
+	private Collaborators = set of User;
+
 values
 -- TODO Define values here
+
 instance variables
-	public name: Utils`String := [];
+	public name: Utils`String;
 	public description: Utils`String := [];
-	public isPrivate: bool; -- Should it default to true or be passed as arg?
+	public isPrivate: bool;
+	
+	public owner: Account;
+	public collaborators: Collaborators := {};
 
 operations
--- TODO Define operations here
+	public Repository: Utils`String * Account * bool ==> Repository
+	Repository(n, acc, priv) == (
+		name := n;
+		isPrivate := priv;
+		owner := acc;
+		return self;
+	)
+	pre n <> []
+	post name = n and isPrivate = priv and owner = acc;
+
+	public setDescription: Account * Utils`String ==> ()
+	setDescription(acc, desc) == description := desc
+	pre acc = owner
+	post description = desc;
+	
+	public addCollaborator: User ==> ()
+	addCollaborator(usr) == collaborators := collaborators union {usr}
+	pre usr <> owner -- Owner > collaborator
+	post usr in set collaborators;
+
+
 functions
 -- TODO Define functiones here
 traces
