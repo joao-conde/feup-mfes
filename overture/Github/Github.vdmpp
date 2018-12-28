@@ -1,24 +1,24 @@
 class Github
 types
-	-- Map of username to Account
-	public Accounts = map Utils`String to Account;
+	-- Map of String (username) to Account
+	public AccountsMap = map Utils`String to Account;
 	
 values
 -- TODO Define values here
 
 instance variables
-	public accounts: Accounts := { |-> };
+	public accounts: AccountsMap := { |-> };
 	
 operations
 	public Github: () ==> Github
-	Github() == (
-		return self;
-	);
+	Github() == (return self)
+	post card dom accounts = 0;
 	
 	public addAccount: Account ==> ()
 	addAccount(acc) == (
 		accounts(acc.username) := acc;
 	)
+	pre not acc.username in set dom accounts
 	post accounts(acc.username) = acc;
 
 functions

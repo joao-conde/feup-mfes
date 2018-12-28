@@ -13,6 +13,9 @@ instance variables
 -- site;
 
 operations
+	public Account: Utils`String ==> Account
+	Account(un) == (username := un; return self)
+	post username = un;
 
 functions
 -- TODO Define functiones here
