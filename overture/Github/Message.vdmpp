@@ -8,8 +8,10 @@ instance variables
 	public content: Utils`String;
 	public timestamp: Utils`Date; --Utils function to get now()?
 
+	public author: User;
+
 operations
-	--public Message:  Utils`String * Utils`String * Utils`Date ==> Message
+	--public Message:  Utils`String * Utils`String * Utils`Date * User ==> Message
 	--Message(msgID, cont, ts) == (
 	--	id := msgID;
 	--	content := cont;
@@ -17,10 +19,11 @@ operations
 	--	return self;
 	--);
 	
-	public Message:  Utils`String * Utils`String ==> Message
-	Message(msgID, cont) == (
+	public Message:  Utils`String * Utils`String * User ==> Message
+	Message(msgID, cont, auth) == (
 		id := msgID;
 		content := cont;
+		author := auth;
 		return self;
 	);
 
