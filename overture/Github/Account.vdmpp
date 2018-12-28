@@ -1,24 +1,22 @@
 class Account
-types
--- TODO Define types here
-
-values
--- TODO Define values here
-
-instance variables
-	public username: Utils`String;
-	public name: Utils`String := [];
--- location;
-	public description: Utils`String := [];
--- site;
-
-operations
-	public Account: Utils`String ==> Account
-	Account(un) == (username := un; return self)
-	post username = un;
-
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+	types
+	-- TODO Define types here
+	
+	values
+	-- TODO Define values here
+	
+	instance variables
+		public username: Utils`String;
+		--public name: Utils`String := [];
+		--public description: Utils`String := [];
+		--public location: Utils`String := [];
+		--public site: Utils`String := [];
+	
+	operations
+	-- TODO Define operations
+	
+	functions
+	-- TODO Define functions here
+	traces
+	-- TODO Define Combinatorial Test Traces here
 end Account

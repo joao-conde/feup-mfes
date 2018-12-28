@@ -21,6 +21,9 @@ operations
 	pre not acc.username in set dom accounts
 	post accounts(acc.username) = acc;
 
+	public numAccounts: () ==> nat
+	numAccounts() == (return card dom accounts);
+
 functions
 -- TODO Define functiones here
 traces
