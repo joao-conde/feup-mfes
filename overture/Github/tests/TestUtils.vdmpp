@@ -10,6 +10,10 @@ operations
 	public static assertTrue: bool ==> ()
   assertTrue(cond) == return
   pre cond;
+  
+  public static assertFalse: bool ==> ()
+  assertFalse(cond) == return
+  pre not cond;
 
 functions
 -- TODO Define functiones here
