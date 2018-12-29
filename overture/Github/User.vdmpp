@@ -21,7 +21,6 @@ operations
 		return self;
 	);
 	
-	
 	-- Only to be called by follow() -> assured by post condition
 	public addFollower: User ==> ()
 	addFollower(follower) == (
@@ -40,7 +39,7 @@ operations
 				self in set user.followers;
 	
 functions
--- TODO Define functiones here
+-- TODO Define functions here
 traces
 -- TODO Define Combinatorial Test Traces here
 end User

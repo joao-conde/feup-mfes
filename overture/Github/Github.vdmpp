@@ -18,14 +18,14 @@ operations
 	addAccount(acc) == (
 		accounts(acc.username) := acc;
 	)
-	pre not acc.username in set dom accounts
+	pre acc.username not in set dom accounts
 	post accounts(acc.username) = acc;
 
 	public numAccounts: () ==> nat
 	numAccounts() == (return card dom accounts);
 
 functions
--- TODO Define functiones here
+-- TODO Define functions here
 traces
 -- TODO Define Combinatorial Test Traces here
 end Github

@@ -25,7 +25,7 @@ class GithubTest
 		);
 	
 	functions
-	-- TODO Define functiones here
+	-- TODO Define functions here
 	traces
 -- TODO Define Combinatorial Test Traces here
 end GithubTest
