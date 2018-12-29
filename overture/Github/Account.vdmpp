@@ -7,6 +7,8 @@ class Account
 	
 	instance variables
 		public username: Utils`String;
+		public repositories: set of Repository;
+		
 		--public name: Utils`String := [];
 		--public description: Utils`String := [];
 		--public location: Utils`String := [];
