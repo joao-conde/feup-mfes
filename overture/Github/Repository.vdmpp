@@ -1,7 +1,5 @@
 class Repository
 types
-	private Collaborators = set of User;
-
 values
 -- TODO Define values here
 
@@ -11,7 +9,8 @@ instance variables
 	public isPrivate: bool;
 	
 	public owner: Account;
-	public collaborators: Collaborators := {};
+	public collaborators: set of User := {};
+	public branches: seq of Branch := [];
 
 operations
 	public Repository: Utils`String * Account * bool ==> Repository
@@ -33,6 +32,16 @@ operations
 	addCollaborator(usr) == collaborators := collaborators union {usr}
 	pre usr <> owner -- Owner > collaborator
 	post usr in set collaborators;
+	
+	public createBranch: Utils`String * bool ==> Branch
+	createBranch(n, prot) == (
+		let b = new Branch(n, prot) in (
+			branches := branches ^ [b];
+			return b;
+		);
+	)
+	pre n <> []
+	post let b = branches(len branches) in b.name = n and b.isProtected = prot;
 
 functions
 -- TODO Define functiones here

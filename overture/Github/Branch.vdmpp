@@ -8,7 +8,17 @@ instance variables
 	public isProtected: bool;
 
 operations
--- TODO Define operations here
+	public Branch: Utils`String * bool ==> Branch
+	Branch(n, prot) == (
+		name := n;
+		isProtected := prot;
+		return self;
+	)
+	pre n <> []
+	post name = n and isProtected = prot;
+
+	
+	
 functions
 -- TODO Define functiones here
 traces
