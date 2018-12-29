@@ -30,11 +30,25 @@ operations
 		);
 	);
 	
+	private testCreateBranch: () ==> ()
+	testCreateBranch() == (
+		let branch = r.createBranch("master", true) in (
+			let b = r.branches(len r.branches) in (
+				TestUtils`assertTrue(branch.name = b.name);
+				TestUtils`assertTrue(branch.name = "master");
+				
+				TestUtils`assertTrue(branch.isProtected = b.isProtected);
+				TestUtils`assertTrue(branch.isProtected = true);
+			);
+		);
+	);
+	
 	public static main: () ==> ()
 	main() == (
 		let r = new RepositoryTest() in (
 			r.testSetDescription();
 			r.testAddCollaborator();
+			r.testCreateBranch();
 		);
 	);
 

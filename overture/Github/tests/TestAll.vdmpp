@@ -8,6 +8,7 @@ class TestAll
 			OrganizationTest`main();
 			RepositoryTest`main();
 			UserTest`main();
+			IssueTest`main();
 		);
 		
 end TestAll

@@ -40,6 +40,12 @@ operations
 	)
 	pre not user in set assignees
 	post user in set assignees;
+	
+	public numMessages: () ==> nat
+	numMessages() == return card dom messages;
+	
+	public numAssignees: () ==> nat
+	numAssignees() == return card assignees;
 
 functions
 -- TODO Define functions here

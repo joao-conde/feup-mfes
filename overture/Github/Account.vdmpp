@@ -11,7 +11,7 @@ class Account
 		--public description: Utils`String := [];
 		--public location: Utils`String := [];
 		--public site: Utils`String := [];
-	
+			
 	operations
 	-- TODO Define operations
 	
