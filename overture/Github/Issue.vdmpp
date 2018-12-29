@@ -1,6 +1,6 @@
 class Issue
 types
-	-- Map of username to Account
+	-- Map of message ID to Message
 	public Messages = map Utils`String to Message;
 	
 values
@@ -11,6 +11,8 @@ instance variables
 	public description: Utils`String;
 	
 	public messages: Messages := { |-> };
+	
+	public assignees: set of User := {};
 
 operations
 	public Issue: Utils`String * Utils`String * Utils`String ==> Issue
@@ -19,13 +21,25 @@ operations
 		title := issueTitle;
 		description := issueDesc;
 		return self;
-	);
+	)
+	post card dom messages = 0;
 	
+	--Add a message to this issue
 	public addMessage: Message ==> ()
 	addMessage(msg) == (
 		messages(msg.id) := msg;
 	)
+	pre not msg.id in set dom messages
 	post messages(msg.id) = msg;
+	
+	--Assign an user to this issue
+	public assignUser: User ==> ()
+	assignUser(user) == (
+		assignees := assignees union {user};
+		--should user have this issue added to him aswell?
+	)
+	pre not user in set assignees
+	post user in set assignees;
 
 functions
 -- TODO Define functions here
