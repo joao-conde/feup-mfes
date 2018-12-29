@@ -1,0 +1,11 @@
+class TestAll
+
+	operations
+		public static main: () ==> ()
+		main() ==
+		(
+			GithubTest`main();
+			OrganizationTest`main();
+		);
+		
+end TestAll

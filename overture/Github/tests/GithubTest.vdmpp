@@ -13,7 +13,7 @@ class GithubTest
 			TestUtils`assertTrue(gh.numAccounts() = 0);
 			gh.addAccount(new User("sample-username"));
 			TestUtils`assertTrue(gh.numAccounts() = 1);
-			gh.addAccount(new User("different-username"));
+			gh.addAccount(new Organization("different-username"));
 			TestUtils`assertTrue(gh.numAccounts() = 2);
 		);
 		--pre gh.numAccounts() = 0;
