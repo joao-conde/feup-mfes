@@ -1,0 +1,35 @@
+class Message
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public id: Utils`String;
+	public content: Utils`String;
+	public timestamp: Utils`Date; --Utils function to get now()?
+
+	public author: User;
+
+operations
+	--public Message:  Utils`String * Utils`String * Utils`Date * User ==> Message
+	--Message(msgID, cont, ts) == (
+	--	id := msgID;
+	--	content := cont;
+	--	timestamp := ts;
+	--	return self;
+	--);
+	
+	public Message:  Utils`String * Utils`String * User ==> Message
+	Message(msgID, cont, auth) == (
+		id := msgID;
+		content := cont;
+		author := auth;
+		return self;
+	);
+
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Message

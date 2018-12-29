@@ -1,0 +1,31 @@
+class GithubTest
+	types
+	-- TODO Define types here
+	values
+	-- TODO Define values here
+	instance variables
+		gh : Github := new Github();
+		
+	operations
+		private testAddAccount: () ==> ()
+		testAddAccount() ==
+		(
+			TestUtils`assertTrue(gh.numAccounts() = 0);
+			gh.addAccount(new User("sample-username"));
+			TestUtils`assertTrue(gh.numAccounts() = 1);
+			gh.addAccount(new Organization("different-username"));
+			TestUtils`assertTrue(gh.numAccounts() = 2);
+		);
+		--pre gh.numAccounts() = 0;
+	
+		public static main: () ==> ()
+		main() ==
+		(
+			new GithubTest().testAddAccount();
+		);
+	
+	functions
+	-- TODO Define functions here
+	traces
+-- TODO Define Combinatorial Test Traces here
+end GithubTest

@@ -1,0 +1,26 @@
+class Branch
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	public name: Utils`String;
+	public isProtected: bool;
+
+operations
+	public Branch: Utils`String * bool ==> Branch
+	Branch(n, prot) == (
+		name := n;
+		isProtected := prot;
+		return self;
+	)
+	pre n <> []
+	post name = n and isProtected = prot;
+
+	
+	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Branch

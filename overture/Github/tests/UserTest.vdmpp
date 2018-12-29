@@ -1,0 +1,29 @@
+class UserTest
+
+	instance variables
+		private users : seq of User := [new User("n") | dummy in set {1, ..., 5}];
+		private user : User := new User("username");
+	
+	operations
+		private testFollowUnfollow: () ==> ()
+		testFollowUnfollow() == (
+			let u = TestUtils`randomUser(users) in (
+				user.follow(u);
+				TestUtils`assertTrue(u in set user.getFollowing() and user in set u.getFollowers());
+				user.unfollow(u);
+				TestUtils`assertFalse(u in set user.getFollowing() or user in set u.getFollowers());
+			)
+		);
+	
+		public static main: () ==> ()
+		main() == (
+			new UserTest().testFollowUnfollow();
+		);
+
+	traces
+		FollowUnfollow :
+			user.clearFollowing();
+			(let u = TestUtils`randomUser(users) in user.follow(u)){1, 5};
+			(let u = TestUtils`randomUser(users) in user.unfollow(u)){1, 5};
+
+end UserTest

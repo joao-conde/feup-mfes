@@ -1,14 +1,32 @@
-class Organization
+class Organization is subclass of Account
 types
 -- TODO Define types here
+
 values
 -- TODO Define values here
+
 instance variables
--- TODO Define instance variables here
+	public members: set of User := {};
+
 operations
--- TODO Define operations here
+	public Organization: Utils`String ==> Organization
+	Organization(un) == (
+		username := un;
+		return self;
+	);
+	
+	public addMember: User ==> ()
+	addMember(u) == (
+		members := members union {u}
+	)
+	pre u.username not in set {us.username | us in set members}
+	post u in set members;
+	
+	public numMembers: () ==> nat
+	numMembers() == return card members;
+	
 functions
--- TODO Define functiones here
+-- TODO Define functions here
 traces
 -- TODO Define Combinatorial Test Traces here
 end Organization

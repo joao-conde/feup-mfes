@@ -1,0 +1,59 @@
+class RepositoryTest
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	o : Account := new Organization("feup");
+	r : Repository := new Repository("mfes", o, false);
+
+operations
+	private testSetDescription: () ==> ()
+	testSetDescription() == (
+		r.setDescription(o, "Projeto de MFES");
+		TestUtils`assertTrue(r.description = "Projeto de MFES");
+		
+		r.setDescription(o, "description");
+		TestUtils`assertTrue(r.description = "description");
+	);
+	
+	private testAddCollaborator: () ==> ()
+	testAddCollaborator() == (
+		let u1 = new User("one") in (
+			r.addCollaborator(u1);
+			TestUtils`assertTrue(r.collaborators = {u1});
+			
+			let u2 = new User("two") in (
+				r.addCollaborator(u2);
+				TestUtils`assertTrue(r.collaborators = {u1, u2});
+			);
+		);
+	);
+	
+	private testCreateBranch: () ==> ()
+	testCreateBranch() == (
+		let branch = r.createBranch("master", true) in (
+			let b = r.branches(len r.branches) in (
+				TestUtils`assertTrue(branch.name = b.name);
+				TestUtils`assertTrue(branch.name = "master");
+				
+				TestUtils`assertTrue(branch.isProtected = b.isProtected);
+				TestUtils`assertTrue(branch.isProtected = true);
+			);
+		);
+	);
+	
+	public static main: () ==> ()
+	main() == (
+		let r = new RepositoryTest() in (
+			r.testSetDescription();
+			r.testAddCollaborator();
+			r.testCreateBranch();
+		);
+	);
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end RepositoryTest

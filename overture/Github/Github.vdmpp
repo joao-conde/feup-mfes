@@ -1,17 +1,31 @@
 class Github
 types
-	public Accounts = seq of Account;
+	-- Map of String (username) to Account
+	public AccountsMap = map Utils`String to Account;
 	
 values
 -- TODO Define values here
 
 instance variables
-	public accounts: Accounts;
+	public accounts: AccountsMap := { |-> };
 	
 operations
--- TODO Define operations here
+	public Github: () ==> Github
+	Github() == (return self)
+	post card dom accounts = 0;
+	
+	public addAccount: Account ==> ()
+	addAccount(acc) == (
+		accounts(acc.username) := acc;
+	)
+	pre acc.username not in set dom accounts
+	post accounts(acc.username) = acc;
+
+	public numAccounts: () ==> nat
+	numAccounts() == (return card dom accounts);
+
 functions
--- TODO Define functiones here
+-- TODO Define functions here
 traces
 -- TODO Define Combinatorial Test Traces here
 end Github
