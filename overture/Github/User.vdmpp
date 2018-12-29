@@ -6,12 +6,12 @@ values
 -- TODO Define values here
 
 instance variables
-	public selfUser: User; -- For invariant purposes
-	public followers: set of User := {};
-	public following: set of User := {};
+	private selfUser: User; -- For invariant purposes
+	private followers: set of User := {};
+	private following: set of User := {};
 	
-	inv not selfUser in set followers; -- makes pre self <> user unecessary
-	inv not selfUser in set following; -- makes pre self <> user unecessary
+	inv selfUser not in set followers; -- makes pre self <> user unecessary
+	inv selfUser not in set following; -- makes pre self <> user unecessary
 	
 operations
 	public User: Utils`String ==> User
@@ -21,23 +21,46 @@ operations
 		return self;
 	);
 	
-	-- Only to be called by follow() -> assured by post condition
-	public addFollower: User ==> ()
+	private addFollower: User ==> ()
 	addFollower(follower) == (
 		followers := followers union {follower};
 	)
-	post follower in set self.followers and
-				self in set follower.following;
+	post follower in set followers;
 	
+	private removeFollower: User ==> ()
+	removeFollower(us) == (
+		followers := followers \ {us};
+	)
+	post us not in set followers;
 	
 	public follow: User ==> ()
-	follow(user) == (
-		following := following union {user};
-		user.addFollower(self);
+	follow(us) == (
+		following := following union {us};
+		us.addFollower(self);
 	)
-	post user in set self.following and
-				self in set user.followers;
+	post us in set self.following and
+				self in set us.followers;
 	
+	public unfollow: User ==> ()
+	unfollow(us) == (
+		following := following \ {us};
+		us.removeFollower(self);
+	)
+	pre us in set following and self in set us.followers
+	post us not in set following and self not in set us.followers;
+	
+	public clearFollowing: () ==> ()
+	clearFollowing() == (
+	 for all us in set following
+	 	do unfollow(us)
+	)
+	post card following = 0;
+	
+	public getFollowing: () ==> set of User
+	getFollowing() == return following;
+	
+	public getFollowers: () ==> set of User
+	getFollowers() == return followers;
 functions
 -- TODO Define functions here
 traces

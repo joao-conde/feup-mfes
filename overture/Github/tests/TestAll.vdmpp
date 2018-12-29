@@ -6,6 +6,8 @@ class TestAll
 		(
 			GithubTest`main();
 			OrganizationTest`main();
+			RepositoryTest`main();
+			UserTest`main();
 		);
 		
 end TestAll

@@ -1,22 +1,29 @@
 class TestUtils
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
--- TODO Define instance variables here
-
-operations
-	public static assertTrue: bool ==> ()
-  assertTrue(cond) == return
-  pre cond;
-  
-  public static assertFalse: bool ==> ()
-  assertFalse(cond) == return
-  pre not cond;
-
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+	types
+	-- TODO Define types here
+	values
+	-- TODO Define values here
+	instance variables
+	-- TODO Define instance variables here
+	
+	operations
+		public static assertTrue: bool ==> ()
+	  assertTrue(cond) == return
+	  pre cond;
+	  
+	  public static assertFalse: bool ==> ()
+	  assertFalse(cond) == return
+	  pre not cond;
+	  
+	  public static randomUser: seq of User ==> User
+	  randomUser(users) == (
+	  	return users(MATH`rand(len users))
+	  );
+	
+	functions
+--		public static randomElement[@T](s: set of @T) res: @T ==
+--		[e | e in set s](MATH`rand(card s));
+		
+	traces
+	-- TODO Define Combinatorial Test Traces here
 end TestUtils
