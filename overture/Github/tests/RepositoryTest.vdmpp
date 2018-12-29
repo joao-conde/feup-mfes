@@ -33,7 +33,7 @@ operations
 	private testCreateBranch: () ==> ()
 	testCreateBranch() == (
 		let branch = r.createBranch("master", true) in (
-			let b = r.branches(len r.branches) in (
+			let b = r.branches("master") in (
 				TestUtils`assertTrue(branch.name = b.name);
 				TestUtils`assertTrue(branch.name = "master");
 				

@@ -10,7 +10,11 @@ instance variables
 	
 	public owner: Account;
 	public collaborators: set of User := {};
-	public branches: seq of Branch := [];
+	public branches: map Utils`String to Branch := { |-> };
+	public defaultBranch: Branch;
+
+	inv defaultBranch in set rng branches;
+	inv branches(defaultBranch.name) = defaultBranch;
 
 operations
 	public Repository: Utils`String * Account * bool ==> Repository
@@ -18,10 +22,12 @@ operations
 		name := n;
 		isPrivate := priv;
 		owner := acc;
+		if isofclass(User, owner) then collaborators := {owner};
 		return self;
 	)
 	pre n <> []
-	post name = n and isPrivate = priv and owner = acc;
+	post name = n and isPrivate = priv and owner = acc and
+		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators));
 
 	public setDescription: Account * Utils`String ==> ()
 	setDescription(acc, desc) == description := desc
@@ -30,18 +36,17 @@ operations
 	
 	public addCollaborator: User ==> ()
 	addCollaborator(usr) == collaborators := collaborators union {usr}
-	pre usr <> owner -- Owner > collaborator
 	post usr in set collaborators;
 	
 	public createBranch: Utils`String * bool ==> Branch
 	createBranch(n, prot) == (
 		let b = new Branch(n, prot) in (
-			branches := branches ^ [b];
+			branches(n) := b;
 			return b;
 		);
 	)
-	pre n <> []
-	post let b = branches(len branches) in b.name = n and b.isProtected = prot;
+	pre n not in set dom branches
+	post let b = branches(n) in b.name = n and b.isProtected = prot;
 
 functions
 -- TODO Define functiones here
