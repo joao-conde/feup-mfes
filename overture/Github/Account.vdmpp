@@ -1,13 +1,8 @@
 class Account
-	types
-	-- TODO Define types here
-	
-	values
-	-- TODO Define values here
-	
+
 	instance variables
 		public username: Utils`String;
-		public repositories: set of Repository;
+		public repositories: map Utils`String to Repository := { |-> };
 		
 		--public name: Utils`String := [];
 		--public description: Utils`String := [];
@@ -15,7 +10,15 @@ class Account
 		--public site: Utils`String := [];
 			
 	operations
---		public newRepository()
+		public newRepository: Utils`String * bool ==> Repository
+		newRepository(name, isPriv) == (
+			let r = new Repository(name, self, isPriv) in (
+				repositories(name) := r;
+				return r;
+			);
+		)
+		pre name not in set dom repositories
+		post repositories(name).name = name;
 	
 	functions
 	-- TODO Define functions here
