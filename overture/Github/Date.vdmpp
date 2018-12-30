@@ -30,10 +30,10 @@ operations
 	post year = y and month = mo and day = day and hour = h and minute = mi;
 
 functions
-	private static isLeapYear(y: nat1) res: bool == y mod 4 = 0
+	public static isLeapYear(y: nat1) res: bool == y mod 4 = 0
 	pre y >= startYear;
 
-	private static daysOfMonth(y, m: nat1) res : nat == (
+	public static daysOfMonth(y, m: nat1) res : nat == (
 		cases m :
 			1, 3, 5, 7, 8, 10, 12 -> 31,
 			4, 6, 9, 11 -> 30,
