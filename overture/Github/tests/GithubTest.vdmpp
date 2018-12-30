@@ -1,8 +1,12 @@
 class GithubTest
-	types
-	-- TODO Define types here
+	
 	values
-	-- TODO Define values here
+		firstUsername = "sample-username";
+		secondUsername = "different-username";
+		
+		tagFEUP = new Tag("FEUP");
+		tagVDM = new Tag("VDM");
+
 	instance variables
 		gh : Github := new Github();
 		
@@ -11,21 +15,33 @@ class GithubTest
 		testAddAccount() ==
 		(
 			TestUtils`assertTrue(gh.numAccounts() = 0);
-			gh.addAccount(new User("sample-username"));
+			gh.addAccount(new User(firstUsername));
 			TestUtils`assertTrue(gh.numAccounts() = 1);
-			gh.addAccount(new Organization("different-username"));
+			gh.addAccount(new Organization(secondUsername));
 			TestUtils`assertTrue(gh.numAccounts() = 2);
 		);
-		--pre gh.numAccounts() = 0;
+
+		private testGetReposByTags: () ==> ()
+		testGetReposByTags() ==
+		(
+			let r1 = gh.accounts(firstUsername).newRepository("MFES", true),
+					r2 = gh.accounts(secondUsername).newRepository("OVERTURE", true) in (
+				r1.addTag(tagFEUP);
+				r1.addTag(tagVDM);
+				r2.addTag(tagVDM);
+				
+				TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
+				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));
+			);
+		);
 	
 		public static main: () ==> ()
 		main() ==
 		(
-			new GithubTest().testAddAccount();
+			let gt = new GithubTest() in (
+				gt.testAddAccount();
+				gt.testGetReposByTags();
+			);
 		);
-	
-	functions
-	-- TODO Define functions here
-	traces
--- TODO Define Combinatorial Test Traces here
+
 end GithubTest
