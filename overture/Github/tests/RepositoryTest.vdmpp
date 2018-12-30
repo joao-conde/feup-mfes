@@ -8,6 +8,27 @@ instance variables
 	r : Repository := new Repository("mfes", o, false);
 
 operations
+	private testConstructor: () ==> ()
+	testConstructor() == (
+		let org = new Organization("org") in (
+			let repo = new Repository("test", org, true) in (
+				TestUtils`assertTrue(repo.name = "test");
+				TestUtils`assertTrue(repo.isPrivate = true);
+				TestUtils`assertTrue(card repo.collaborators = 0);
+			);
+		);
+		
+		let usr = new User("usr") in (
+			let repo = new Repository("test2", usr, false) in (
+				TestUtils`assertTrue(card repo.collaborators = 1);
+			);
+		);
+		
+		TestUtils`assertTrue(r.defaultBranch.name = "master");
+		TestUtils`assertTrue(card dom r.branches = 1);
+		TestUtils`assertTrue(r.branches("master") = r.defaultBranch);
+	);
+
 	private testSetDescription: () ==> ()
 	testSetDescription() == (
 		r.setDescription(o, "Projeto de MFES");
@@ -44,12 +65,24 @@ operations
 		TestUtils`assertTrue(card dom r.branches = 2);
 	);
 	
+	private testCommit: () ==> ()
+	testCommit() == (
+		let usr = new User("contributor") in (
+			r.addCollaborator(usr);
+			TestUtils`assertTrue(len r.defaultBranch.getCommits() = 0);
+			r.commit(usr, r.defaultBranch, "hash");
+			TestUtils`assertTrue(len r.defaultBranch.getCommits() = 1);
+		);
+	);
+	
 	public static main: () ==> ()
 	main() == (
 		let r = new RepositoryTest() in (
+			r.testConstructor();
 			r.testSetDescription();
 			r.testAddCollaborator();
 			r.testCreateBranch();
+			r.testCommit();
 		);
 	);
 

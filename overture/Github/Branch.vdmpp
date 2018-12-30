@@ -29,6 +29,9 @@ operations
 	pre c not in set elems commits
 	post c in set elems commits;
 	
+	public getCommits: () ==> seq of Commit
+	getCommits() == return commits;
+	
 functions
 -- TODO Define functiones here
 traces
