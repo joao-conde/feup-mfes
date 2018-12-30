@@ -15,7 +15,7 @@ class Account
 		--public site: Utils`String := [];
 			
 	operations
-	-- TODO Define operations
+--		public newRepository()
 	
 	functions
 	-- TODO Define functions here
