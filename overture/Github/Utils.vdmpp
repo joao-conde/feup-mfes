@@ -22,6 +22,8 @@ class Utils
 		iota n1 in set s & forall n2 in set s & n1 >= n2
 		pre card s > 0;
 		
+		public static isAscendingOrder[@T](s: seq of @T) res: bool ==
+		forall i in set {1, ..., len s - 1} & s(i) <= s(i+1);
 	traces
 	-- TODO Define Combinatorial Test Traces here
 end Utils
