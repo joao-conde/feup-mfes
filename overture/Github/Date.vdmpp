@@ -1,6 +1,13 @@
 class Date
 types
--- TODO Define types here
+	ComparableDate :: date: Date
+	ord mk_ComparableDate(d1) < mk_ComparableDate(d2) ==
+		d1.year < d2.year or
+		d1.year = d2.year and d1.month < d2.month or
+		d1.year = d2.year and d1.month = d2.month and d1.day < d2.day or
+		d1.year = d2.year and d1.month = d2.month and d1.day = d2.day and d1.hour < d2.hour or
+		d1.year = d2.year and d1.month = d2.month and d1.day = d2.day and d1.hour = d2.hour and d1.minute < d2.minute;
+
 values
 	public static startYear = 2000;
 
@@ -16,7 +23,7 @@ instance variables
 	inv day >= 1 and day <= daysOfMonth(year, month);
 	inv hour >= 0 and hour < 24;
 	inv minute >= 0 and minute < 60;
-
+	
 operations
 	public Date: nat * nat * nat1 * nat1 * nat1 ==> Date
 	Date(mi, h, d, mo, y) == (
