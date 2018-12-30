@@ -6,6 +6,7 @@ values
 instance variables
 	public tag: Utils`String; -- Shall this be a tag?
 	public title: Utils`String := [];
+	public timestamp: nat; -- TODO change Type
 	--public timestamp: Utils`Date; --Utils function to get now()?
 
 operations

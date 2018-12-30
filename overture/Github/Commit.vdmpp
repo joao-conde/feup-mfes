@@ -6,7 +6,7 @@ values
 instance variables
 	public hash: Utils`String;
 	-- public content: Utils`String;
-	public timestamp: nat; --Utils`Date; --Utils function to get now()?
+	public timestamp: nat; -- TODO change Type
 	
 	public author: User;
 

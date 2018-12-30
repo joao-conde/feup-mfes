@@ -16,6 +16,9 @@ class Repository
 		inv defaultBranch in set rng branches;
 		inv branches(defaultBranch.name) = defaultBranch;
 	
+		inv forall i1, i2 in set inds releases & 
+			i1 < i2 => releases(i2).timestamp >= releases(i1).timestamp;
+		
 	operations
 		public Repository: Utils`String * Account * bool ==> Repository
 		Repository(n, acc, priv) == (
