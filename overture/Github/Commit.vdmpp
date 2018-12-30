@@ -7,11 +7,14 @@ instance variables
 	public hash: Utils`String;
 	-- public content: Utils`String;
 	public timestamp: nat; --Utils`Date; --Utils function to get now()?
+	
+	public author: User;
 
 operations
-	public Commit: Utils`String ==> Commit
-	Commit(str) == (
+	public Commit: Utils`String * User ==> Commit
+	Commit(str, u) == (
 		hash := str;
+		author := u;
 		return self;
 	)
 	pre str <> []

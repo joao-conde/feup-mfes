@@ -53,13 +53,21 @@ operations
 	)
 	pre n not in set dom branches
 	post let b = branches(n) in b.name = n and b.isProtected = prot;
+	
+	public setDefaultBranch: Utils`String ==> ()
+	setDefaultBranch(bName) == defaultBranch := branches(bName)
+	pre bName in set dom branches
+	post defaultBranch.name = bName;
 
 	public commit: User * Branch * Utils`String ==> ()
 	commit(usr, branch, hash) == (
-		branch.commit(new Commit(hash));
+		branch.commit(new Commit(hash, usr));
 	)
 	pre usr in set collaborators and
 		branch in set rng branches;
+		
+	public getCommitHistory: () ==> seq of Commit
+	getCommitHistory() == return defaultBranch.getCommits();
 
 functions
 -- TODO Define functiones here

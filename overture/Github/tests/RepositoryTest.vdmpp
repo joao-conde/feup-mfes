@@ -65,6 +65,13 @@ operations
 		TestUtils`assertTrue(card dom r.branches = 2);
 	);
 	
+	private testSetDefaultBranch: () ==> ()
+	testSetDefaultBranch() == (
+		TestUtils`assertTrue(r.defaultBranch.name = "master");
+		r.setDefaultBranch("develop");
+		TestUtils`assertTrue(r.defaultBranch.name = "develop");
+	);
+	
 	private testCommit: () ==> ()
 	testCommit() == (
 		let usr = new User("contributor") in (
@@ -75,6 +82,13 @@ operations
 		);
 	);
 	
+	private getCommitHistory: () ==> ()
+	getCommitHistory() == (
+		TestUtils`assertTrue(len r.getCommitHistory() = 1);
+		r.setDefaultBranch("master");
+		TestUtils`assertTrue(len r.getCommitHistory() = 0);
+	);
+	
 	public static main: () ==> ()
 	main() == (
 		let r = new RepositoryTest() in (
@@ -82,7 +96,9 @@ operations
 			r.testSetDescription();
 			r.testAddCollaborator();
 			r.testCreateBranch();
+			r.testSetDefaultBranch();
 			r.testCommit();
+			r.getCommitHistory();
 		);
 	);
 
