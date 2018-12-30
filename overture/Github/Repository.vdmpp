@@ -12,6 +12,8 @@ instance variables
 	public collaborators: set of User := {};
 	public branches: map Utils`String to Branch := { |-> };
 	public defaultBranch: Branch;
+	
+	public tags: set of Tag := {};
 
 	inv defaultBranch in set rng branches;
 	inv branches(defaultBranch.name) = defaultBranch;
@@ -43,6 +45,10 @@ operations
 	public addCollaborator: User ==> ()
 	addCollaborator(usr) == collaborators := collaborators union {usr}
 	post usr in set collaborators;
+	
+	public addTag: Tag ==> ()
+	addTag(tag) == tags := tags union {tag}
+	post tag in set tags;
 	
 	public createBranch: Utils`String * bool ==> Branch
 	createBranch(n, prot) == (

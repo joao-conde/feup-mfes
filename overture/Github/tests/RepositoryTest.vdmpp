@@ -51,6 +51,19 @@ operations
 		);
 	);
 	
+	private testAddTag: () ==> ()
+	testAddTag() == (
+		let tag1 = new Tag("AI") in (
+			r.addTag(tag1);
+			TestUtils`assertTrue(r.tags = {tag1});
+			
+			let tag2 = new Tag("WebDev") in (
+				r.addTag(tag2);
+				TestUtils`assertTrue(r.tags = {tag1, tag2});
+			);
+		);
+	);
+	
 	private testCreateBranch: () ==> ()
 	testCreateBranch() == (
 		let branch = r.createBranch("develop", true) in (
@@ -95,6 +108,7 @@ operations
 			r.testConstructor();
 			r.testSetDescription();
 			r.testAddCollaborator();
+			r.testAddTag();
 			r.testCreateBranch();
 			r.testSetDefaultBranch();
 			r.testCommit();
