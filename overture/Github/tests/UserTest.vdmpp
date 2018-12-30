@@ -14,10 +14,18 @@ class UserTest
 				TestUtils`assertFalse(u in set user.getFollowing() or user in set u.getFollowers());
 			)
 		);
+		
+		private testNewRepo: () ==> ()
+		testNewRepo() == (
+			let r = user.newRepository("FEUP-MFES", true) in (
+				TestUtils`assertTrue(user.repositories(r.name) = r)
+			);
+		);
 	
 		public static main: () ==> ()
 		main() == (
 			new UserTest().testFollowUnfollow();
+			new UserTest().testNewRepo();
 		);
 
 	traces
