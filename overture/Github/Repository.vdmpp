@@ -3,11 +3,11 @@ class Repository
 	instance variables
 		
 		public name: Utils`String;
-		public description: Utils`String := [];
 		public isPrivate: bool;
+		private description: Utils`String := [];
 	
-		public owner: Account;
-		public defaultBranch: Branch;
+		private owner: Account;
+		private defaultBranch: Branch;
 		public tags: set of Tag := {};
 		public collaborators: set of User := {};
 		public releases: seq of Release := [];
@@ -57,20 +57,28 @@ class Repository
 		pre n not in set dom branches
 		post let b = branches(n) in b.name = n and b.isProtected = prot;
 		
-		public commit: User * Branch * Utils`String ==> ()
-		commit(usr, branch, hash) == (
-			branch.commit(new Commit(hash, usr));
+		public commit: User * Utils`String * Utils`String ==> ()
+		commit(usr, branchName, hash) == (
+			branches(branchName).commit(new Commit(hash, usr));
 		)
-		pre usr in set collaborators and
-			branch in set rng branches;
+		pre (usr in set collaborators or not isPrivate) and
+			branchName in set dom branches;
 			
 		public addCollaborator: User ==> ()
 		addCollaborator(usr) == collaborators := collaborators union {usr}
 		post usr in set collaborators;
 			
+		-- Getters
 		public getDefaultBranch: () ==> Branch
 		getDefaultBranch() == return defaultBranch;
 		
+		public getDescription: () ==> Utils`String
+		getDescription() == return description;
+		
+		public numReleases: () ==> nat
+		numReleases() == return len releases;
+		
+		-- Setters
 		public setDefaultBranch: Utils`String ==> ()
 		setDefaultBranch(bName) == defaultBranch := branches(bName)
 		pre bName in set dom branches
@@ -80,8 +88,5 @@ class Repository
 		setDescription(acc, desc) == description := desc
 		pre acc = owner
 		post description = desc;
-	
-		public numReleases: () ==> nat
-		numReleases() == return len releases;
 		
 end Repository

@@ -24,18 +24,18 @@ operations
 			);
 		);
 		
-		TestUtils`assertTrue(r.defaultBranch.name = "master");
+		TestUtils`assertTrue(r.getDefaultBranch().name = "master");
 		TestUtils`assertTrue(card dom r.branches = 1);
-		TestUtils`assertTrue(r.branches("master") = r.defaultBranch);
+		TestUtils`assertTrue(r.branches("master") = r.getDefaultBranch());
 	);
 
 	private testSetDescription: () ==> ()
 	testSetDescription() == (
 		r.setDescription(o, "Projeto de MFES");
-		TestUtils`assertTrue(r.description = "Projeto de MFES");
+		TestUtils`assertTrue(r.getDescription() = "Projeto de MFES");
 		
 		r.setDescription(o, "description");
-		TestUtils`assertTrue(r.description = "description");
+		TestUtils`assertTrue(r.getDescription() = "description");
 	);
 	
 	private testAddCollaborator: () ==> ()
@@ -80,18 +80,18 @@ operations
 	
 	private testSetDefaultBranch: () ==> ()
 	testSetDefaultBranch() == (
-		TestUtils`assertTrue(r.defaultBranch.name = "master");
+		TestUtils`assertTrue(r.getDefaultBranch().name = "master");
 		r.setDefaultBranch("develop");
-		TestUtils`assertTrue(r.defaultBranch.name = "develop");
+		TestUtils`assertTrue(r.getDefaultBranch().name = "develop");
 	);
 	
 	private testCommit: () ==> ()
 	testCommit() == (
 		let usr = new User("contributor") in (
 			r.addCollaborator(usr);
-			TestUtils`assertTrue(len r.defaultBranch.getCommits() = 0);
-			r.commit(usr, r.defaultBranch, "hash");
-			TestUtils`assertTrue(len r.defaultBranch.getCommits() = 1);
+			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
+			r.commit(usr, r.getDefaultBranch().name, "hash");
+			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 		);
 	);
 	
