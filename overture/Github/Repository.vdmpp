@@ -1,9 +1,14 @@
 class Repository
 types
+
+-- Map of String (tag) to Release
+	public ReleasesMap = map Utils`String to Release;
+
 values
 -- TODO Define values here
 
 instance variables
+	
 	public name: Utils`String;
 	public description: Utils`String := [];
 	public isPrivate: bool;
@@ -13,6 +18,7 @@ instance variables
 	public branches: map Utils`String to Branch := { |-> };
 	public defaultBranch: Branch;
 	
+	public releases: ReleasesMap := { |-> };
 	public tags: set of Tag := {};
 
 	inv defaultBranch in set rng branches;
@@ -46,6 +52,13 @@ operations
 	addCollaborator(usr) == collaborators := collaborators union {usr}
 	post usr in set collaborators;
 	
+	public addRelease: Release ==> ()
+	addRelease(rel) == (
+		releases(rel.tag) := rel;
+	)
+	pre rel.tag not in set dom releases
+	post releases(rel.tag) = rel;
+	
 	public addTag: Tag ==> ()
 	addTag(tag) == tags := tags union {tag}
 	post tag in set tags;
@@ -74,7 +87,10 @@ operations
 		
 	public getCommitHistory: () ==> seq of Commit
 	getCommitHistory() == return defaultBranch.getCommits();
-
+	
+	public numReleases: () ==> nat
+	numReleases() == (return card dom releases);
+	
 functions
 -- TODO Define functiones here
 traces

@@ -6,10 +6,17 @@ values
 instance variables
 	public tag: Utils`String; -- Shall this be a tag?
 	public title: Utils`String := [];
-	public timestamp: Utils`Date; --Utils function to get now()?
+	--public timestamp: Utils`Date; --Utils function to get now()?
 
 operations
--- TODO Define operations here
+
+	public Release: Utils`String * Utils`String ==> Release
+	Release(rTag, rTitle) == (
+		tag := rTag;
+		title := rTitle;
+		return self;
+	)
+	
 functions
 -- TODO Define functiones here
 traces

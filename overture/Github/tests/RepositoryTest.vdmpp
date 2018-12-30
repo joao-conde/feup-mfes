@@ -102,6 +102,16 @@ operations
 		TestUtils`assertTrue(len r.getCommitHistory() = 0);
 	);
 	
+	private testAddRelease: () ==> ()
+		testAddRelease() ==
+		(
+			TestUtils`assertTrue(r.numReleases() = 0);
+			r.addRelease(new Release("tag1", "v1.1"));
+			TestUtils`assertTrue(r.numReleases() = 1);
+			r.addRelease(new Release("tag2", "v1.2"));
+			TestUtils`assertTrue(r.numReleases() = 2);
+		);
+	
 	public static main: () ==> ()
 	main() == (
 		let r = new RepositoryTest() in (
@@ -109,6 +119,7 @@ operations
 			r.testSetDescription();
 			r.testAddCollaborator();
 			r.testAddTag();
+			r.testAddRelease();
 			r.testCreateBranch();
 			r.testSetDefaultBranch();
 			r.testCommit();
