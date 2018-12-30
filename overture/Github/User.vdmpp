@@ -16,9 +16,9 @@ instance variables
 operations
 	public User: Utils`String ==> User
 	User(un) == (
-		username := un;
+--		username := un;
 		selfUser := self;
-		return self;
+		Account(un);
 	);
 	
 	private addFollower: User ==> ()

@@ -6,7 +6,7 @@ class Commit
 	instance variables
 		public hash: Utils`String;
 		-- public content: Utils`String;
-		public timestamp: nat; -- TODO change Type
+		public timestamp : nat := 0; -- TODO change Type
 		
 		public author: User;
 	

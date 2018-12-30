@@ -2,7 +2,7 @@ class Release
 
 	instance variables
 		public name: Utils`String := [];
-		public timestamp: nat; -- TODO change Type
+		public timestamp: nat := 0; -- TODO change Type
 	
 	operations
 		public Release: Utils`String ==> Release
