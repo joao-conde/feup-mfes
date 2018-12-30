@@ -8,17 +8,26 @@ instance variables
 	private year: nat1;
 	private month: nat1;
 	private day: nat1;
+	private hour: nat;
+	private minute: nat;
+	
+	inv year >= startYear;
+	inv month >= 1 and month <= 12;
+	inv day >= 1 and day <= daysOfMonth(year, month);
+	inv hour >= 0 and hour < 24;
+	inv minute >= 0 and minute < 60;
 
 operations
-	public Date: nat1 * nat1 * nat1 ==> Date
-	Date(d, m, y) == (
+	public Date: nat * nat * nat1 * nat1 * nat1 ==> Date
+	Date(mi, h, d, mo, y) == (
 		year := y;
-		month := m;
+		month := mo;
 		day := d;
+		hour := h;
+		minute := mi;
 		return self;
-	)
-	pre (y >= startYear) and (m >= 1 and m <= 12) and (d >= 1 and d <= daysOfMonth(y, m))
-	post year = y and month = m and day = day;
+	) -- No need for pre conditions -> assured by instance variables invariants
+	post year = y and month = mo and day = day and hour = h and minute = mi;
 
 functions
 	private static isLeapYear(y: nat1) res: bool == y mod 4 = 0
