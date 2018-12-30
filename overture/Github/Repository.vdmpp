@@ -3,7 +3,7 @@ class Repository
 	instance variables
 		
 		public name: Utils`String;
-		public isPrivate: bool;
+		private isPrivate: bool;
 		private description: Utils`String := [];
 	
 		private owner: Account;
@@ -81,6 +81,9 @@ class Repository
 		public numReleases: () ==> nat
 		numReleases() == return len releases;
 		
+		public isRepoPrivate: () ==> bool
+		isRepoPrivate() == return isPrivate;
+		
 		-- Setters
 		public setDefaultBranch: Utils`String ==> ()
 		setDefaultBranch(bName) == defaultBranch := branches(bName)
@@ -91,5 +94,10 @@ class Repository
 		setDescription(acc, desc) == description := desc
 		pre acc = owner
 		post description = desc;
+		
+		public setPrivacy: Account * bool ==> ()
+		setPrivacy(acc, privacy) == isPrivate := privacy
+		pre acc = owner
+		post isPrivate = privacy;
 		
 end Repository

@@ -13,7 +13,7 @@ operations
 		let org = new Organization("org") in (
 			let repo = new Repository("test", org, true) in (
 				TestUtils`assertTrue(repo.name = "test");
-				TestUtils`assertTrue(repo.isPrivate = true);
+				TestUtils`assertTrue(repo.isRepoPrivate());
 				TestUtils`assertTrue(card repo.collaborators = 0);
 			);
 		);
@@ -72,7 +72,7 @@ operations
 				TestUtils`assertTrue(branch.name = "develop");
 				
 				TestUtils`assertTrue(branch.isProtected = b.isProtected);
-				TestUtils`assertTrue(branch.isProtected = true);
+				TestUtils`assertTrue(branch.isProtected);
 			);
 		);
 		TestUtils`assertTrue(card dom r.branches = 2);
@@ -108,6 +108,13 @@ operations
 		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 	);
 	
+	private testSetPrivacy: () ==> ()
+	testSetPrivacy() == (
+		TestUtils`assertTrue(r.isRepoPrivate());
+		r.setPrivacy(o, false);
+		TestUtils`assertFalse(r.isRepoPrivate());
+	);
+	
 	private testAddRelease: () ==> ()
 		testAddRelease() ==
 		(
@@ -130,6 +137,7 @@ operations
 			r.testSetDefaultBranch();
 			r.testCommit();
 			r.testCommitHistory();
+			r.testSetPrivacy();
 		);
 	);
 
