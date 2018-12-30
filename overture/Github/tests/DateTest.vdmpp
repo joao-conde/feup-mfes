@@ -19,12 +19,37 @@ operations
 			TestUtils`assertTrue(Date`daysOfMonth(2018, 12) = 31);
 			TestUtils`assertTrue(Date`daysOfMonth(2018, 4) = 30);
 		);
+		
+		private testCompareDates: () ==> ()
+		testCompareDates() == (
+			TestUtils`assertTrue(
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) < 
+				mk_Date`DateComparable(new Date(2012, 4, 21, 23, 56))
+			);
+			TestUtils`assertTrue(
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+				mk_Date`DateComparable(new Date(2010, 4, 21, 23, 56))
+			);
+			TestUtils`assertTrue(
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+				mk_Date`DateComparable(new Date(2010, 3, 21, 23, 56))
+			);
+			TestUtils`assertTrue(
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+				mk_Date`DateComparable(new Date(2010, 3, 12, 23, 56))
+			);
+			TestUtils`assertTrue(
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 56))
+			);			
+		);
 	
 		public static main: () ==> ()
 		main() == (
 			let dt = new DateTest() in (
 				dt.testIsLeapYear();
 				dt.testDaysOfMonth();
+				dt.testCompareDates();
 			);
 		);
 

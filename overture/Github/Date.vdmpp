@@ -1,7 +1,7 @@
 class Date
 types
-	ComparableDate :: date: Date
-	ord mk_ComparableDate(d1) < mk_ComparableDate(d2) ==
+	public DateComparable :: date: Date
+	ord mk_DateComparable(d1) < mk_DateComparable(d2) ==
 		d1.year < d2.year or
 		d1.year = d2.year and d1.month < d2.month or
 		d1.year = d2.year and d1.month = d2.month and d1.day < d2.day or
@@ -25,8 +25,8 @@ instance variables
 	inv minute >= 0 and minute < 60;
 	
 operations
-	public Date: nat * nat * nat1 * nat1 * nat1 ==> Date
-	Date(mi, h, d, mo, y) == (
+	public Date: nat1 * nat1 * nat1 * nat * nat ==> Date
+	Date(y, mo, d, h, mi) == (
 		year := y;
 		month := mo;
 		day := d;
