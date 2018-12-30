@@ -9,9 +9,9 @@ operations
 	private testAddMessage: () ==> ()
 	testAddMessage() == (
 		TestUtils`assertTrue(issue.numMessages() = 0);
-		issue.addMessage(new Message("msgID", "Content", new User("username")));
+		issue.addMessage(new Message("msgID", "Content", new User("username"), new Date(2018, 12, 30, 22, 28)));
 		TestUtils`assertTrue(issue.numMessages() = 1);
-		issue.addMessage(new Message("msgID2", "Content2", new User("username2")));
+		issue.addMessage(new Message("msgID2", "Content2", new User("username2"), new Date(2018, 12, 30, 22, 29)));
 		TestUtils`assertTrue(issue.numMessages() = 2);
 	);
 	

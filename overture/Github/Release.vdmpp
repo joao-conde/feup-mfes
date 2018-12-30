@@ -2,12 +2,13 @@ class Release
 
 	instance variables
 		public name: Utils`String := [];
-		public timestamp: nat := 0; -- TODO change Type
+		public timestamp : Date;
 	
 	operations
-		public Release: Utils`String ==> Release
-		Release(n) == (
+		public Release: Utils`String * Date ==> Release
+		Release(n, date) == (
 			name := n;
+			timestamp := date;
 			return self;
 		)
 		pre n <> [];

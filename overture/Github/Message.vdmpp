@@ -6,27 +6,19 @@ values
 instance variables
 	public id: Utils`String;
 	public content: Utils`String;
-	-- public timestamp: Date;
+	public timestamp: Date;
 
 	public author: User;
 
 operations
-	--public Message:  Utils`String * Utils`String * Utils`Date * User ==> Message
-	--Message(msgID, cont, ts) == (
-	--	id := msgID;
-	--	content := cont;
-	--	timestamp := ts;
-	--	return self;
-	--);
-	
-	public Message:  Utils`String * Utils`String * User ==> Message
-	Message(msgID, cont, auth) == (
+	public Message:  Utils`String * Utils`String * User * Date ==> Message
+	Message(msgID, cont, auth, date) == (
 		id := msgID;
 		content := cont;
 		author := auth;
+		timestamp := date;
 		return self;
 	);
-
 
 functions
 -- TODO Define functiones here

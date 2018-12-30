@@ -17,7 +17,7 @@ class Repository
 		inv branches(defaultBranch.name) = defaultBranch;
 	
 		inv forall i1, i2 in set inds releases & 
-			i1 < i2 => releases(i2).timestamp >= releases(i1).timestamp;
+			i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
 		
 	operations
 		public Repository: Utils`String * Account * bool ==> Repository

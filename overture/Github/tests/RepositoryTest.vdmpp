@@ -119,25 +119,25 @@ operations
 		testAddRelease() ==
 		(
 			TestUtils`assertTrue(r.numReleases() = 0);
-			r.addRelease(new Release("v1.1"));
+			r.addRelease(new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
 			TestUtils`assertTrue(r.numReleases() = 1);
-			r.addRelease(new Release("v1.2"));
+			r.addRelease(new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
 			TestUtils`assertTrue(r.numReleases() = 2);
 		);
 	
 	public static main: () ==> ()
 	main() == (
-		let r = new RepositoryTest() in (
-			r.testConstructor();
-			r.testSetDescription();
-			r.testAddCollaborator();
-			r.testAddTag();
-			r.testAddRelease();
-			r.testCreateBranch();
-			r.testSetDefaultBranch();
-			r.testCommit();
-			r.testCommitHistory();
-			r.testSetPrivacy();
+		let rt = new RepositoryTest() in (
+			rt.testConstructor();
+			rt.testSetDescription();
+			rt.testAddCollaborator();
+			rt.testAddTag();
+			rt.testAddRelease();
+			rt.testCreateBranch();
+			rt.testSetDefaultBranch();
+			rt.testCommit();
+			rt.testCommitHistory();
+			rt.testSetPrivacy();
 		);
 	);
 
