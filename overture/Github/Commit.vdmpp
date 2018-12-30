@@ -6,15 +6,16 @@ class Commit
 	instance variables
 		public hash: Utils`String;
 		-- public content: Utils`String;
-		public timestamp : nat := 0; -- TODO change Type
+		public timestamp: Date;
 		
 		public author: User;
 	
 	operations
-		public Commit: Utils`String * User ==> Commit
-		Commit(str, u) == (
+		public Commit: Utils`String * User * Date ==> Commit
+		Commit(str, u, d) == (
 			hash := str;
 			author := u;
+			timestamp := d;
 			return self;
 		)
 		pre str <> []

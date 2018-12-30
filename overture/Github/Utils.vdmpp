@@ -1,11 +1,6 @@
 class Utils
 	types
 		public String = seq of char;
-		public Date :: year: nat
-								 	 month: nat
-									 day: nat
-									 hour: nat
-									 minute: nat;
 	
 	values
 	-- TODO Define values here

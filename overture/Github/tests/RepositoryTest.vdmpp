@@ -90,12 +90,12 @@ operations
 		let usr = new User("contributor") in (
 			r.addCollaborator(usr);
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
-			r.commit(usr, r.getDefaultBranch().name, "hash");
+			r.commit(usr, r.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 19));
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 			
 			-- Can also contribute to public repositories
 			let pub = new Repository("public", o, false) in (
-				pub.commit(usr, pub.getDefaultBranch().name, "hash");
+				pub.commit(usr, pub.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 20));
 				TestUtils`assertTrue(len pub.getDefaultBranch().getCommits() = 1);
 			);
 		);

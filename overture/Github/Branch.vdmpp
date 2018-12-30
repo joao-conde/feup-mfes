@@ -10,7 +10,7 @@ class Branch
 		private commits: seq of Commit := []; -- Chronologically ordered assured by invariant
 	
 		inv forall i1, i2 in set inds commits & 
-			i1 < i2 => commits(i2).timestamp >= commits(i1).timestamp;
+			i1 < i2 => mk_Date`DateComparable(commits(i1).timestamp) < mk_Date`DateComparable(commits(i2).timestamp);
 		
 	operations
 		public Branch: Utils`String * bool ==> Branch

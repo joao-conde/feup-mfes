@@ -60,9 +60,9 @@ class Repository
 		pre n not in set dom branches
 		post let b = branches(n) in b.name = n and b.isProtected = prot;
 		
-		public commit: User * Utils`String * Utils`String ==> ()
-		commit(usr, branchName, hash) == (
-			branches(branchName).commit(new Commit(hash, usr));
+		public commit: User * Utils`String * Utils`String * Date ==> ()
+		commit(usr, branchName, hash, date) == (
+			branches(branchName).commit(new Commit(hash, usr, date));
 		)
 		pre (usr in set collaborators or not isPrivate) and
 			branchName in set dom branches;

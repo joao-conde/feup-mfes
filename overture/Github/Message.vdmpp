@@ -6,7 +6,7 @@ values
 instance variables
 	public id: Utils`String;
 	public content: Utils`String;
-	public timestamp: Utils`Date; --Utils function to get now()?
+	-- public timestamp: Date;
 
 	public author: User;
 
