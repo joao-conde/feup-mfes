@@ -21,6 +21,7 @@ class Utils
 		public static max(s: set of nat) res: nat ==
 		iota n1 in set s & forall n2 in set s & n1 >= n2
 		pre card s > 0;
+		
 	traces
 	-- TODO Define Combinatorial Test Traces here
 end Utils

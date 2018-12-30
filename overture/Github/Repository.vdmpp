@@ -48,6 +48,13 @@ operations
 	pre n not in set dom branches
 	post let b = branches(n) in b.name = n and b.isProtected = prot;
 
+	public commit: User * Branch * Utils`String ==> ()
+	commit(usr, branch, hash) == (
+		branch.commit(new Commit(hash));
+	)
+	pre usr in set collaborators and
+		branch in set rng branches;
+
 functions
 -- TODO Define functiones here
 traces

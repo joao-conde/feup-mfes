@@ -7,6 +7,11 @@ instance variables
 	public name: Utils`String;
 	public isProtected: bool;
 
+	private commits: seq of Commit := []; -- Chronologically ordered assured by invariant
+
+	inv forall i1, i2 in set inds commits & 
+		i1 < i2 => commits(i2).timestamp >= commits(i1).timestamp;
+	
 operations
 	public Branch: Utils`String * bool ==> Branch
 	Branch(n, prot) == (
@@ -16,8 +21,13 @@ operations
 	)
 	pre n <> []
 	post name = n and isProtected = prot;
-
 	
+	public commit: Commit ==> ()
+	commit(c) == (
+		commits := commits ^ [c];
+	)
+	pre c not in set elems commits
+	post c in set elems commits;
 	
 functions
 -- TODO Define functiones here

@@ -5,13 +5,20 @@ values
 -- TODO Define values here
 instance variables
 	public hash: Utils`String;
-	public content: Utils`String;
-	public timestamp: Utils`Date; --Utils function to get now()?
+	-- public content: Utils`String;
+	public timestamp: nat; --Utils`Date; --Utils function to get now()?
 
 operations
--- TODO Define operations here
+	public Commit: Utils`String ==> Commit
+	Commit(str) == (
+		hash := str;
+		return self;
+	)
+	pre str <> []
+	post hash = str;
+	
 functions
--- TODO Define functiones here
+-- TODO Define functions here
 traces
 -- TODO Define Combinatorial Test Traces here
 end Commit
