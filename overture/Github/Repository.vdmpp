@@ -1,76 +1,76 @@
 class Repository
-types
-values
--- TODO Define values here
 
-instance variables
-	public name: Utils`String;
-	public description: Utils`String := [];
-	public isPrivate: bool;
+	instance variables
 	
-	public owner: Account;
-	public collaborators: set of User := {};
-	public branches: map Utils`String to Branch := { |-> };
-	public defaultBranch: Branch;
-
-	inv defaultBranch in set rng branches;
-	inv branches(defaultBranch.name) = defaultBranch;
-
-operations
-	public Repository: Utils`String * Account * bool ==> Repository
-	Repository(n, acc, priv) == (
-		name := n;
-		isPrivate := priv;
-		owner := acc;
-		if isofclass(User, owner) then collaborators := {owner};
+		public name: Utils`String;
+		public isPrivate: bool;
+		public description: Utils`String := "";
+	
+		public owner: Account;
+		public collaborators: set of User := {};
+		public branches: map Utils`String to Branch := { |-> };
+		public defaultBranch: Branch;
 		
-		let master = new Branch("master", true) in ( -- Github creates default branch master
-			defaultBranch := master;
-			branches := { "master" |-> master };
-		);
-		return self;
-	)
-	pre n <> []
-	post name = n and isPrivate = priv and owner = acc and
-		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
-		defaultBranch.name = "master" and card dom branches = 1 and branches("master") = defaultBranch;
-
-	public setDescription: Account * Utils`String ==> ()
-	setDescription(acc, desc) == description := desc
-	pre acc = owner
-	post description = desc;
+		public tags: set of Tag := {};
 	
-	public addCollaborator: User ==> ()
-	addCollaborator(usr) == collaborators := collaborators union {usr}
-	post usr in set collaborators;
+		inv defaultBranch in set rng branches;
+		inv branches(defaultBranch.name) = defaultBranch;
 	
-	public createBranch: Utils`String * bool ==> Branch
-	createBranch(n, prot) == (
-		let b = new Branch(n, prot) in (
-			branches(n) := b;
-			return b;
-		);
-	)
-	pre n not in set dom branches
-	post let b = branches(n) in b.name = n and b.isProtected = prot;
+	operations
+		public Repository: Utils`String * Account * bool ==> Repository
+		Repository(n, acc, priv) == (
+			name := n;
+			isPrivate := priv;
+			owner := acc;
+			if isofclass(User, owner) then collaborators := {owner};
+			
+			let master = new Branch("master", true) in ( -- Github creates default branch master
+				defaultBranch := master;
+				branches := { "master" |-> master };
+			);
+			return self;
+		)
+		pre n <> []
+		post name = n and isPrivate = priv and owner = acc and
+			(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
+			defaultBranch.name = "master" and card dom branches = 1;
 	
-	public setDefaultBranch: Utils`String ==> ()
-	setDefaultBranch(bName) == defaultBranch := branches(bName)
-	pre bName in set dom branches
-	post defaultBranch.name = bName;
-
-	public commit: User * Branch * Utils`String ==> ()
-	commit(usr, branch, hash) == (
-		branch.commit(new Commit(hash, usr));
-	)
-	pre usr in set collaborators and
-		branch in set rng branches;
+		public addTag: Tag ==> ()
+		addTag(tag) == tags := tags union {tag}
+		post tag in set tags;
 		
-	public getCommitHistory: () ==> seq of Commit
-	getCommitHistory() == return defaultBranch.getCommits();
+		public createBranch: Utils`String * bool ==> Branch
+		createBranch(n, prot) == (
+			let b = new Branch(n, prot) in (
+				branches(n) := b;
+				return b;
+			);
+		)
+		pre n not in set dom branches
+		post let b = branches(n) in b.name = n and b.isProtected = prot;
+	
+		public commit: User * Branch * Utils`String ==> ()
+		commit(usr, branch, hash) == (
+			branch.commit(new Commit(hash, usr));
+		)
+		pre usr in set collaborators and
+			branch in set rng branches;
+		
+		public addCollaborator: User ==> ()
+		addCollaborator(usr) == collaborators := collaborators union {usr}
+		post usr in set collaborators;
+		
+		public getCommitHistory: () ==> seq of Commit
+		getCommitHistory() == return defaultBranch.getCommits();
+		
+		public setDefaultBranch: Utils`String ==> ()
+		setDefaultBranch(bName) == defaultBranch := branches(bName)
+		pre bName in set dom branches
+		post defaultBranch.name = bName;
 
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+		public setDescription: Account * Utils`String ==> ()
+		setDescription(acc, desc) == description := desc
+		pre acc = owner
+		post description = desc;
+		
 end Repository

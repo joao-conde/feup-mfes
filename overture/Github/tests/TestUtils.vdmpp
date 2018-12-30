@@ -17,7 +17,7 @@ class TestUtils
 	  
 	  public static randomUser: seq of User ==> User
 	  randomUser(users) == (
-	  	return users(MATH`rand(len users))
+	  	return users(MATH`rand(len users) + 1)
 	  );
 	
 	functions
