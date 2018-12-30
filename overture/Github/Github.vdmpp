@@ -24,13 +24,13 @@ class Github
 		public numAccounts: () ==> nat
 		numAccounts() == (return card dom accounts);
 		
-		public getRepositoriesByTags: set of Tag ==> set of Repository
+		public getRepositoriesByTags: set of Tag | set of Utils`String ==> set of Repository
 		getRepositoriesByTags(tags) ==
 			return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
 		pre tags <> {};
 	
 	functions
-		public static repoMatchesTags(r: Repository, tags: set of Tag) res: bool ==
-		forall t in set tags & t.name in set {tInner.name | tInner in set r.tags};
+		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
+		forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
 		
 end Github
