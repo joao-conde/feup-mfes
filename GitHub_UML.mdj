@@ -2932,24 +2932,7 @@
 											"top": 830,
 											"width": 102.96533203125,
 											"height": 13,
-											"text": "+tag",
-											"horizontalAlignment": 0
-										},
-										{
-											"_type": "UMLAttributeView",
-											"_id": "AAAAAAFns17tKXRHbCM=",
-											"_parent": {
-												"$ref": "AAAAAAFns16Te3C6f3E="
-											},
-											"model": {
-												"$ref": "AAAAAAFns17tBHQsXzs="
-											},
-											"font": "Arial;13;0",
-											"left": 981,
-											"top": 845,
-											"width": 102.96533203125,
-											"height": 13,
-											"text": "+title",
+											"text": "+name",
 											"horizontalAlignment": 0
 										},
 										{
@@ -2963,7 +2946,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 981,
-											"top": 860,
+											"top": 845,
 											"width": 102.96533203125,
 											"height": 13,
 											"text": "+timestamp",
@@ -2974,7 +2957,7 @@
 									"left": 976,
 									"top": 825,
 									"width": 112.96533203125,
-									"height": 53
+									"height": 38
 								},
 								{
 									"_type": "UMLOperationCompartmentView",
@@ -2997,7 +2980,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 981,
-											"top": 883,
+											"top": 868,
 											"width": 102.96533203125,
 											"height": 13,
 											"text": "+CreateRelease()",
@@ -3006,7 +2989,7 @@
 									],
 									"font": "Arial;13;0",
 									"left": 976,
-									"top": 878,
+									"top": 863,
 									"width": 112.96533203125,
 									"height": 23
 								},
@@ -3048,7 +3031,8 @@
 							"left": 976,
 							"top": 800,
 							"width": 112.96533203125,
-							"height": 101,
+							"height": 86,
+							"autoResize": true,
 							"nameCompartment": {
 								"$ref": "AAAAAAFns16Te3C1oLw="
 							},
@@ -8315,17 +8299,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFns16TenCyq1k="
 							},
-							"name": "tag",
-							"type": ""
-						},
-						{
-							"_type": "UMLAttribute",
-							"_id": "AAAAAAFns17tBHQsXzs=",
-							"_parent": {
-								"$ref": "AAAAAAFns16TenCyq1k="
-							},
-							"name": "title",
-							"type": ""
+							"name": "name"
 						},
 						{
 							"_type": "UMLAttribute",
