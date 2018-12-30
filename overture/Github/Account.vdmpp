@@ -19,9 +19,5 @@ class Account
 		)
 		pre name not in set dom repositories
 		post repositories(name).name = name;
-	
-	functions
-	-- TODO Define functions here
-	traces
-	-- TODO Define Combinatorial Test Traces here
+
 end Account

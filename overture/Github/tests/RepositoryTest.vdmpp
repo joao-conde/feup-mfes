@@ -95,11 +95,11 @@ operations
 		);
 	);
 	
-	private getCommitHistory: () ==> ()
-	getCommitHistory() == (
-		TestUtils`assertTrue(len r.getCommitHistory() = 1);
+	private testCommitHistory: () ==> ()
+	testCommitHistory() == (
+		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 		r.setDefaultBranch("master");
-		TestUtils`assertTrue(len r.getCommitHistory() = 0);
+		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 	);
 	
 	private testAddRelease: () ==> ()
@@ -123,7 +123,7 @@ operations
 			r.testCreateBranch();
 			r.testSetDefaultBranch();
 			r.testCommit();
-			r.getCommitHistory();
+			r.testCommitHistory();
 		);
 	);
 
