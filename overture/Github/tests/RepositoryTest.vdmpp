@@ -5,7 +5,7 @@ values
 -- TODO Define values here
 instance variables
 	o : Account := new Organization("feup");
-	r : Repository := new Repository("mfes", o, false);
+	r : Repository := new Repository("mfes", o, true);
 
 operations
 	private testConstructor: () ==> ()
@@ -92,6 +92,12 @@ operations
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 			r.commit(usr, r.getDefaultBranch().name, "hash");
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
+			
+			-- Can also contribute to public repositories
+			let pub = new Repository("public", o, false) in (
+				pub.commit(usr, pub.getDefaultBranch().name, "hash");
+				TestUtils`assertTrue(len pub.getDefaultBranch().getCommits() = 1);
+			);
 		);
 	);
 	
