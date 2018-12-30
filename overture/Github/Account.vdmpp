@@ -1,6 +1,8 @@
 class Account
 
 	instance variables
+--		private static usedUsernames: set of Utils`String := {};
+	
 		public username: Utils`String;
 		public repositories: map Utils`String to Repository := { |-> };
 		
@@ -8,8 +10,15 @@ class Account
 		--public description: Utils`String := [];
 		--public location: Utils`String := [];
 		--public site: Utils`String := [];
-			
+		
 	operations
+		public Account: Utils`String ==> Account
+		Account(un) == (
+			username := un;
+		);
+--		pre un not in set usedUsernames
+--		post un in set usedUsernames;
+	
 		public newRepository: Utils`String * bool ==> Repository
 		newRepository(name, isPriv) == (
 			let r = new Repository(name, self, isPriv) in (

@@ -106,9 +106,9 @@ operations
 		testAddRelease() ==
 		(
 			TestUtils`assertTrue(r.numReleases() = 0);
-			r.addRelease(new Release("tag1", "v1.1"));
+			r.addRelease(new Release("v1.1"));
 			TestUtils`assertTrue(r.numReleases() = 1);
-			r.addRelease(new Release("tag2", "v1.2"));
+			r.addRelease(new Release("v1.2"));
 			TestUtils`assertTrue(r.numReleases() = 2);
 		);
 	

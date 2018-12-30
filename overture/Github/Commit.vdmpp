@@ -1,27 +1,27 @@
 class Commit
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
-	public hash: Utils`String;
-	-- public content: Utils`String;
-	public timestamp: nat; -- TODO change Type
+	types
+	-- TODO Define types here
+	values
+	-- TODO Define values here
+	instance variables
+		public hash: Utils`String;
+		-- public content: Utils`String;
+		public timestamp : nat := 0; -- TODO change Type
+		
+		public author: User;
 	
-	public author: User;
-
-operations
-	public Commit: Utils`String * User ==> Commit
-	Commit(str, u) == (
-		hash := str;
-		author := u;
-		return self;
-	)
-	pre str <> []
-	post hash = str;
-	
-functions
--- TODO Define functions here
-traces
--- TODO Define Combinatorial Test Traces here
+	operations
+		public Commit: Utils`String * User ==> Commit
+		Commit(str, u) == (
+			hash := str;
+			author := u;
+			return self;
+		)
+		pre str <> []
+		post hash = str;
+		
+	functions
+	-- TODO Define functions here
+	traces
+	-- TODO Define Combinatorial Test Traces here
 end Commit

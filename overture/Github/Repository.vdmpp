@@ -43,7 +43,7 @@ class Repository
 		addRelease(rel) == (
 			releases := releases ^ [rel];
 		)
-		pre rel.tag not in set {r.tag | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
+		pre rel.name not in set {r.name | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
 		post releases(len releases) = rel;
 		
 		public addTag: Tag ==> ()

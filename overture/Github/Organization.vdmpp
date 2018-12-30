@@ -11,8 +11,7 @@ instance variables
 operations
 	public Organization: Utils`String ==> Organization
 	Organization(un) == (
-		username := un;
-		return self;
+		Account(un);
 	);
 	
 	public addMember: User ==> ()

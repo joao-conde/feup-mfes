@@ -1,25 +1,15 @@
 class Release
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
-	public tag: Utils`String; -- Shall this be a tag?
-	public title: Utils`String := [];
-	public timestamp: nat; -- TODO change Type
-	--public timestamp: Utils`Date; --Utils function to get now()?
 
-operations
-
-	public Release: Utils`String * Utils`String ==> Release
-	Release(rTag, rTitle) == (
-		tag := rTag;
-		title := rTitle;
-		return self;
-	)
+	instance variables
+		public name: Utils`String := [];
+		public timestamp: nat := 0; -- TODO change Type
 	
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
+	operations
+		public Release: Utils`String ==> Release
+		Release(n) == (
+			name := n;
+			return self;
+		)
+		pre n <> [];
+		
 end Release
