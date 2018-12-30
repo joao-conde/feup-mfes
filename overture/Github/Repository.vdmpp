@@ -23,11 +23,17 @@ operations
 		isPrivate := priv;
 		owner := acc;
 		if isofclass(User, owner) then collaborators := {owner};
+		
+		let master = new Branch("master", true) in ( -- Github creates default branch master
+			defaultBranch := master;
+			branches := { "master" |-> master };
+		);
 		return self;
 	)
 	pre n <> []
 	post name = n and isPrivate = priv and owner = acc and
-		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators));
+		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
+		defaultBranch.name = "master" and card dom branches = 1 and branches("master") = defaultBranch;
 
 	public setDescription: Account * Utils`String ==> ()
 	setDescription(acc, desc) == description := desc

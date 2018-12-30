@@ -32,15 +32,16 @@ operations
 	
 	private testCreateBranch: () ==> ()
 	testCreateBranch() == (
-		let branch = r.createBranch("master", true) in (
-			let b = r.branches("master") in (
+		let branch = r.createBranch("develop", true) in (
+			let b = r.branches("develop") in (
 				TestUtils`assertTrue(branch.name = b.name);
-				TestUtils`assertTrue(branch.name = "master");
+				TestUtils`assertTrue(branch.name = "develop");
 				
 				TestUtils`assertTrue(branch.isProtected = b.isProtected);
 				TestUtils`assertTrue(branch.isProtected = true);
 			);
 		);
+		TestUtils`assertTrue(card dom r.branches = 2);
 	);
 	
 	public static main: () ==> ()
