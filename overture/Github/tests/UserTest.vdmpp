@@ -21,11 +21,25 @@ class UserTest
 				TestUtils`assertTrue(user.repositories(r.name) = r)
 			);
 		);
+		
+		private testStarUnstar: () ==> ()
+		testStarUnstar() == (
+			let r = (TestUtils`randomUser(users)).newRepository("FEUP-MFES", true) in (
+				TestUtils`assertTrue(user.getStars() = {});
+				user.star(r);
+				TestUtils`assertTrue(user.getStars() = {r});
+				user.unstar(r);
+				TestUtils`assertTrue(user.getStars() = {});
+			);
+		);
 	
 		public static main: () ==> ()
 		main() == (
-			new UserTest().testFollowUnfollow();
-			new UserTest().testNewRepo();
+			let ut = new UserTest() in (
+				ut.testFollowUnfollow();
+				ut.testNewRepo();
+				ut.testStarUnstar();
+			);
 		);
 
 	traces

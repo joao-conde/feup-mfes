@@ -9,6 +9,7 @@ instance variables
 	private selfUser: User; -- For invariant purposes
 	private followers: set of User := {};
 	private following: set of User := {};
+	private stars: set of Repository := {};
 	
 	inv selfUser not in set followers; -- makes pre self <> user unecessary
 	inv selfUser not in set following; -- makes pre self <> user unecessary
@@ -56,11 +57,26 @@ operations
 	)
 	post card following = 0;
 	
+	public star: Repository ==> ()
+	star(repo) == stars := stars union {repo}
+	pre repo not in set stars
+	post repo in set stars;
+	
+	public unstar: Repository ==> ()
+	unstar(repo) == stars:= stars \ {repo}
+	pre repo in set stars
+	post repo not in set stars;
+	
+	-- Getters
 	public getFollowing: () ==> set of User
 	getFollowing() == return following;
 	
 	public getFollowers: () ==> set of User
 	getFollowers() == return followers;
+	
+	public getStars: () ==> set of Repository
+	getStars() == return stars;
+	
 functions
 -- TODO Define functions here
 traces
