@@ -5,9 +5,20 @@ class Utils
 	values
 	-- TODO Define values here
 	instance variables
-	-- TODO Define instance variables here
 	operations
-	-- TODO Define operations here
+		bubbleSort: seq of nat ==> seq of nat
+		bubbleSort(l) ==
+			(dcl sorted_list : seq of nat := l;
+			for i = len l to 1 by -1 do
+				for j = 1 to i-1 do
+					if sorted_list(j) > sorted_list(j+1)
+						then (dcl temp:nat := sorted_list(j);
+							sorted_list(j) := sorted_list(j+1);
+							sorted_list(j+1) := temp
+			);
+			return sorted_list;
+		);
+	
 	functions
 		public static min(s: set of nat) res: nat ==
 		iota n1 in set s & forall n2 in set s & n1 <= n2
@@ -19,6 +30,25 @@ class Utils
 		
 		public static isAscendingOrder[@T](s: seq of @T) res: bool ==
 		forall i in set {1, ..., len s - 1} & s(i) <= s(i+1);
+
+		private static lmerge[@T](s1, s2: seq of @T) res: seq of @T ==
+			if s1 = []
+				then s2
+			elseif s2 = []
+				then s1
+			elseif (hd s1) < (hd s2)
+				then [hd s1] ^ (lmerge(tl s1, s2))
+				else [hd s2] ^ (lmerge(s1, tl s2))
+		measure len s1 + len s2;
+				
+		public static mergesort[@T](l: seq of @T) res: seq of @T ==
+			cases l:
+				[] -> [],
+				[x] -> [x],
+				l1 ^ l2 -> lmerge(mergesort(l1), mergesort(l2))
+			end
+		measure len l;
+
 	traces
 	-- TODO Define Combinatorial Test Traces here
 end Utils
