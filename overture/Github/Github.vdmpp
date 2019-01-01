@@ -28,7 +28,19 @@ class Github
 		getRepositoriesByTags(tags) ==
 			return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
 		pre tags <> {};
-	
+		
+		-- Get name of the User accounts
+		private pure getUsers: () ==> set of Utils`String
+		getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
+		post forall un in set RESULT & isofclass(User, accounts(un));
+		
+		public stargazers: Repository ==> set of Utils`String
+		stargazers(repo) == (
+			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
+		)
+		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
+			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
+
 	functions
 		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
 		forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};

@@ -74,7 +74,7 @@ operations
 	public getFollowers: () ==> set of User
 	getFollowers() == return followers;
 	
-	public getStars: () ==> set of Repository
+	public pure getStars: () ==> set of Repository
 	getStars() == return stars;
 	
 functions
