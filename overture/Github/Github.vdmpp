@@ -35,9 +35,8 @@ class Github
 		post forall un in set RESULT & isofclass(User, accounts(un));
 		
 		public stargazers: Repository ==> set of Utils`String
-		stargazers(repo) == (
+		stargazers(repo) ==
 			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
-		)
 		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
 			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
 

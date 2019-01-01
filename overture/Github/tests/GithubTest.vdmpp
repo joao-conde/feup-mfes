@@ -3,6 +3,8 @@ class GithubTest
 	values
 		firstUsername = "sample-username";
 		secondUsername = "different-username";
+		thirdUsername = "other-username";
+		forthUsername = "another-one";
 		
 		tagFEUP = new Tag("FEUP");
 		tagVDM = new Tag("VDM");
@@ -32,6 +34,21 @@ class GithubTest
 				
 				TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
 				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));
+			);
+		);
+		
+		private testStargazers: () ==> () 
+		testStargazers() == 
+		(
+			let u = new User(thirdUsername), u2 = new User(forthUsername), r = u.newRepository("VDM++", true) in (
+				gh.addAccount(u);
+				u.star(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
+				u2.star(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername, forthUsername});
+				u.unstar(r);
+				u2.unstar(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {});
 			);
 		);
 	

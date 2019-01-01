@@ -10,18 +10,14 @@ instance variables
 operations
 	private testConstructor: () ==> ()
 	testConstructor() == (
-		let org = new Organization("org") in (
-			let repo = new Repository("test", org, true) in (
-				TestUtils`assertTrue(repo.name = "test");
-				TestUtils`assertTrue(repo.isRepoPrivate());
-				TestUtils`assertTrue(card repo.collaborators = 0);
-			);
+		let org = new Organization("org"), repo = new Repository("test", org, true) in (
+			TestUtils`assertTrue(repo.name = "test");
+			TestUtils`assertTrue(repo.isRepoPrivate());
+			TestUtils`assertTrue(card repo.collaborators = 0);
 		);
 		
-		let usr = new User("usr") in (
-			let repo = new Repository("test2", usr, false) in (
-				TestUtils`assertTrue(card repo.collaborators = 1);
-			);
+		let usr = new User("usr"), repo = new Repository("test2", usr, false) in (
+			TestUtils`assertTrue(card repo.collaborators = 1);
 		);
 		
 		TestUtils`assertTrue(r.getDefaultBranch().name = "master");
@@ -40,40 +36,34 @@ operations
 	
 	private testAddCollaborator: () ==> ()
 	testAddCollaborator() == (
-		let u1 = new User("one") in (
+		let u1 = new User("one"), u2 = new User("two") in (
 			r.addCollaborator(u1);
 			TestUtils`assertTrue(r.collaborators = {u1});
 			
-			let u2 = new User("two") in (
-				r.addCollaborator(u2);
-				TestUtils`assertTrue(r.collaborators = {u1, u2});
-			);
+			r.addCollaborator(u2);
+			TestUtils`assertTrue(r.collaborators = {u1, u2});
 		);
 	);
 	
 	private testAddTag: () ==> ()
 	testAddTag() == (
-		let tag1 = new Tag("AI") in (
+		let tag1 = new Tag("AI"), tag2 = new Tag("WebDev") in (
 			r.addTag(tag1);
 			TestUtils`assertTrue(r.tags = {tag1});
 			
-			let tag2 = new Tag("WebDev") in (
-				r.addTag(tag2);
-				TestUtils`assertTrue(r.tags = {tag1, tag2});
-			);
+			r.addTag(tag2);
+			TestUtils`assertTrue(r.tags = {tag1, tag2});
 		);
 	);
 	
 	private testCreateBranch: () ==> ()
 	testCreateBranch() == (
-		let branch = r.createBranch("develop", true) in (
-			let b = r.branches("develop") in (
-				TestUtils`assertTrue(branch.name = b.name);
-				TestUtils`assertTrue(branch.name = "develop");
-				
-				TestUtils`assertTrue(branch.isProtected = b.isProtected);
-				TestUtils`assertTrue(branch.isProtected);
-			);
+		let branch = r.createBranch("develop", true), b = r.branches("develop") in (
+			TestUtils`assertTrue(branch.name = b.name);
+			TestUtils`assertTrue(branch.name = "develop");
+			
+			TestUtils`assertTrue(branch.isProtected = b.isProtected);
+			TestUtils`assertTrue(branch.isProtected);
 		);
 		TestUtils`assertTrue(card dom r.branches = 2);
 	);
@@ -87,17 +77,15 @@ operations
 	
 	private testCommit: () ==> ()
 	testCommit() == (
-		let usr = new User("contributor") in (
+		let usr = new User("contributor"), pub = new Repository("public", o, false) in (
 			r.addCollaborator(usr);
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 			r.commit(usr, r.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 19));
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 			
 			-- Can also contribute to public repositories
-			let pub = new Repository("public", o, false) in (
-				pub.commit(usr, pub.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 20));
-				TestUtils`assertTrue(len pub.getDefaultBranch().getCommits() = 1);
-			);
+			pub.commit(usr, pub.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 20));
+			TestUtils`assertTrue(len pub.getDefaultBranch().getCommits() = 1);
 		);
 	);
 	
