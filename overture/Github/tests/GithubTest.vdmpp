@@ -41,7 +41,7 @@ class GithubTest
 		testStargazers() == 
 		(
 			let u = new User(thirdUsername), u2 = new User(forthUsername), r = u.newRepository("VDM++", true) in (
-				gh.addAccount(u);
+				gh.addAccount(u); gh.addAccount(u2);
 				u.star(r);
 				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
 				u2.star(r);
@@ -58,6 +58,7 @@ class GithubTest
 			let gt = new GithubTest() in (
 				gt.testAddAccount();
 				gt.testGetReposByTags();
+				gt.testStargazers();
 			);
 		);
 
