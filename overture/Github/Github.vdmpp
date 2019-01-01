@@ -34,11 +34,37 @@ class Github
 		getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
 		post forall un in set RESULT & isofclass(User, accounts(un));
 		
-		public stargazers: Repository ==> set of Utils`String
+		public pure stargazers: Repository ==> set of Utils`String
 		stargazers(repo) ==
 			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
 		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
 			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
+		
+		-- Gets sequence containing all Repositories
+		private getAllRepos: () ==> seq of Repository
+		getAllRepos() == (
+			dcl reposSet: set of Repository := {}, repos: seq of Repository := [];
+			for all acc in set rng accounts do
+				reposSet := reposSet union {r | r in set rng acc.repositories \ reposSet};
+			for all r in set reposSet do repos := repos ^ [r];
+			return repos;
+		);
+		
+		-- Orders Repositories by number of stars using a bubble-sort like algorithm
+		public getTopRepos: () ==> seq of Repository
+		getTopRepos() == (
+			dcl l: seq of Repository := getAllRepos();
+			dcl sorted_list: seq of Repository := l;
+			for i = len l to 1 by -1 do
+				for j = 1 to i-1 do
+					if card stargazers(sorted_list(j)) > card stargazers(sorted_list(j+1))
+						then (dcl temp: Repository := sorted_list(j);
+							sorted_list(j) := sorted_list(j+1);
+							sorted_list(j+1) := temp
+			);
+			return sorted_list;
+		)
+		post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) > card stargazers(RESULT(i + 1));
 
 	functions
 		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
