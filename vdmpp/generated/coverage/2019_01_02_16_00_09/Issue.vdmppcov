@@ -1,0 +1,54 @@
+class Issue
+types
+	-- Map of message ID to Message
+	public Messages = map Utils`String to Message;
+	
+values
+-- TODO Define values here
+instance variables
+	public id: Utils`String;
+	public title: Utils`String;
+	public description: Utils`String;
+	
+	public messages: Messages := { |-> };
+	
+	public assignees: set of User := {};
+
+operations
+	public Issue: Utils`String * Utils`String * Utils`String ==> Issue
+	Issue(issueID, issueTitle, issueDesc) == (
+		id := issueID;
+		title := issueTitle;
+		description := issueDesc;
+		return self;
+	)
+	post card dom messages = 0;
+	
+	--Add a message to this issue
+	public addMessage: Message ==> ()
+	addMessage(msg) == (
+		messages(msg.id) := msg;
+	)
+	pre not msg.id in set dom messages
+	post messages(msg.id) = msg;
+	
+	--Assign an user to this issue
+	public assignUser: User ==> ()
+	assignUser(user) == (
+		assignees := assignees union {user};
+		--should user have this issue added to him aswell?
+	)
+	pre not user in set assignees
+	post user in set assignees;
+	
+	public numMessages: () ==> nat
+	numMessages() == return card dom messages;
+	
+	public numAssignees: () ==> nat
+	numAssignees() == return card assignees;
+
+functions
+-- TODO Define functions here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Issue
