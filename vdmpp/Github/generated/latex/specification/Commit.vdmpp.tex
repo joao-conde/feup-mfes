@@ -1,0 +1,46 @@
+\begin{vdmpp}[breaklines=true]
+class Commit
+ types
+ -- TODO Define types here
+ values
+ -- TODO Define values here
+ instance variables
+  public hash: Utils`String;
+  -- public content: Utils`String;
+  public timestamp: Date;
+  
+  public author: User;
+ 
+ operations
+(*@
+\label{Commit:14}
+@*)
+  public Commit: Utils`String * User * Date ==> Commit
+  Commit(str, u, d) == (
+   hash := str;
+   author := u;
+   timestamp := d;
+   return self;
+  )
+  pre str <> []
+  post hash = str;
+  
+ functions
+ -- TODO Define functions here
+ traces
+ -- TODO Define Combinatorial Test Traces here
+end Commit
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[Commit:14]{Commit} & 14&100.0\% & 2 \\
+\hline
+\hline
+Commit.vdmpp & & 100.0\% & 2 \\
+\hline
+\end{longtable}
+

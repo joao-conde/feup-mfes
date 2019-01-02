@@ -49,7 +49,8 @@
 			for all r in set reposSet do repos := repos ^ [r];
 			return repos;
 		)
-		post forall e in set dunion { rng acc.repositories | acc in set rng accounts } & e in set elems RESULT;
+		post forall e in set dunion { rng acc.repositories | acc in set rng accounts } & e in set elems RESULT and
+			card dunion { rng acc.repositories | acc in set rng accounts } = len RESULT;
 
 		-- Orders Repositories by number of stars using a bubble-sort like algorithm
 		public getTopRepos: () ==> seq of Repository

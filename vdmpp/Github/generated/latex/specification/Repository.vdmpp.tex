@@ -1,0 +1,181 @@
+\begin{vdmpp}[breaklines=true]
+class Repository
+ 
+ instance variables
+  
+  public name: Utils`String;
+  private isPrivate: bool;
+  private description: Utils`String := [];
+ 
+  private owner: Account;
+  private defaultBranch: Branch;
+  public tags: set of Tag := {};
+  public collaborators: set of User := {};
+  public releases: seq of Release := [];
+  public branches: map Utils`String to Branch := { |-> };
+   
+  inv defaultBranch in set rng branches;
+  inv branches(defaultBranch.name) = defaultBranch;
+ 
+  inv forall i1, i2 in set inds releases & 
+   i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
+  
+ operations
+(*@
+\label{Repository:23}
+@*)
+  public Repository: Utils`String * Account * bool ==> Repository
+  Repository(n, acc, priv) == (
+   name := n;
+   isPrivate := priv;
+   owner := acc;
+   if isofclass(User, owner) then collaborators := {owner};
+    
+   let master = new Branch("master", true) in ( -- Github creates default branch master
+    defaultBranch := master;
+    branches := { "master" |-> master };
+   );
+   return self;
+  )
+  pre n <> []
+  post name = n and isPrivate = priv and owner = acc and
+   (isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
+   defaultBranch.name = "master" and card dom branches = 1;
+   
+  
+(*@
+\label{addRelease:42}
+@*)
+  public addRelease: Release ==> ()
+  addRelease(rel) == (
+   releases := releases ^ [rel];
+  )
+  pre rel.name not in set {r.name | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
+  post releases(len releases) = rel;
+  
+(*@
+\label{addTag:49}
+@*)
+  public addTag: Tag ==> ()
+  addTag(tag) == tags := tags union {tag}
+  post tag in set tags;
+   
+(*@
+\label{createBranch:53}
+@*)
+  public createBranch: Utils`String * bool ==> Branch
+  createBranch(n, prot) == (
+   let b = new Branch(n, prot) in (
+    branches(n) := b;
+    return b;
+   );
+  )
+  pre n not in set dom branches
+  post let b = branches(n) in b.name = n and b.isProtected = prot;
+  
+(*@
+\label{commit:63}
+@*)
+  public commit: User * Utils`String * Utils`String * Date ==> ()
+  commit(usr, branchName, hash, date) == (
+   branches(branchName).commit(new Commit(hash, usr, date));
+  )
+  pre (usr in set collaborators or not isPrivate) and
+   branchName in set dom branches;
+   
+(*@
+\label{addCollaborator:70}
+@*)
+  public addCollaborator: User ==> ()
+  addCollaborator(usr) == collaborators := collaborators union {usr}
+  post usr in set collaborators;
+   
+  -- Getters
+(*@
+\label{getDefaultBranch:75}
+@*)
+  public getDefaultBranch: () ==> Branch
+  getDefaultBranch() == return defaultBranch;
+  
+(*@
+\label{getDescription:78}
+@*)
+  public getDescription: () ==> Utils`String
+  getDescription() == return description;
+  
+(*@
+\label{numReleases:81}
+@*)
+  public numReleases: () ==> nat
+  numReleases() == return len releases;
+  
+(*@
+\label{isRepoPrivate:84}
+@*)
+  public isRepoPrivate: () ==> bool
+  isRepoPrivate() == return isPrivate;
+  
+  -- Setters
+(*@
+\label{setDefaultBranch:88}
+@*)
+  public setDefaultBranch: Utils`String ==> ()
+  setDefaultBranch(bName) == defaultBranch := branches(bName)
+  pre bName in set dom branches
+  post defaultBranch.name = bName;
+ 
+(*@
+\label{setDescription:93}
+@*)
+  public setDescription: Account * Utils`String ==> ()
+  setDescription(acc, desc) == description := desc
+  pre acc = owner
+  post description = desc;
+  
+(*@
+\label{setPrivacy:98}
+@*)
+  public setPrivacy: Account * bool ==> ()
+  setPrivacy(acc, privacy) == isPrivate := privacy
+  pre acc = owner
+  post isPrivate = privacy;
+  
+end Repository
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[Repository:23]{Repository} & 23&100.0\% & 9 \\
+\hline
+\hyperref[addCollaborator:70]{addCollaborator} & 70&100.0\% & 3 \\
+\hline
+\hyperref[addRelease:42]{addRelease} & 42&100.0\% & 2 \\
+\hline
+\hyperref[addTag:49]{addTag} & 49&100.0\% & 5 \\
+\hline
+\hyperref[commit:63]{commit} & 63&100.0\% & 2 \\
+\hline
+\hyperref[createBranch:53]{createBranch} & 53&100.0\% & 1 \\
+\hline
+\hyperref[getDefaultBranch:75]{getDefaultBranch} & 75&100.0\% & 11 \\
+\hline
+\hyperref[getDescription:78]{getDescription} & 78&100.0\% & 2 \\
+\hline
+\hyperref[isRepoPrivate:84]{isRepoPrivate} & 84&100.0\% & 3 \\
+\hline
+\hyperref[numReleases:81]{numReleases} & 81&100.0\% & 3 \\
+\hline
+\hyperref[setDefaultBranch:88]{setDefaultBranch} & 88&100.0\% & 2 \\
+\hline
+\hyperref[setDescription:93]{setDescription} & 93&100.0\% & 2 \\
+\hline
+\hyperref[setPrivacy:98]{setPrivacy} & 98&100.0\% & 1 \\
+\hline
+\hline
+Repository.vdmpp & & 100.0\% & 46 \\
+\hline
+\end{longtable}
+

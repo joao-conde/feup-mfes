@@ -1,0 +1,59 @@
+\begin{vdmpp}[breaklines=true]
+class Organization is subclass of Account
+types
+-- TODO Define types here
+
+values
+-- TODO Define values here
+
+instance variables
+ public members: set of User := {};
+
+operations
+(*@
+\label{Organization:12}
+@*)
+ public Organization: Utils`String ==> Organization
+ Organization(un) == (
+  Account(un);
+ );
+ 
+(*@
+\label{addMember:17}
+@*)
+ public addMember: User ==> ()
+ addMember(u) == (
+  members := members union {u}
+ )
+ pre u.username not in set {us.username | us in set members}
+ post u in set members;
+ 
+(*@
+\label{numMembers:24}
+@*)
+ public numMembers: () ==> nat
+ numMembers() == return card members;
+ 
+functions
+-- TODO Define functions here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Organization
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[Organization:12]{Organization} & 12&100.0\% & 4 \\
+\hline
+\hyperref[addMember:17]{addMember} & 17&100.0\% & 2 \\
+\hline
+\hyperref[numMembers:24]{numMembers} & 24&100.0\% & 3 \\
+\hline
+\hline
+Organization.vdmpp & & 100.0\% & 9 \\
+\hline
+\end{longtable}
+

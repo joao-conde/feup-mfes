@@ -1,0 +1,92 @@
+\begin{vdmpp}[breaklines=true]
+class Issue
+types
+ -- Map of message ID to Message
+ public Messages = map Utils`String to Message;
+ 
+values
+-- TODO Define values here
+instance variables
+ public id: Utils`String;
+ public title: Utils`String;
+ public description: Utils`String;
+ 
+ public messages: Messages := { |-> };
+ 
+ public assignees: set of User := {};
+
+operations
+(*@
+\label{Issue:18}
+@*)
+ public Issue: Utils`String * Utils`String * Utils`String ==> Issue
+ Issue(issueID, issueTitle, issueDesc) == (
+  id := issueID;
+  title := issueTitle;
+  description := issueDesc;
+  return self;
+ )
+ post card dom messages = 0;
+ 
+ --Add a message to this issue
+(*@
+\label{addMessage:28}
+@*)
+ public addMessage: Message ==> ()
+ addMessage(msg) == (
+  messages(msg.id) := msg;
+ )
+ pre not msg.id in set dom messages
+ post messages(msg.id) = msg;
+ 
+ --Assign an user to this issue
+(*@
+\label{assignUser:36}
+@*)
+ public assignUser: User ==> ()
+ assignUser(user) == (
+  assignees := assignees union {user};
+  --should user have this issue added to him aswell?
+ )
+ pre not user in set assignees
+ post user in set assignees;
+ 
+(*@
+\label{numMessages:44}
+@*)
+ public numMessages: () ==> nat
+ numMessages() == return card dom messages;
+ 
+(*@
+\label{numAssignees:47}
+@*)
+ public numAssignees: () ==> nat
+ numAssignees() == return card assignees;
+
+functions
+-- TODO Define functions here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Issue
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[Issue:18]{Issue} & 18&100.0\% & 1 \\
+\hline
+\hyperref[addMessage:28]{addMessage} & 28&100.0\% & 2 \\
+\hline
+\hyperref[assignUser:36]{assignUser} & 36&100.0\% & 2 \\
+\hline
+\hyperref[numAssignees:47]{numAssignees} & 47&100.0\% & 3 \\
+\hline
+\hyperref[numMessages:44]{numMessages} & 44&100.0\% & 3 \\
+\hline
+\hline
+Issue.vdmpp & & 100.0\% & 11 \\
+\hline
+\end{longtable}
+

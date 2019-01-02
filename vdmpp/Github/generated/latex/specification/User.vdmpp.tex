@@ -1,0 +1,152 @@
+\begin{vdmpp}[breaklines=true]
+class User is subclass of Account
+types
+-- TODO Define types here
+
+values
+-- TODO Define values here
+
+instance variables
+ private selfUser: User; -- For invariant purposes
+ private followers: set of User := {};
+ private following: set of User := {};
+ private stars: set of Repository := {};
+ 
+ inv selfUser not in set followers; -- makes pre self <> user unecessary
+ inv selfUser not in set following; -- makes pre self <> user unecessary
+ 
+operations
+(*@
+\label{User:18}
+@*)
+ public User: Utils`String ==> User
+ User(un) == (
+--  username := un;
+  selfUser := self;
+  Account(un);
+ );
+ 
+(*@
+\label{addFollower:25}
+@*)
+ private addFollower: User ==> ()
+ addFollower(follower) == (
+  followers := followers union {follower};
+ )
+ post follower in set followers;
+ 
+(*@
+\label{removeFollower:31}
+@*)
+ private removeFollower: User ==> ()
+ removeFollower(us) == (
+  followers := followers \ {us};
+ )
+ post us not in set followers;
+ 
+(*@
+\label{follow:37}
+@*)
+ public follow: User ==> ()
+ follow(us) == (
+  following := following union {us};
+  us.addFollower(self);
+ )
+ post us in set self.following and
+    self in set us.followers;
+ 
+(*@
+\label{unfollow:45}
+@*)
+ public unfollow: User ==> ()
+ unfollow(us) == (
+  following := following \ {us};
+  us.removeFollower(self);
+ )
+ pre us in set following and self in set us.followers
+ post us not in set following and self not in set us.followers;
+ 
+(*@
+\label{clearFollowing:53}
+@*)
+ public clearFollowing: () ==> ()
+ clearFollowing() == (
+  for all us in set following
+   do unfollow(us)
+ )
+ post card following = 0;
+ 
+(*@
+\label{star:60}
+@*)
+ public star: Repository ==> ()
+ star(repo) == stars := stars union {repo}
+ pre repo not in set stars
+ post repo in set stars;
+ 
+(*@
+\label{unstar:65}
+@*)
+ public unstar: Repository ==> ()
+ unstar(repo) == stars:= stars \ {repo}
+ pre repo in set stars
+ post repo not in set stars;
+ 
+ -- Getters
+(*@
+\label{getFollowing:71}
+@*)
+ public getFollowing: () ==> set of User
+ getFollowing() == return following;
+ 
+(*@
+\label{getFollowers:74}
+@*)
+ public getFollowers: () ==> set of User
+ getFollowers() == return followers;
+ 
+(*@
+\label{getStars:77}
+@*)
+ public pure getStars: () ==> set of Repository
+ getStars() == return stars;
+ 
+functions
+-- TODO Define functions here
+traces
+-- TODO Define Combinatorial Test Traces here
+end User
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[User:18]{User} & 18&100.0\% & 19 \\
+\hline
+\hyperref[addFollower:25]{addFollower} & 25&100.0\% & 1 \\
+\hline
+\hyperref[clearFollowing:53]{clearFollowing} & 53&100.0\% & 1 \\
+\hline
+\hyperref[follow:37]{follow} & 37&100.0\% & 1 \\
+\hline
+\hyperref[getFollowers:74]{getFollowers} & 74&100.0\% & 2 \\
+\hline
+\hyperref[getFollowing:71]{getFollowing} & 71&100.0\% & 2 \\
+\hline
+\hyperref[getStars:77]{getStars} & 77&100.0\% & 21 \\
+\hline
+\hyperref[removeFollower:31]{removeFollower} & 31&100.0\% & 1 \\
+\hline
+\hyperref[star:60]{star} & 60&100.0\% & 3 \\
+\hline
+\hyperref[unfollow:45]{unfollow} & 45&100.0\% & 1 \\
+\hline
+\hyperref[unstar:65]{unstar} & 65&100.0\% & 2 \\
+\hline
+\hline
+User.vdmpp & & 100.0\% & 54 \\
+\hline
+\end{longtable}
+

@@ -1,0 +1,111 @@
+\begin{vdmpp}[breaklines=true]
+class GithubTest
+ 
+ values
+  firstUsername = "sample-username";
+  secondUsername = "different-username";
+  thirdUsername = "other-username";
+  fourthUsername = "another-one";
+  
+  tagFEUP = new Tag("FEUP");
+  tagVDM = new Tag("VDM");
+
+ instance variables
+  gh : Github := new Github();
+  
+ operations
+(*@
+\label{testAddAccount:16}
+@*)
+  private testAddAccount: () ==> ()
+  testAddAccount() ==
+  (
+   TestUtils`assertTrue(gh.numAccounts() = 0);
+   gh.addAccount(new User(firstUsername));
+   TestUtils`assertTrue(gh.numAccounts() = 1);
+   gh.addAccount(new Organization(secondUsername));
+   TestUtils`assertTrue(gh.numAccounts() = 2);
+  );
+
+(*@
+\label{testGetReposByTags:26}
+@*)
+  private testGetReposByTags: () ==> ()
+  testGetReposByTags() ==
+  (
+   let r1 = gh.accounts(firstUsername).newRepository("MFES", true),
+     r2 = gh.accounts(secondUsername).newRepository("OVERTURE", true) in (
+    r1.addTag(tagFEUP);
+    r1.addTag(tagVDM);
+    r2.addTag(tagVDM);
+    
+    TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
+    TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));
+    TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({"VDM"}));
+   );
+  );
+  
+(*@
+\label{testStargazers:41}
+@*)
+  private testStargazers: () ==> () 
+  testStargazers() == 
+  (
+   let u3 = new User(thirdUsername), u4 = new User(fourthUsername), r = u3.newRepository("VDM++", true) in (
+    gh.addAccount(u3); gh.addAccount(u4);
+    u3.star(r);
+    TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
+    u4.star(r);
+    TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername, fourthUsername});
+    u3.unstar(r);
+    TestUtils`assertTrue(gh.stargazers(r) = {fourthUsername});
+   );
+  );
+  
+(*@
+\label{testGetTopRepos:55}
+@*)
+  private testGetTopRepos: () ==> ()
+  testGetTopRepos() == (*@\vdmnotcovered{(}@*)
+   TestUtils`assertTrue(len gh.(*@\vdmnotcovered{getTopRepos}@*)() (*@\vdmnotcovered{=}@*) (*@\vdmnotcovered{3}@*));
+   TestUtils`assertTrue(gh.getTopRepos()((*@\vdmnotcovered{1}@*)).(*@\vdmnotcovered{name}@*) (*@\vdmnotcovered{=}@*) (*@\vdmnotcovered{"VDM++"}@*));
+  );
+ 
+(*@
+\label{main:61}
+@*)
+  public static main: () ==> ()
+  main() ==
+  (
+   let gt = new GithubTest() in (
+    gt.testAddAccount();
+    gt.testGetReposByTags();
+    gt.testStargazers();
+--    gt.testGetTopRepos(); -- TODO call when getTopRepos is fixed
+   );
+  );
+
+
+end GithubTest
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[main:61]{main} & 61&100.0\% & 1 \\
+\hline
+\hyperref[testAddAccount:16]{testAddAccount} & 16&100.0\% & 1 \\
+\hline
+\hyperref[testGetReposByTags:26]{testGetReposByTags} & 26&100.0\% & 1 \\
+\hline
+\hyperref[testGetTopRepos:55]{testGetTopRepos} & 55&0.0\% & 0 \\
+\hline
+\hyperref[testStargazers:41]{testStargazers} & 41&100.0\% & 1 \\
+\hline
+\hline
+GithubTest.vdmpp & & 90.3\% & 4 \\
+\hline
+\end{longtable}
+

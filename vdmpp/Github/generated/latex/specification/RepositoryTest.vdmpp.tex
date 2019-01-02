@@ -1,0 +1,204 @@
+\begin{vdmpp}[breaklines=true]
+class RepositoryTest
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+ o : Account := new Organization("feup");
+ r : Repository := new Repository("mfes", o, true);
+
+operations
+(*@
+\label{testConstructor:11}
+@*)
+ private testConstructor: () ==> ()
+ testConstructor() == (
+  let org = new Organization("org"), repo = new Repository("test", org, true) in (
+   TestUtils`assertTrue(repo.name = "test");
+   TestUtils`assertTrue(repo.isRepoPrivate());
+   TestUtils`assertTrue(card repo.collaborators = 0);
+  );
+  
+  let usr = new User("usr"), repo = new Repository("test2", usr, false) in (
+   TestUtils`assertTrue(card repo.collaborators = 1);
+  );
+  
+  TestUtils`assertTrue(r.getDefaultBranch().name = "master");
+  TestUtils`assertTrue(card dom r.branches = 1);
+  TestUtils`assertTrue(r.branches("master") = r.getDefaultBranch());
+ );
+
+(*@
+\label{testSetDescription:28}
+@*)
+ private testSetDescription: () ==> ()
+ testSetDescription() == (
+  r.setDescription(o, "Projeto de MFES");
+  TestUtils`assertTrue(r.getDescription() = "Projeto de MFES");
+  
+  r.setDescription(o, "description");
+  TestUtils`assertTrue(r.getDescription() = "description");
+ );
+ 
+(*@
+\label{testAddCollaborator:37}
+@*)
+ private testAddCollaborator: () ==> ()
+ testAddCollaborator() == (
+  let u1 = new User("one"), u2 = new User("two") in (
+   r.addCollaborator(u1);
+   TestUtils`assertTrue(r.collaborators = {u1});
+   
+   r.addCollaborator(u2);
+   TestUtils`assertTrue(r.collaborators = {u1, u2});
+  );
+ );
+ 
+(*@
+\label{testAddTag:48}
+@*)
+ private testAddTag: () ==> ()
+ testAddTag() == (
+  let tag1 = new Tag("AI"), tag2 = new Tag("WebDev") in (
+   r.addTag(tag1);
+   TestUtils`assertTrue(r.tags = {tag1});
+   
+   r.addTag(tag2);
+   TestUtils`assertTrue(r.tags = {tag1, tag2});
+  );
+ );
+ 
+(*@
+\label{testCreateBranch:59}
+@*)
+ private testCreateBranch: () ==> ()
+ testCreateBranch() == (
+  let branch = r.createBranch("develop", true), b = r.branches("develop") in (
+   TestUtils`assertTrue(branch.name = b.name);
+   TestUtils`assertTrue(branch.name = "develop");
+   
+   TestUtils`assertTrue(branch.isProtected = b.isProtected);
+   TestUtils`assertTrue(branch.isProtected);
+  );
+  TestUtils`assertTrue(card dom r.branches = 2);
+ );
+ 
+(*@
+\label{testSetDefaultBranch:71}
+@*)
+ private testSetDefaultBranch: () ==> ()
+ testSetDefaultBranch() == (
+  TestUtils`assertTrue(r.getDefaultBranch().name = "master");
+  r.setDefaultBranch("develop");
+  TestUtils`assertTrue(r.getDefaultBranch().name = "develop");
+ );
+ 
+(*@
+\label{testCommit:78}
+@*)
+ private testCommit: () ==> ()
+ testCommit() == (
+  let usr = new User("contributor"), pub = new Repository("public", o, false) in (
+   r.addCollaborator(usr);
+   TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
+   r.commit(usr, r.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 19));
+   TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
+   
+   -- Can also contribute to public repositories
+   pub.commit(usr, pub.getDefaultBranch().name, "hash", new Date(2018, 12, 30, 22, 20));
+   TestUtils`assertTrue(len pub.getDefaultBranch().getCommits() = 1);
+  );
+ );
+ 
+(*@
+\label{testCommitHistory:92}
+@*)
+ private testCommitHistory: () ==> ()
+ testCommitHistory() == (
+  TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
+  r.setDefaultBranch("master");
+  TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
+ );
+ 
+(*@
+\label{testSetPrivacy:99}
+@*)
+ private testSetPrivacy: () ==> ()
+ testSetPrivacy() == (
+  TestUtils`assertTrue(r.isRepoPrivate());
+  r.setPrivacy(o, false);
+  TestUtils`assertFalse(r.isRepoPrivate());
+ );
+ 
+(*@
+\label{testAddRelease:106}
+@*)
+ private testAddRelease: () ==> ()
+  testAddRelease() ==
+  (
+   TestUtils`assertTrue(r.numReleases() = 0);
+   r.addRelease(new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
+   TestUtils`assertTrue(r.numReleases() = 1);
+   r.addRelease(new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
+   TestUtils`assertTrue(r.numReleases() = 2);
+  );
+ 
+(*@
+\label{main:116}
+@*)
+ public static main: () ==> ()
+ main() == (
+  let rt = new RepositoryTest() in (
+   rt.testConstructor();
+   rt.testSetDescription();
+   rt.testAddCollaborator();
+   rt.testAddTag();
+   rt.testAddRelease();
+   rt.testCreateBranch();
+   rt.testSetDefaultBranch();
+   rt.testCommit();
+   rt.testCommitHistory();
+   rt.testSetPrivacy();
+  );
+ );
+
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end RepositoryTest
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[main:116]{main} & 116&100.0\% & 1 \\
+\hline
+\hyperref[testAddCollaborator:37]{testAddCollaborator} & 37&100.0\% & 1 \\
+\hline
+\hyperref[testAddRelease:106]{testAddRelease} & 106&100.0\% & 1 \\
+\hline
+\hyperref[testAddTag:48]{testAddTag} & 48&100.0\% & 1 \\
+\hline
+\hyperref[testCommit:78]{testCommit} & 78&100.0\% & 1 \\
+\hline
+\hyperref[testCommitHistory:92]{testCommitHistory} & 92&100.0\% & 1 \\
+\hline
+\hyperref[testConstructor:11]{testConstructor} & 11&100.0\% & 1 \\
+\hline
+\hyperref[testCreateBranch:59]{testCreateBranch} & 59&100.0\% & 1 \\
+\hline
+\hyperref[testSetDefaultBranch:71]{testSetDefaultBranch} & 71&100.0\% & 1 \\
+\hline
+\hyperref[testSetDescription:28]{testSetDescription} & 28&100.0\% & 1 \\
+\hline
+\hyperref[testSetPrivacy:99]{testSetPrivacy} & 99&100.0\% & 1 \\
+\hline
+\hline
+RepositoryTest.vdmpp & & 100.0\% & 11 \\
+\hline
+\end{longtable}
+
