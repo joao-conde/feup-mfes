@@ -1,9 +1,12 @@
 package cli;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import main.*;
+import org.overture.codegen.runtime.*;
+
 
 public class CLI {
 
@@ -17,44 +20,62 @@ public class CLI {
 	}
 
 	public void run() {
+		
+		//testing area
+		/*User u = new User("jotac");
+		gh.addAccount(u);
+		Repository repos = new Repository("feup-mfes", u, true);*/
+		
+		
+		//
+		
 		while (running) {
 			switch (this.state) {
 			case MAIN_MENU:
 				mainMenu();
-				System.out.println(gh.numAccounts());
+				break;
+				
+			case LOGGED:
+				loggedInMenu();
 				break;
 
 			default:
-				System.out.println("EXITING");
+				displayExitMsg();
 				running = false;
 			}
 		}
 	}
-
-	private void mainMenu() {
-		displayMainMenuOpts();
-		int opt = readUserInputOpt(1, 10); // TODO change to options
-		if (opt != -1)
-			processOption(opt);
+	
+	private void displayExitMsg() {
+		System.out.println("\nThank you for using GitHub, see you soon");
 	}
-
-	private void displayMainMenuOpts() {
+	
+	private void displayWelcomeBanner() {
 		System.out.println("==================================================");
 		System.out.println("\t\tWelcome to GitHub!\t\t");
 		System.out.println("==================================================");
 		System.out.println("Select an option");
+	}
+
+	private void mainMenu() {
+		displayWelcomeBanner();
+		displayMainMenuOpts();
+		int opt = readUserInputOpt(1, 10); // TODO change to options
+		if (opt != -1)
+			processMainMenuOpt(opt);
+	}
+
+	private void displayMainMenuOpts() {
 		System.out.println("1 - Login");
 		System.out.println("2 - Register user");
 		System.out.println("3 - Create organization");
-		System.out.println("2 - View how many GitHub accounts exist");
-		System.out.println("3 - View repositories filtered by a set of tags");
-		System.out.println("4 - View existing users");
-		System.out.println("5 - View stargazers of a repository");
-		System.out.println("6 - View all repositories");
-		System.out.println("7 - View the repositories rating ranks");
+		System.out.println("4 - View repositories ranked by rating");
+		System.out.println("5 - View repositories filtered by a set of tags");
+		System.out.println("6 - View existing users");
+		System.out.println("7 - View stargazers of a repository");
 	}
 
-	private void processOption(int opt) {
+	private void processMainMenuOpt(int opt) {
 		// TODO do smthing with opt -> change state
 		switch (opt) {
 		case 1:
@@ -66,9 +87,32 @@ public class CLI {
 		case 3:
 			createOrganization();
 			break;
+		case 4:
+			viewTopRepos();
+			break;
+		default:
+			System.out.println("Invalid option");
 		}
 	}
 
+	private void loggedInMenu() {
+		displayWelcomeBanner();
+		displayMainMenuOpts();
+		displayLoggedInMenuOpts();
+		int opt = readUserInputOpt(1, 10); // TODO change to options
+		if (opt != -1)
+			processLoggedInMenuOpt(opt);
+	}
+	
+	private void displayLoggedInMenuOpts() {
+		
+	}
+	
+	private void processLoggedInMenuOpt(int opt) {
+		
+	}
+	
+	
 	private void login() {
 		System.out.println("LOGIN"); // TODO change state
 	}
@@ -90,18 +134,34 @@ public class CLI {
 		System.out.println("Organization " + org + " successfully created");
 	}
 
+	private void viewTopRepos() {
+		User u = new User("jotac");
+		Repository rep = new Repository("feup-mfes", u, true);
+		Repository rep2 = new Repository("feup", u, true);
+		gh.addAccount(u);
+		u.star(rep);
+		VDMSeq repos = gh.getTopRepos();
+		Iterator<Repository> ite = repos.iterator();
+		while(ite.hasNext()) {
+			Repository r = ite.next();
+			System.out.println("repos " + r.name);
+		}
+		System.out.println(repos.size());
+	}
+	
 	private String readNonEmptyString(String promptMsg) {
 		System.out.print(promptMsg);
-		String inp;
+		String str;
 		do {
-			inp = scanner.nextLine();
-		} while (inp.isEmpty());
-		return inp;
+			str = scanner.nextLine();
+		} while (str.isEmpty());
+		return str;
 	}
 
 	private int readUserInputOpt(int lb, int ub) {
 		int opt;
-
+		
+		System.out.println("Option (between " + lb + " and " + ub + "): ");
 		try {
 			opt = Integer.parseInt(scanner.nextLine());
 		} catch (NumberFormatException e) {
@@ -118,7 +178,7 @@ public class CLI {
 	}
 
 	private enum CLIState {
-		MAIN_MENU, B, C;
+		MAIN_MENU, LOGGED, C;
 	}
 
 }
