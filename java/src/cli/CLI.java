@@ -31,21 +31,41 @@ public class CLI {
 
 	private void mainMenu() {
 		displayMainMenu();
+		
 		int opt = readUserInput(1, 5);
+		if(opt == -1) return;
 
 		// TODO not hardcoded bounds, do smthing with opt -> change state
 	}
 
 	private void displayMainMenu() {
-		System.out.print("SELECT UR OPTION\n list of opts\n");
+		System.out.println("==========================================");
+		System.out.println("Welcome to GitHub!");
+		System.out.println("==========================================");
+		System.out.println("Select an option");
+		System.out.println("1 - Add a GitHub account");
+		System.out.println("2 - View how many GitHub accounts exist");
+		System.out.println("3 - View repositories filtered by a set of tags");
+		System.out.println("4 - View existing users");
+		System.out.println("5 - View stargazers of a repository");
+		System.out.println("6 - View all repositories");
+		System.out.println("7 - View the repositories rating ranks");
 	}
 
 	private int readUserInput(int lb, int ub) {
-		int opt = Integer.parseInt(scanner.nextLine());
+		int opt;
+		
+		try{
+			opt = Integer.parseInt(scanner.nextLine());
+		}
+		catch(NumberFormatException e) {
+			System.out.println("Invalid option");
+			return -1;
+		}
 
 		if (opt < lb || opt > ub) {
 			System.out.println("Invalid option");
-			opt = readUserInput(lb, ub);
+			return -1;
 		}
 
 		return opt;
