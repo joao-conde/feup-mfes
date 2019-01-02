@@ -1,4 +1,4 @@
-class Github
+	class Github
 	types
 		-- Map of String (username) to Account
 		public AccountsMap = map Utils`String to Account;
@@ -33,6 +33,12 @@ class Github
 		private pure getUsers: () ==> set of Utils`String
 		getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
 		post forall un in set RESULT & isofclass(User, accounts(un));
+
+		public pure stargazers: Repository ==> set of Utils`String
+		stargazers(repo) ==
+			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
+		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
+			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
 
 		-- Gets sequence containing all Repositories
 		private getAllRepos: () ==> seq of Repository
