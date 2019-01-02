@@ -54,6 +54,7 @@ class GithubTest
 		
 		private testGetTopRepos: () ==> ()
 		testGetTopRepos() == (
+			TestUtils`assertTrue(len gh.getTopRepos() = 3);
 			TestUtils`assertTrue(gh.getTopRepos()(1).name = "VDM++");
 		);
 	
