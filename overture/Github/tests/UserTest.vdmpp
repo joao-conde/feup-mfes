@@ -10,7 +10,7 @@ class UserTest
 			let u = TestUtils`randomUser(users) in (
 				user.follow(u);
 				TestUtils`assertTrue(u in set user.getFollowing() and user in set u.getFollowers());
-				user.unfollow(u);
+				user.clearFollowing();
 				TestUtils`assertFalse(u in set user.getFollowing() or user in set u.getFollowers());
 			)
 		);
