@@ -4,7 +4,7 @@ class GithubTest
 		firstUsername = "sample-username";
 		secondUsername = "different-username";
 		thirdUsername = "other-username";
-		forthUsername = "another-one";
+		fourthUsername = "another-one";
 		
 		tagFEUP = new Tag("FEUP");
 		tagVDM = new Tag("VDM");
@@ -34,22 +34,27 @@ class GithubTest
 				
 				TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
 				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));
+				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({"VDM"}));
 			);
 		);
 		
 		private testStargazers: () ==> () 
 		testStargazers() == 
 		(
-			let u = new User(thirdUsername), u2 = new User(forthUsername), r = u.newRepository("VDM++", true) in (
-				gh.addAccount(u); gh.addAccount(u2);
-				u.star(r);
+			let u3 = new User(thirdUsername), u4 = new User(fourthUsername), r = u3.newRepository("VDM++", true) in (
+				gh.addAccount(u3); gh.addAccount(u4);
+				u3.star(r);
 				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
-				u2.star(r);
-				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername, forthUsername});
-				u.unstar(r);
-				u2.unstar(r);
-				TestUtils`assertTrue(gh.stargazers(r) = {});
+				u4.star(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername, fourthUsername});
+				u3.unstar(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {fourthUsername});
 			);
+		);
+		
+		private testGetTopRepos: () ==> ()
+		testGetTopRepos() == (
+			TestUtils`assertTrue(gh.getTopRepos()(1).name = "VDM++");
 		);
 	
 		public static main: () ==> ()
@@ -59,7 +64,9 @@ class GithubTest
 				gt.testAddAccount();
 				gt.testGetReposByTags();
 				gt.testStargazers();
+--				gt.testGetTopRepos(); -- TODO call when getTopRepos is fixed
 			);
 		);
+
 
 end GithubTest
