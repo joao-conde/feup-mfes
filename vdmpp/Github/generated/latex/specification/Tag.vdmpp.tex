@@ -1,0 +1,32 @@
+\begin{vdmpp}[breaklines=true]
+class Tag
+
+ instance variables
+  public name: Utils`String;
+  --public description: Utils`String := [];
+ 
+ operations
+(*@
+\label{Tag:8}
+@*)
+  public Tag: Utils`String ==> Tag
+  Tag(tag) == (
+   name := tag;
+   return self;
+  );
+
+end Tag
+\end{vdmpp}
+\bigskip
+\begin{longtable}{|l|r|r|r|}
+\hline
+Function or operation & Line & Coverage & Calls \\
+\hline
+\hline
+\hyperref[Tag:8]{Tag} & 8&100.0\% & 4 \\
+\hline
+\hline
+Tag.vdmpp & & 100.0\% & 4 \\
+\hline
+\end{longtable}
+

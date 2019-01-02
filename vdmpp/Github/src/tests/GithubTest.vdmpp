@@ -65,7 +65,7 @@ class GithubTest
 				gt.testAddAccount();
 				gt.testGetReposByTags();
 				gt.testStargazers();
---				gt.testGetTopRepos(); -- TODO call when getTopRepos is fixed
+				gt.testGetTopRepos();
 			);
 		);
 
