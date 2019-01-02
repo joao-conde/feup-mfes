@@ -1,11 +1,12 @@
 package cli;
 
+import java.io.IOException;
 import java.util.Scanner;
 
-import main.Github;
+import main.*;
 
 public class CLI {
-	
+
 	private Boolean running = true;
 	private Github gh = new Github();
 	private CLIState state = CLIState.MAIN_MENU;
@@ -20,6 +21,7 @@ public class CLI {
 			switch (this.state) {
 			case MAIN_MENU:
 				mainMenu();
+				System.out.println(gh.numAccounts());
 				break;
 
 			default:
@@ -30,20 +32,20 @@ public class CLI {
 	}
 
 	private void mainMenu() {
-		displayMainMenu();
-		
-		int opt = readUserInput(1, 5);
-		if(opt == -1) return;
-
-		// TODO not hardcoded bounds, do smthing with opt -> change state
+		displayMainMenuOpts();
+		int opt = readUserInputOpt(1, 10); // TODO change to options
+		if (opt != -1)
+			processOption(opt);
 	}
 
-	private void displayMainMenu() {
-		System.out.println("==========================================");
-		System.out.println("Welcome to GitHub!");
-		System.out.println("==========================================");
+	private void displayMainMenuOpts() {
+		System.out.println("==================================================");
+		System.out.println("\t\tWelcome to GitHub!\t\t");
+		System.out.println("==================================================");
 		System.out.println("Select an option");
-		System.out.println("1 - Add a GitHub account");
+		System.out.println("1 - Login");
+		System.out.println("2 - Register user");
+		System.out.println("3 - Create organization");
 		System.out.println("2 - View how many GitHub accounts exist");
 		System.out.println("3 - View repositories filtered by a set of tags");
 		System.out.println("4 - View existing users");
@@ -52,13 +54,57 @@ public class CLI {
 		System.out.println("7 - View the repositories rating ranks");
 	}
 
-	private int readUserInput(int lb, int ub) {
-		int opt;
-		
-		try{
-			opt = Integer.parseInt(scanner.nextLine());
+	private void processOption(int opt) {
+		// TODO do smthing with opt -> change state
+		switch (opt) {
+		case 1:
+			login();
+			break;
+		case 2:
+			registerUser();
+			break;
+		case 3:
+			createOrganization();
+			break;
 		}
-		catch(NumberFormatException e) {
+	}
+
+	private void login() {
+		System.out.println("LOGIN"); // TODO change state
+	}
+
+	private void registerUser() {
+		int prev = (int) gh.numAccounts();
+		String username = readNonEmptyString("Username: ");
+		gh.addAccount(new User(username));
+		
+		if(prev + 1 == (int)gh.numAccounts())
+			System.out.println("User " + username + " successfully added");
+		else
+			System.out.println("User " + username + " already in use, specify a different one");
+	}
+
+	private void createOrganization() {
+		String org = readNonEmptyString("Organization name: ");
+		gh.addAccount(new Organization(org));
+		System.out.println("Organization " + org + " successfully created");
+	}
+
+	private String readNonEmptyString(String promptMsg) {
+		System.out.print(promptMsg);
+		String inp;
+		do {
+			inp = scanner.nextLine();
+		} while (inp.isEmpty());
+		return inp;
+	}
+
+	private int readUserInputOpt(int lb, int ub) {
+		int opt;
+
+		try {
+			opt = Integer.parseInt(scanner.nextLine());
+		} catch (NumberFormatException e) {
 			System.out.println("Invalid option");
 			return -1;
 		}
