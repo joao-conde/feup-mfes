@@ -15,7 +15,7 @@ instance variables
 	inv selfUser not in set following; -- makes pre self <> user unecessary
 	
 operations
-	public User: Utils`String ==> User
+	public User: VDMUtils`String ==> User
 	User(un) == (
 --		username := un;
 		selfUser := self;

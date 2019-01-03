@@ -1,21 +1,21 @@
 class Issue
 types
 	-- Map of message ID to Message
-	public Messages = map Utils`String to Message;
+	public Messages = map VDMUtils`String to Message;
 	
 values
 -- TODO Define values here
 instance variables
-	public id: Utils`String;
-	public title: Utils`String;
-	public description: Utils`String;
+	public id: VDMUtils`String;
+	public title: VDMUtils`String;
+	public description: VDMUtils`String;
 	
 	public messages: Messages := { |-> };
 	
 	public assignees: set of User := {};
 
 operations
-	public Issue: Utils`String * Utils`String * Utils`String ==> Issue
+	public Issue: VDMUtils`String * VDMUtils`String * VDMUtils`String ==> Issue
 	Issue(issueID, issueTitle, issueDesc) == (
 		id := issueID;
 		title := issueTitle;

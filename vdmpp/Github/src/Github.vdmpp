@@ -1,7 +1,7 @@
 	class Github
 	types
 		-- Map of String (username) to Account
-		public AccountsMap = map Utils`String to Account;
+		public AccountsMap = map VDMUtils`String to Account;
 		
 	values
 	-- TODO Define values here
@@ -24,17 +24,17 @@
 		public numAccounts: () ==> nat
 		numAccounts() == (return card dom accounts);
 		
-		public getRepositoriesByTags: set of Tag | set of Utils`String ==> set of Repository
+		public getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
 		getRepositoriesByTags(tags) ==
 			return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
 		pre tags <> {};
 		
 		-- Get name of the User accounts
-		private pure getUsers: () ==> set of Utils`String
+		private pure getUsers: () ==> set of VDMUtils`String
 		getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
 		post forall un in set RESULT & isofclass(User, accounts(un));
 
-		public pure stargazers: Repository ==> set of Utils`String
+		public pure stargazers: Repository ==> set of VDMUtils`String
 		stargazers(repo) ==
 			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
 		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
@@ -68,18 +68,18 @@
 		)
 		post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
 
-		public searchRepos: Utils`String ==> set of Repository
+		public searchRepos: VDMUtils`String ==> set of Repository
 		searchRepos(query) ==
-			return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and Utils`isSubstring(r.name, query) >= 0}
-		post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if Utils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
+			return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and VDMUtils`isSubstring(r.name, query) >= 0}
+		post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if VDMUtils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
-		public searchAccounts: Utils`String ==> set of Account
+		public searchAccounts: VDMUtils`String ==> set of Account
 		searchAccounts(query) ==
-			return {accounts(acc) | acc in set dom accounts & Utils`isSubstring(acc, query) >= 0}
-		post forall acc in set dom accounts & if Utils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
+			return {accounts(acc) | acc in set dom accounts & VDMUtils`isSubstring(acc, query) >= 0}
+		post forall acc in set dom accounts & if VDMUtils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
 
 	functions
-		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
+		public static repoMatchesTags(r: Repository, tags: set of VDMUtils`String | set of Tag) res: bool ==
 		forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
 		
 end Github

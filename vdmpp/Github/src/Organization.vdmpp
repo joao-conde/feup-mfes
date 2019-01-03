@@ -9,7 +9,7 @@ instance variables
 	public members: set of User := {};
 
 operations
-	public Organization: Utils`String ==> Organization
+	public Organization: VDMUtils`String ==> Organization
 	Organization(un) == (
 		Account(un);
 	);

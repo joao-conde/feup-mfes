@@ -1,25 +1,25 @@
 class Account
 
 	instance variables
---		private static usedUsernames: set of Utils`String := {};
+--		private static usedUsernames: set of VDMUtils`String := {};
 	
-		public username: Utils`String;
-		public repositories: map Utils`String to Repository := { |-> };
+		public username: VDMUtils`String;
+		public repositories: map VDMUtils`String to Repository := { |-> };
 		
-		--public name: Utils`String := [];
-		--public description: Utils`String := [];
-		--public location: Utils`String := [];
-		--public site: Utils`String := [];
+		--public name: VDMUtils`String := [];
+		--public description: VDMUtils`String := [];
+		--public location: VDMUtils`String := [];
+		--public site: VDMUtils`String := [];
 		
 	operations
-		public Account: Utils`String ==> Account
+		public Account: VDMUtils`String ==> Account
 		Account(un) == (
 			username := un;
 		);
 --		pre un not in set usedUsernames
 --		post un in set usedUsernames;
 	
-		public newRepository: Utils`String * bool ==> Repository
+		public newRepository: VDMUtils`String * bool ==> Repository
 		newRepository(name, isPriv) == (
 			let r = new Repository(name, self, isPriv) in (
 				repositories(name) := r;

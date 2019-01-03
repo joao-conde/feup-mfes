@@ -2,16 +2,16 @@ class Repository
 	
 	instance variables
 		
-		public name: Utils`String;
+		public name: VDMUtils`String;
 		private isPrivate: bool;
-		private description: Utils`String := [];
+		private description: VDMUtils`String := [];
 	
 		private owner: Account;
 		private defaultBranch: Branch;
 		public tags: set of Tag := {};
 		public collaborators: set of User := {};
 		public releases: seq of Release := [];
-		public branches: map Utils`String to Branch := { |-> };
+		public branches: map VDMUtils`String to Branch := { |-> };
 			
 		inv defaultBranch in set rng branches;
 		inv branches(defaultBranch.name) = defaultBranch;
@@ -20,7 +20,7 @@ class Repository
 			i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
 		
 	operations
-		public Repository: Utils`String * Account * bool ==> Repository
+		public Repository: VDMUtils`String * Account * bool ==> Repository
 		Repository(n, acc, priv) == (
 			name := n;
 			isPrivate := priv;
@@ -50,7 +50,7 @@ class Repository
 		addTag(tag) == tags := tags union {tag}
 		post tag in set tags;
 			
-		public createBranch: Utils`String * bool ==> Branch
+		public createBranch: VDMUtils`String * bool ==> Branch
 		createBranch(n, prot) == (
 			let b = new Branch(n, prot) in (
 				branches(n) := b;
@@ -60,7 +60,7 @@ class Repository
 		pre n not in set dom branches
 		post let b = branches(n) in b.name = n and b.isProtected = prot;
 		
-		public commit: User * Utils`String * Utils`String * Date ==> ()
+		public commit: User * VDMUtils`String * VDMUtils`String * Date ==> ()
 		commit(usr, branchName, hash, date) == (
 			branches(branchName).commit(new Commit(hash, usr, date));
 		)
@@ -75,7 +75,7 @@ class Repository
 		public getDefaultBranch: () ==> Branch
 		getDefaultBranch() == return defaultBranch;
 		
-		public getDescription: () ==> Utils`String
+		public getDescription: () ==> VDMUtils`String
 		getDescription() == return description;
 		
 		public numReleases: () ==> nat
@@ -85,12 +85,12 @@ class Repository
 		isRepoPrivate() == return isPrivate;
 		
 		-- Setters
-		public setDefaultBranch: Utils`String ==> ()
+		public setDefaultBranch: VDMUtils`String ==> ()
 		setDefaultBranch(bName) == defaultBranch := branches(bName)
 		pre bName in set dom branches
 		post defaultBranch.name = bName;
 	
-		public setDescription: Account * Utils`String ==> ()
+		public setDescription: Account * VDMUtils`String ==> ()
 		setDescription(acc, desc) == description := desc
 		pre acc = owner
 		post description = desc;

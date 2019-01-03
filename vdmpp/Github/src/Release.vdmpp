@@ -1,11 +1,11 @@
 class Release
 
 	instance variables
-		public name: Utils`String := [];
+		public name: VDMUtils`String := [];
 		public timestamp : Date;
 	
 	operations
-		public Release: Utils`String * Date ==> Release
+		public Release: VDMUtils`String * Date ==> Release
 		Release(n, date) == (
 			name := n;
 			timestamp := date;

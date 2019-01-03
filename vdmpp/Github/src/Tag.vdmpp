@@ -1,11 +1,11 @@
 class Tag
 
 	instance variables
-		public name: Utils`String;
-		--public description: Utils`String := [];
+		public name: VDMUtils`String;
+		--public description: VDMUtils`String := [];
 	
 	operations
-		public Tag: Utils`String ==> Tag
+		public Tag: VDMUtils`String ==> Tag
 		Tag(tag) == (
 			name := tag;
 			return self;

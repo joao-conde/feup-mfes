@@ -4,7 +4,7 @@ class Branch
 	values
 	-- TODO Define values here
 	instance variables
-		public name: Utils`String;
+		public name: VDMUtils`String;
 		public isProtected: bool;
 	
 		private commits: seq of Commit := []; -- Chronologically ordered assured by invariant
@@ -13,7 +13,7 @@ class Branch
 			i1 < i2 => mk_Date`DateComparable(commits(i1).timestamp) < mk_Date`DateComparable(commits(i2).timestamp);
 		
 	operations
-		public Branch: Utils`String * bool ==> Branch
+		public Branch: VDMUtils`String * bool ==> Branch
 		Branch(n, prot) == (
 			name := n;
 			isProtected := prot;

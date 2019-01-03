@@ -4,14 +4,14 @@ types
 values
 -- TODO Define values here
 instance variables
-	public id: Utils`String;
-	public content: Utils`String;
+	public id: VDMUtils`String;
+	public content: VDMUtils`String;
 	public timestamp: Date;
 
 	public author: User;
 
 operations
-	public Message:  Utils`String * Utils`String * User * Date ==> Message
+	public Message:  VDMUtils`String * VDMUtils`String * User * Date ==> Message
 	Message(msgID, cont, auth, date) == (
 		id := msgID;
 		content := cont;

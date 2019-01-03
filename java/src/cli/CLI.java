@@ -8,7 +8,7 @@ import org.overture.codegen.runtime.*;
 
 public class CLI {
 
-	private Github gh = new Github();
+	private Github gh;
 	private User user = null; // logged in user
 
 	private Boolean running = true;
@@ -16,18 +16,26 @@ public class CLI {
 	private Scanner scanner = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		new CLI().run();
+		CLI cli = new CLI();
+		cli.populateDB();
+		cli.run();
+	}
+
+	public void populateDB() {
+		this.gh = new Github();
+		gh.addAccount(new User("joao-conde"));
+		gh.addAccount(new User("andre"));
+		gh.addAccount(new User("edgar"));
+		
+		((User) (gh.searchAccounts("joao-conde").iterator().next())).newRepository("why-python-rocks", false);
+		((User) (gh.searchAccounts("andre").iterator().next())).newRepository("feup-mfes", false);
+		((User) (gh.searchAccounts("edgar").iterator().next())).newRepository("frontend-shenanigans", true);
+
+		((User) (gh.searchAccounts("andre").iterator().next()))
+				.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
 	}
 
 	public void run() {
-
-		// testing area TODO REMOVE THIS
-		/*User u = new User("jotac");
-		gh.addAccount(u);
-		Repository repos = new Repository("feup-mfes", u, true);
-		Tag tag1 = new Tag("mfes");
-		repos.addTag(tag1);*/
-		//
 		while (running) {
 			switch (this.state) {
 			case MAIN_MENU:
@@ -68,38 +76,34 @@ public class CLI {
 	private void mainMenu() {
 		displayWelcomeBanner();
 		displayMainMenuOpts();
-		int opt = readUserInputOpt(1, 6); // TODO change to options
+		int opt = readUserInputOpt(1, 5); // TODO change to options
 		if (opt != -1)
 			processMainMenuOpt(opt);
 	}
 
 	private void displayMainMenuOpts() {
-		System.out.println("1 - Login");
-		System.out.println("2 - Register user");
-		System.out.println("3 - Create organization");
-		System.out.println("4 - View repositories ranked by rating");
-		System.out.println("5 - View repositories filtered by a set of tags");
-		System.out.println("6 - View stargazers of a repository");
+		System.out.println("1 - SignIn");
+		System.out.println("2 - SignUp");
+		System.out.println("3 - View public repositories ranked by rating");
+		System.out.println("4 - View public repositories filtered by a set of tags");
+		System.out.println("5 - View stargazers of a repository");
 	}
 
 	private void processMainMenuOpt(int opt) {
 		switch (opt) {
 		case 1:
-			login();
+			signIn();
 			break;
 		case 2:
-			registerUser();
+			signUp();
 			break;
 		case 3:
-			createOrganization();
-			break;
-		case 4:
 			viewTopRepos();
 			break;
-		case 5:
+		case 4:
 			viewReposByTags();
 			break;
-		case 6:
+		case 5:
 			viewReposStargazers();
 			break;
 		default:
@@ -110,81 +114,96 @@ public class CLI {
 	private void loggedInMenu() {
 		displayLoggedBanner();
 		displayLoggedInMenuOpts();
-		int opt = readUserInputOpt(1, 14); // TODO change to options
+		int opt = readUserInputOpt(1, 15); // TODO change to options
 		if (opt != -1)
 			processLoggedInMenuOpt(opt);
 	}
 
 	private void displayLoggedInMenuOpts() {
-		System.out.println("1 - Logout");
-		System.out.println("2 - Register user");
-		System.out.println("3 - Create organization");
-		System.out.println("4 - View repositories ranked by rating");
-		System.out.println("5 - View repositories filtered by a set of tags");
-		System.out.println("6 - View stargazers of a repository");
-		System.out.println("7 - Follow an user");
-		System.out.println("8 - Unfollow an user");
-		System.out.println("9 - Unfollow all users");
-		System.out.println("10 - View who I follow");
-		System.out.println("11 - View my followers");
-		System.out.println("12 - View my stars");
-		System.out.println("13 - Star a repository");
-		System.out.println("14 - Unstar a repository");
+		System.out.println("1 - SignOut");
+		System.out.println("2 - View public repositories ranked by rating");
+		System.out.println("3 - View public repositories filtered by a set of tags");
+		System.out.println("4 - View stargazers of a repository");
+		System.out.println("5 - Follow an user");
+		System.out.println("6 - Unfollow an user");
+		System.out.println("7 - Unfollow all users");
+		System.out.println("8 - View who I follow");
+		System.out.println("9 - View my followers");
+		System.out.println("10 - View my stars");
+		System.out.println("11 - Star a repository");
+		System.out.println("12 - Unstar a repository");
+		System.out.println("13 - Create Repository");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
-		if (opt <= 6 && opt != 1) {
-			processMainMenuOpt(opt);
-			return;
-		}
-		
+
 		switch (opt) {
 		case 1:
-			logout();
+			signOut();
 			break;
-		case 7:
+		case 2:
+			viewTopRepos();
+			break;
+		case 3:
+			viewReposByTags();
+			break;
+		case 4:
+			viewReposStargazers();
+			break;
+		case 5:
 			followUser();
 			break;
-		case 8:
+		case 6:
 			unfollowUser();
 			break;
-		case 9:
+		case 7:
 			unfollowAllUsers();
 			break;
-		case 10:
+		case 8:
 			viewFollowing();
 			break;
-		case 11:
+		case 9:
 			viewFollowers();
 			break;
-		case 12:
+		case 10:
 			viewMyStars();
 			break;
-		case 13:
+		case 11:
 			starRepos();
 			break;
-		case 14:
+		case 12:
 			unstarRepos();
+			break;
+		case 13:
+			createRepos();
 			break;
 		default:
 			System.out.println("Invalid option");
 		}
+
 	}
 
-	private void login() {
-		String username = readNonEmptyString("Username: ");
-		this.user = new User(username);
-		this.state = CLIState.LOGGED;
+	@SuppressWarnings("unused")
+	private void signIn() {
+		String username = readNonEmptyString("\nUsername: ");
+		VDMSet usersFound = gh.searchAccounts(username);
+		if (!usersFound.isEmpty()) {
+			this.user = (User) usersFound.iterator().next();
+			this.state = CLIState.LOGGED;
+			System.out.println("\nLogged in as " + username);
+		} else
+			System.out.println("\nUser " + username + " not found");
 	}
 
-	private void logout() {
+	private void signOut() {
 		this.user = null;
 		this.state = CLIState.MAIN_MENU;
 	}
 
-	private void registerUser() {
+	private void signUp() {
 		int prev = (int) gh.numAccounts();
 		String username = readNonEmptyString("Username: ");
+
 		gh.addAccount(new User(username));
 
 		if (prev + 1 == (int) gh.numAccounts())
@@ -201,19 +220,17 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void viewTopRepos() {
-		/*
-		 * User u = new User("jotac"); Repository rep = new Repository("feup-mfes", u,
-		 * true); Repository rep2 = new Repository("feup", u, true); gh.addAccount(u);
-		 * u.star(rep);
-		 */
 		VDMSeq repos = gh.getTopRepos();
-		System.out.println("Top Repositories");
-		int i = 1;
-		Iterator<Repository> ite = repos.iterator();
-		while (ite.hasNext()) {
-			System.out.println(i + ". " + ite.next().name);
-			i++;
-		}
+		if (repos.size() != 0) {
+			System.out.println("Top Repositories");
+			int i = 1;
+			Iterator<Repository> ite = repos.iterator();
+			while (ite.hasNext()) {
+				System.out.println(i + ". " + ite.next().name);
+				i++;
+			}
+		} else
+			System.out.println("No repositories");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -226,33 +243,74 @@ public class CLI {
 				break;
 			tags.add(new Tag(t));
 		}
-		System.out.println("Repositories");
-		System.out.println("[" + tags.toString() + "]");
+		
+		if(tags.isEmpty()) {
+			System.out.println("No tags specified");
+			return;
+		}
+		
+		try {
+			VDMSet repos = gh.getRepositoriesByTags(tags);
+			System.out.println("Repositories");
+			Iterator<Repository> ite = repos.iterator();
+			while (ite.hasNext()) {
+				System.out.println("[" + tags.toString() + "]");
+				int i = 1;
+				System.out.println(i + ". " + ite.next().name);
+				i++;
+			}
+		} catch (UnsupportedOperationException e) {
+			System.out.println("No repositories match those tags");
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void viewReposStargazers() {
+		String repoName = readNonEmptyString("Repository name: ");
+		VDMSet reposFound = gh.searchRepos(repoName);
+		if(reposFound.isEmpty()) {
+			System.out.println("No repository found");
+			return;
+		}
+		
+		VDMSet stargazers = this.gh.stargazers((Repository)reposFound.iterator().next());
+		if(stargazers.isEmpty()) {
+			System.out.println("No stargazers for " + repoName);
+			return;
+		}
+		
 		int i = 1;
-		Iterator<Repository> ite = gh.getRepositoriesByTags(tags).iterator();
-		while (ite.hasNext()) {
-			System.out.println(i + ". " + ite.next().name);
+		Iterator<String> ite = stargazers.iterator();
+		while(ite.hasNext()) {
+			System.out.println(i + ". " + ite.next());
 			i++;
 		}
 	}
 
-	private void viewReposStargazers() {
-		String repoName = readNonEmptyString("Search for repository: ");
-		// search for repos
-		// this.gh.stargazers(reposFound);
-		// display all stargazers
-	}
-
 	private void followUser() {
-		String username = readNonEmptyString("Search for user: ");
-		// search for user
-		// this.user.follow(userFound);
+		String username = readNonEmptyString("User: ");
+		VDMSet usersFound = gh.searchAccounts(username);
+		
+		if(usersFound.isEmpty()) {
+			System.out.println("No user found");
+			return;
+		}
+		
+		System.out.println("Started following " + username);
+		this.user.follow((User)usersFound.iterator().next());
 	}
 
 	private void unfollowUser() {
-		String username = readNonEmptyString("Search for user: ");
-		// search for user
-		// this.user.unfollow(userFound);
+		String username = readNonEmptyString("User: ");
+		VDMSet usersFound = gh.searchAccounts(username);
+		
+		if(usersFound.isEmpty()) {
+			System.out.println("No user found");
+			return;
+		}
+		
+		System.out.println("Started following " + username);
+		this.user.unfollow((User)usersFound.iterator().next());
 	}
 
 	private void unfollowAllUsers() {
@@ -261,9 +319,16 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void viewFollowing() {
-		System.out.println("Currently following:");
-		Iterator<User> ite = this.user.getFollowing().iterator();
+		VDMSet following = this.user.getFollowers();
+
+		if(following.isEmpty()) {
+			System.out.println("Not following anyone");
+			return;
+		}
+		
 		int i = 1;
+		Iterator<User> ite = this.user.getFollowers().iterator();
+		System.out.println("I follow:");
 		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next().username);
 			i++;
@@ -272,9 +337,16 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void viewFollowers() {
-		System.out.println("My followers:");
-		Iterator<User> ite = this.user.getFollowers().iterator();
+		VDMSet followers = this.user.getFollowers();
+
+		if(followers.isEmpty()) {
+			System.out.println("No followers :(");
+			return;
+		}
+		
 		int i = 1;
+		Iterator<User> ite = this.user.getFollowers().iterator();
+		System.out.println("My followers:");
 		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next().username);
 			i++;
@@ -282,9 +354,16 @@ public class CLI {
 	}
 
 	private void viewMyStars() {
-		System.out.println("My stars:");
-		Iterator<Repository> ite = this.user.getStars().iterator();
+		VDMSet myStars = this.user.getStars();
+
+		if(myStars.isEmpty()) {
+			System.out.println("No stars :(");
+			return;
+		}
+		
 		int i = 1;
+		Iterator<Repository> ite = myStars.iterator();
+		System.out.println("My stars:");
 		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next().name);
 			i++;
@@ -312,6 +391,18 @@ public class CLI {
 				this.user.unstar(rep);
 				break;
 			}
+		}
+	}
+
+	private void createRepos() {
+		String reposName = readNonEmptyString("Repository name: ");
+		String isPrivate = readNonEmptyString("Private? (y/n): ").toLowerCase();
+
+		if (!isPrivate.equals("y") && !isPrivate.equals("n"))
+			System.out.println("Invalid private setting");
+		else {
+			System.out.println("Repository " + reposName + " successfully created");
+			this.user.newRepository(reposName, (isPrivate.equals("y")));
 		}
 	}
 
@@ -349,7 +440,7 @@ public class CLI {
 	}
 
 	private void requestEnter() {
-		System.out.println("Press <Enter> to continue");
+		System.out.println("\nPress <Enter> to continue");
 		scanner.nextLine();
 	}
 

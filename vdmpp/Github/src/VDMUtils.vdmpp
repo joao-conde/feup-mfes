@@ -1,4 +1,4 @@
-class Utils
+class VDMUtils
 	types
 		public String = seq of char;
 	
@@ -32,4 +32,4 @@ class Utils
 
 	traces
 	-- TODO Define Combinatorial Test Traces here
-end Utils
+end VDMUtils

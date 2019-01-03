@@ -4,14 +4,14 @@ class Commit
 	values
 	-- TODO Define values here
 	instance variables
-		public hash: Utils`String;
-		-- public content: Utils`String;
+		public hash: VDMUtils`String;
+		-- public content: VDMUtils`String;
 		public timestamp: Date;
 		
 		public author: User;
 	
 	operations
-		public Commit: Utils`String * User * Date ==> Commit
+		public Commit: VDMUtils`String * User * Date ==> Commit
 		Commit(str, u, d) == (
 			hash := str;
 			author := u;
