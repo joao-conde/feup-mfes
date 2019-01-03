@@ -73,6 +73,12 @@ class GithubTest
 				for all r in set s do
 					TestUtils`assertTrue(r.name = "VDM++");
 			);
+			
+			let r1 = gh.accounts(thirdUsername).newRepository("overture-VDM++2.0", true),
+			s = gh.searchRepos("VDM++") in (
+				TestUtils`assertTrue(card s = 3);
+				TestUtils`assertTrue(r1 in set s);
+			);
 		);
 	
 		public static main: () ==> ()

@@ -70,8 +70,8 @@
 
 		public searchRepos: Utils`String ==> set of Repository
 		searchRepos(query) ==
-			return {r | r in set elems getAllRepos() & r.name = query}
-		post forall r in set elems getAllRepos() & if r.name = query then r in set RESULT else r not in set RESULT;
+			return {r | r in set elems getAllRepos() & Utils`isSubstring(r.name, query) >= 0}
+		post forall r in set elems getAllRepos() & if Utils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
 	functions
 		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
