@@ -41,7 +41,7 @@
 			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
 
 		-- Gets sequence containing all Repositories
-		private getAllRepos: () ==> seq of Repository
+		private pure getAllRepos: () ==> seq of Repository
 		getAllRepos() == (
 			dcl reposSet: set of Repository := {}, repos: seq of Repository := [];
 			for all acc in set rng accounts do
@@ -67,6 +67,11 @@
 			return sorted_list;
 		)
 		post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
+
+		public searchRepos: Utils`String ==> set of Repository
+		searchRepos(query) ==
+			return {r | r in set elems getAllRepos() & r.name = query}
+		post forall r in set elems getAllRepos() & if r.name = query then r in set RESULT else r not in set RESULT;
 
 	functions
 		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==

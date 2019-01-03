@@ -57,6 +57,23 @@ class GithubTest
 			TestUtils`assertTrue(len gh.getTopRepos() = 3);
 			TestUtils`assertTrue(gh.getTopRepos()(1).name = "VDM++");
 		);
+		
+		private testSearchRepos: () ==> ()
+		testSearchRepos() == (
+			let s = gh.searchRepos("VDM++") in (
+				TestUtils`assertTrue(card s = 1);
+				for all r in set s do
+					TestUtils`assertTrue(r.name = "VDM++");
+			);
+			
+			let r1 = gh.accounts(secondUsername).newRepository("VDM++", true),
+			s = gh.searchRepos("VDM++") in (
+				TestUtils`assertTrue(card s = 2);
+				TestUtils`assertTrue(r1 in set s);
+				for all r in set s do
+					TestUtils`assertTrue(r.name = "VDM++");
+			);
+		);
 	
 		public static main: () ==> ()
 		main() ==
@@ -66,6 +83,7 @@ class GithubTest
 				gt.testGetReposByTags();
 				gt.testStargazers();
 				gt.testGetTopRepos();
+				gt.testSearchRepos();
 			);
 		);
 
