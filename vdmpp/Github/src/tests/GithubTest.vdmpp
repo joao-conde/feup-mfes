@@ -80,6 +80,13 @@ class GithubTest
 				TestUtils`assertTrue(r1 in set s);
 			);
 		);
+		
+		private testSearchAccounts: () ==> ()
+		testSearchAccounts() == (
+			TestUtils`assertTrue(card gh.searchAccounts("username") = 3); --first, second and third Users
+			TestUtils`assertTrue(card gh.searchAccounts(firstUsername) = 1); --first
+			TestUtils`assertTrue(card gh.searchAccounts("other") = 2); --third and forth Users
+		);
 	
 		public static main: () ==> ()
 		main() ==
@@ -90,6 +97,7 @@ class GithubTest
 				gt.testStargazers();
 				gt.testGetTopRepos();
 				gt.testSearchRepos();
+				gt.testSearchAccounts();
 			);
 		);
 
