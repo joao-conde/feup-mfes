@@ -1,0 +1,73 @@
+class GithubTest
+	
+	values
+		firstUsername = "sample-username";
+		secondUsername = "different-username";
+		thirdUsername = "other-username";
+		fourthUsername = "another-one";
+		
+		tagFEUP = new Tag("FEUP");
+		tagVDM = new Tag("VDM");
+
+	instance variables
+		gh : Github := new Github();
+		
+	operations
+		private testAddAccount: () ==> ()
+		testAddAccount() ==
+		(
+			TestUtils`assertTrue(gh.numAccounts() = 0);
+			gh.addAccount(new User(firstUsername));
+			TestUtils`assertTrue(gh.numAccounts() = 1);
+			gh.addAccount(new Organization(secondUsername));
+			TestUtils`assertTrue(gh.numAccounts() = 2);
+		);
+
+		private testGetReposByTags: () ==> ()
+		testGetReposByTags() ==
+		(
+			let r1 = gh.accounts(firstUsername).newRepository("MFES", true),
+					r2 = gh.accounts(secondUsername).newRepository("OVERTURE", true) in (
+				r1.addTag(tagFEUP);
+				r1.addTag(tagVDM);
+				r2.addTag(tagVDM);
+				
+				TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
+				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));
+				TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({"VDM"}));
+			);
+		);
+		
+		private testStargazers: () ==> () 
+		testStargazers() == 
+		(
+			let u3 = new User(thirdUsername), u4 = new User(fourthUsername), r = u3.newRepository("VDM++", true) in (
+				gh.addAccount(u3); gh.addAccount(u4);
+				u3.star(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
+				u4.star(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername, fourthUsername});
+				u3.unstar(r);
+				TestUtils`assertTrue(gh.stargazers(r) = {fourthUsername});
+			);
+		);
+		
+		private testGetTopRepos: () ==> ()
+		testGetTopRepos() == (
+			TestUtils`assertTrue(len gh.getTopRepos() = 3);
+			TestUtils`assertTrue(gh.getTopRepos()(1).name = "VDM++");
+		);
+	
+		public static main: () ==> ()
+		main() ==
+		(
+			let gt = new GithubTest() in (
+				gt.testAddAccount();
+				gt.testGetReposByTags();
+				gt.testStargazers();
+				gt.testGetTopRepos();
+			);
+		);
+
+
+end GithubTest
