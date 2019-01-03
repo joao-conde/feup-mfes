@@ -26,8 +26,8 @@ class GithubTest
 		private testGetReposByTags: () ==> ()
 		testGetReposByTags() ==
 		(
-			let r1 = gh.accounts(firstUsername).newRepository("MFES", true),
-					r2 = gh.accounts(secondUsername).newRepository("OVERTURE", true) in (
+			let r1 = gh.accounts(firstUsername).newRepository("MFES", false),
+					r2 = gh.accounts(secondUsername).newRepository("OVERTURE", false) in (
 				r1.addTag(tagFEUP);
 				r1.addTag(tagVDM);
 				r2.addTag(tagVDM);
@@ -41,7 +41,7 @@ class GithubTest
 		private testStargazers: () ==> () 
 		testStargazers() == 
 		(
-			let u3 = new User(thirdUsername), u4 = new User(fourthUsername), r = u3.newRepository("VDM++", true) in (
+			let u3 = new User(thirdUsername), u4 = new User(fourthUsername), r = u3.newRepository("VDM++", false) in (
 				gh.addAccount(u3); gh.addAccount(u4);
 				u3.star(r);
 				TestUtils`assertTrue(gh.stargazers(r) = {thirdUsername});
@@ -54,8 +54,16 @@ class GithubTest
 		
 		private testGetTopRepos: () ==> ()
 		testGetTopRepos() == (
-			TestUtils`assertTrue(len gh.getTopRepos() = 3);
-			TestUtils`assertTrue(gh.getTopRepos()(1).name = "VDM++");
+			let tr = gh.getTopRepos() in (
+				TestUtils`assertTrue(len tr = 3);
+				TestUtils`assertTrue(tr(1).name = "VDM++");
+			);
+			let r1 = gh.accounts(secondUsername).newRepository("privateRepo", true),
+			tr = gh.getTopRepos() in (
+				TestUtils`assertTrue(len tr = 3); --Private repo does not appear
+				TestUtils`assertTrue(tr(1).name = "VDM++");
+				TestUtils`assertTrue(r1 not in set elems tr);
+			);
 		);
 		
 		private testSearchRepos: () ==> ()
@@ -66,7 +74,7 @@ class GithubTest
 					TestUtils`assertTrue(r.name = "VDM++");
 			);
 			
-			let r1 = gh.accounts(secondUsername).newRepository("VDM++", true),
+			let r1 = gh.accounts(secondUsername).newRepository("VDM++", false),
 			s = gh.searchRepos("VDM++") in (
 				TestUtils`assertTrue(card s = 2);
 				TestUtils`assertTrue(r1 in set s);
@@ -74,10 +82,16 @@ class GithubTest
 					TestUtils`assertTrue(r.name = "VDM++");
 			);
 			
-			let r1 = gh.accounts(thirdUsername).newRepository("overture-VDM++2.0", true),
+			let r1 = gh.accounts(thirdUsername).newRepository("overture-VDM++2.0", false),
 			s = gh.searchRepos("VDM++") in (
 				TestUtils`assertTrue(card s = 3);
 				TestUtils`assertTrue(r1 in set s);
+			);
+			
+			let r1 = gh.accounts(firstUsername).newRepository("overture-VDM++", true),
+			s = gh.searchRepos("VDM++") in (
+				TestUtils`assertTrue(card s = 3); --Private repo does not appear
+				TestUtils`assertTrue(r1 not in set s);
 			);
 		);
 		

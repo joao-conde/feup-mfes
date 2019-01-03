@@ -55,7 +55,7 @@
 		-- Orders Repositories by number of stars using a bubble-sort like algorithm
 		public getTopRepos: () ==> seq of Repository
 		getTopRepos() == (
-			dcl l: seq of Repository := getAllRepos();
+			dcl l: seq of Repository := [r | r in seq getAllRepos() & not r.isRepoPrivate()];
 			dcl sorted_list: seq of Repository := l;
 			for i = len l to 1 by -1 do
 				for j = 1 to i-1 do
@@ -70,8 +70,8 @@
 
 		public searchRepos: Utils`String ==> set of Repository
 		searchRepos(query) ==
-			return {r | r in set elems getAllRepos() & Utils`isSubstring(r.name, query) >= 0}
-		post forall r in set elems getAllRepos() & if Utils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
+			return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and Utils`isSubstring(r.name, query) >= 0}
+		post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if Utils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
 		public searchAccounts: Utils`String ==> set of Account
 		searchAccounts(query) ==

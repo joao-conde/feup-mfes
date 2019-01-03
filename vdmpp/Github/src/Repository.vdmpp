@@ -81,7 +81,7 @@ class Repository
 		public numReleases: () ==> nat
 		numReleases() == return len releases;
 		
-		public isRepoPrivate: () ==> bool
+		public pure isRepoPrivate: () ==> bool
 		isRepoPrivate() == return isPrivate;
 		
 		-- Setters
