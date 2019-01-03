@@ -74,6 +74,22 @@ class GithubTest
 					TestUtils`assertTrue(r.name = "VDM++");
 			);
 		);
+		
+		private testSearchAccounts: () ==> ()
+		testSearchAccounts() == (
+			let s = gh.searchAccounts(firstUsername) in (
+				TestUtils`assertTrue(card s = 1);
+				for all acc in set s do
+					TestUtils`assertTrue(acc.username = firstUsername);
+			);
+			
+			gh.addAccount(new Organization(firstUsername));
+			let s = gh.searchAccounts(firstUsername) in (
+				TestUtils`assertTrue(card s = 2);
+				for all acc in set s do
+					TestUtils`assertTrue(acc.username = firstUsername);
+			);
+		);
 	
 		public static main: () ==> ()
 		main() ==

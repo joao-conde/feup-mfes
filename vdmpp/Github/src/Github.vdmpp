@@ -73,6 +73,11 @@
 			return {r | r in set elems getAllRepos() & r.name = query}
 		post forall r in set elems getAllRepos() & if r.name = query then r in set RESULT else r not in set RESULT;
 
+		public searchAccounts: Utils`String ==> set of Account
+		searchAccounts(query) ==
+			return {accounts(acc) | acc in set dom accounts & acc = query}
+		post forall acc in set dom accounts & if acc = query then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
+
 	functions
 		public static repoMatchesTags(r: Repository, tags: set of Utils`String | set of Tag) res: bool ==
 		forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
