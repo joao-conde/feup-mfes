@@ -1,8 +1,5 @@
 class IssueTest
-types
--- TODO Define types here
-values
--- TODO Define values here
+
 instance variables
 	issue: Issue := new Issue("#7400", "test title", "test description")
 operations
@@ -32,8 +29,4 @@ operations
 		);
 	);
 
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end IssueTest

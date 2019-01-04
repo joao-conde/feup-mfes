@@ -1,85 +1,83 @@
-	class Github
-	types
-		-- Map of String (username) to Account
-		public AccountsMap = map VDMUtils`String to Account;
-		
-	values
-	-- TODO Define values here
+class Github
+
+types
+	-- Map of String (username) to Account
+	public AccountsMap = map VDMUtils`String to Account;
+
+instance variables
+	public accounts: AccountsMap := { |-> };
 	
-	instance variables
-		public accounts: AccountsMap := { |-> };
-		
-	operations
-		public Github: () ==> Github
-		Github() == (return self)
-		post card dom accounts = 0;
-		
-		public addAccount: Account ==> ()
-		addAccount(acc) == (
-			accounts(acc.username) := acc;
-		)
-		pre acc.username not in set dom accounts
-		post accounts(acc.username) = acc;
+operations
+	public Github: () ==> Github
+	Github() == (return self)
+	post card dom accounts = 0;
 	
-		public numAccounts: () ==> nat
-		numAccounts() == (return card dom accounts);
-		
-		public getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
-		getRepositoriesByTags(tags) ==
-			return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
-		pre tags <> {};
-		
-		-- Get name of the User accounts
-		private pure getUsers: () ==> set of VDMUtils`String
-		getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
-		post forall un in set RESULT & isofclass(User, accounts(un));
+	public addAccount: Account ==> ()
+	addAccount(acc) == (
+		accounts(acc.username) := acc;
+	)
+	pre acc.username not in set dom accounts
+	post accounts(acc.username) = acc;
 
-		public pure stargazers: Repository ==> set of VDMUtils`String
-		stargazers(repo) ==
-			return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
-		post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
-			(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
+	public numAccounts: () ==> nat
+	numAccounts() == (return card dom accounts);
+	
+	public getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
+	getRepositoriesByTags(tags) ==
+		return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
+	pre tags <> {};
+	
+	-- Get name of the User accounts
+	private pure getUsers: () ==> set of VDMUtils`String
+	getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
+	post forall un in set RESULT & isofclass(User, accounts(un));
 
-		-- Gets sequence containing all Repositories
-		private pure getAllRepos: () ==> seq of Repository
-		getAllRepos() == (
-			dcl reposSet: set of Repository := {}, repos: seq of Repository := [];
-			for all acc in set rng accounts do
-				reposSet := reposSet union {r | r in set rng acc.repositories \ reposSet};
-			for all r in set reposSet do repos := repos ^ [r];
-			return repos;
-		)
-		post forall e in set dunion { rng acc.repositories | acc in set rng accounts } & e in set elems RESULT and
-			card dunion { rng acc.repositories | acc in set rng accounts } = len RESULT;
+	public pure stargazers: Repository ==> set of VDMUtils`String
+	stargazers(repo) ==
+		return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
+	post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
+		(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
 
-		-- Orders Repositories by number of stars using a bubble-sort like algorithm
-		public getTopRepos: () ==> seq of Repository
-		getTopRepos() == (
-			dcl l: seq of Repository := [r | r in seq getAllRepos() & not r.isRepoPrivate()];
-			dcl sorted_list: seq of Repository := l;
-			for i = len l to 1 by -1 do
-				for j = 1 to i-1 do
-					if card stargazers(sorted_list(j)) < card stargazers(sorted_list(j+1))
-						then (dcl temp: Repository := sorted_list(j);
-							sorted_list(j) := sorted_list(j+1);
-							sorted_list(j+1) := temp
-			);
-			return sorted_list;
-		)
-		post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
+	-- Gets sequence containing all Repositories
+	private pure getAllRepos: () ==> seq of Repository
+	getAllRepos() == (
+		dcl reposSet: set of Repository := {}, repos: seq of Repository := [];
+		for all acc in set rng accounts do
+			reposSet := reposSet union {r | r in set rng acc.repositories \ reposSet};
+		for all r in set reposSet do repos := repos ^ [r];
+		return repos;
+	)
+	post forall e in set dunion { rng acc.repositories | acc in set rng accounts } & e in set elems RESULT and
+		card dunion { rng acc.repositories | acc in set rng accounts } = len RESULT;
 
-		public searchRepos: VDMUtils`String ==> set of Repository
-		searchRepos(query) ==
-			return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and VDMUtils`isSubstring(r.name, query) >= 0}
-		post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if VDMUtils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
+	-- Orders Repositories by number of stars using a bubble-sort like algorithm
+	public getTopRepos: () ==> seq of Repository
+	getTopRepos() == (
+		dcl l: seq of Repository := [r | r in seq getAllRepos() & not r.isRepoPrivate()];
+		dcl sorted_list: seq of Repository := l;
+		for i = len l to 1 by -1 do
+			for j = 1 to i-1 do
+				if card stargazers(sorted_list(j)) < card stargazers(sorted_list(j+1))
+					then (dcl temp: Repository := sorted_list(j);
+						sorted_list(j) := sorted_list(j+1);
+						sorted_list(j+1) := temp
+		);
+		return sorted_list;
+	)
+	post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
 
-		public searchAccounts: VDMUtils`String ==> set of Account
-		searchAccounts(query) ==
-			return {accounts(acc) | acc in set dom accounts & VDMUtils`isSubstring(acc, query) >= 0}
-		post forall acc in set dom accounts & if VDMUtils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
+	public searchRepos: VDMUtils`String ==> set of Repository
+	searchRepos(query) ==
+		return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and VDMUtils`isSubstring(r.name, query) >= 0}
+	post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if VDMUtils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
-	functions
-		public static repoMatchesTags(r: Repository, tags: set of VDMUtils`String | set of Tag) res: bool ==
-		forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
+	public searchAccounts: VDMUtils`String ==> set of Account
+	searchAccounts(query) ==
+		return {accounts(acc) | acc in set dom accounts & VDMUtils`isSubstring(acc, query) >= 0}
+	post forall acc in set dom accounts & if VDMUtils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
+
+functions
+	public static repoMatchesTags(r: Repository, tags: set of VDMUtils`String | set of Tag) res: bool ==
+	forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
 		
 end Github

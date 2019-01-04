@@ -1,16 +1,16 @@
 class Release
 
-	instance variables
-		public name: VDMUtils`String := [];
-		public timestamp : Date;
+instance variables
+	public name: VDMUtils`String := [];
+	public timestamp : Date;
+
+operations
+	public Release: VDMUtils`String * Date ==> Release
+	Release(n, date) == (
+		name := n;
+		timestamp := date;
+		return self;
+	)
+	pre n <> [];
 	
-	operations
-		public Release: VDMUtils`String * Date ==> Release
-		Release(n, date) == (
-			name := n;
-			timestamp := date;
-			return self;
-		)
-		pre n <> [];
-		
 end Release

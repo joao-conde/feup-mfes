@@ -49,6 +49,4 @@ functions
 	)
 	pre m >= 1 and m <= 12;
 
-traces
--- TODO Define Combinatorial Test Traces here
 end Date

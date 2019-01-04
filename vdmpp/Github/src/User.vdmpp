@@ -1,9 +1,4 @@
 class User is subclass of Account
-types
--- TODO Define types here
-
-values
--- TODO Define values here
 
 instance variables
 	private selfUser: User; -- For invariant purposes
@@ -17,7 +12,6 @@ instance variables
 operations
 	public User: VDMUtils`String ==> User
 	User(un) == (
---		username := un;
 		selfUser := self;
 		Account(un);
 	);
@@ -76,9 +70,5 @@ operations
 	
 	public pure getStars: () ==> set of Repository
 	getStars() == return stars;
-	
-functions
--- TODO Define functions here
-traces
--- TODO Define Combinatorial Test Traces here
+
 end User

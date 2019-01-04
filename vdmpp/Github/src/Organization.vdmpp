@@ -1,9 +1,4 @@
 class Organization is subclass of Account
-types
--- TODO Define types here
-
-values
--- TODO Define values here
 
 instance variables
 	public members: set of User := {};
@@ -23,9 +18,5 @@ operations
 	
 	public numMembers: () ==> nat
 	numMembers() == return card members;
-	
-functions
--- TODO Define functions here
-traces
--- TODO Define Combinatorial Test Traces here
+
 end Organization

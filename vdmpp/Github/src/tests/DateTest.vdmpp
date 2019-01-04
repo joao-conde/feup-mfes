@@ -1,61 +1,52 @@
 class DateTest
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
--- TODO Define instance variables here
+
 operations
-		private testIsLeapYear: () ==> ()
-		testIsLeapYear() == (	
-			TestUtils`assertTrue(Date`isLeapYear(2020));
-			TestUtils`assertFalse(Date`isLeapYear(2018));
-		);
-		
-		private testDaysOfMonth: () ==> ()
-		testDaysOfMonth() == (	
-			TestUtils`assertTrue(Date`daysOfMonth(2020, 2) = 29);
-			TestUtils`assertTrue(Date`daysOfMonth(2018, 2) = 28);
-			TestUtils`assertTrue(Date`daysOfMonth(2018, 12) = 31);
-			TestUtils`assertTrue(Date`daysOfMonth(2018, 4) = 30);
-		);
-		
-		private testCompareDates: () ==> ()
-		testCompareDates() == (
-			TestUtils`assertTrue(
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) < 
-				mk_Date`DateComparable(new Date(2012, 4, 21, 23, 56))
-			);
-			TestUtils`assertTrue(
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
-				mk_Date`DateComparable(new Date(2010, 4, 21, 23, 56))
-			);
-			TestUtils`assertTrue(
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
-				mk_Date`DateComparable(new Date(2010, 3, 21, 23, 56))
-			);
-			TestUtils`assertTrue(
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
-				mk_Date`DateComparable(new Date(2010, 3, 12, 23, 56))
-			);
-			TestUtils`assertTrue(
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
-				mk_Date`DateComparable(new Date(2010, 3, 12, 20, 56))
-			);			
-		);
+	private testIsLeapYear: () ==> ()
+	testIsLeapYear() == (	
+		TestUtils`assertTrue(Date`isLeapYear(2020));
+		TestUtils`assertFalse(Date`isLeapYear(2018));
+	);
 	
-		public static main: () ==> ()
-		main() == (
-			let dt = new DateTest() in (
-				dt.testIsLeapYear();
-				dt.testDaysOfMonth();
-				dt.testCompareDates();
-			);
+	private testDaysOfMonth: () ==> ()
+	testDaysOfMonth() == (	
+		TestUtils`assertTrue(Date`daysOfMonth(2020, 2) = 29);
+		TestUtils`assertTrue(Date`daysOfMonth(2018, 2) = 28);
+		TestUtils`assertTrue(Date`daysOfMonth(2018, 12) = 31);
+		TestUtils`assertTrue(Date`daysOfMonth(2018, 4) = 30);
+	);
+	
+	private testCompareDates: () ==> ()
+	testCompareDates() == (
+		TestUtils`assertTrue(
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) < 
+			mk_Date`DateComparable(new Date(2012, 4, 21, 23, 56))
 		);
+		TestUtils`assertTrue(
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+			mk_Date`DateComparable(new Date(2010, 4, 21, 23, 56))
+		);
+		TestUtils`assertTrue(
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+			mk_Date`DateComparable(new Date(2010, 3, 21, 23, 56))
+		);
+		TestUtils`assertTrue(
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+			mk_Date`DateComparable(new Date(2010, 3, 12, 23, 56))
+		);
+		TestUtils`assertTrue(
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 11)) <
+			mk_Date`DateComparable(new Date(2010, 3, 12, 20, 56))
+		);			
+	);
+
+	public static main: () ==> ()
+	main() == (
+		let dt = new DateTest() in (
+			dt.testIsLeapYear();
+			dt.testDaysOfMonth();
+			dt.testCompareDates();
+		);
+	);
 
 
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end DateTest

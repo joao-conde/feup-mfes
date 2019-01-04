@@ -1,32 +1,32 @@
 class Account
 
-	instance variables
---		private static usedUsernames: set of VDMUtils`String := {};
+instance variables	
+	public username: VDMUtils`String;
+	public repositories: map VDMUtils`String to Repository := { |-> };
 	
-		public username: VDMUtils`String;
-		public repositories: map VDMUtils`String to Repository := { |-> };
-		
-		--public name: VDMUtils`String := [];
-		--public description: VDMUtils`String := [];
-		--public location: VDMUtils`String := [];
-		--public site: VDMUtils`String := [];
-		
-	operations
-		public Account: VDMUtils`String ==> Account
-		Account(un) == (
-			username := un;
+	private description: VDMUtils`String := [];
+	
+operations
+	public Account: VDMUtils`String ==> Account
+	Account(un) == (
+		username := un;
+	);
+	
+	public pure getDescription: () ==> VDMUtils`String
+	getDescription() == return description;
+	
+	public setDescription: VDMUtils`String ==> ()
+	setDescription(desc) == description := desc
+	post description = desc;
+
+	public newRepository: VDMUtils`String * bool ==> Repository
+	newRepository(name, isPriv) == (
+		let r = new Repository(name, self, isPriv) in (
+			repositories(name) := r;
+			return r;
 		);
---		pre un not in set usedUsernames
---		post un in set usedUsernames;
-	
-		public newRepository: VDMUtils`String * bool ==> Repository
-		newRepository(name, isPriv) == (
-			let r = new Repository(name, self, isPriv) in (
-				repositories(name) := r;
-				return r;
-			);
-		)
-		pre name not in set dom repositories
-		post repositories(name).name = name;
+	)
+	pre name not in set dom repositories
+	post repositories(name).name = name;
 
 end Account

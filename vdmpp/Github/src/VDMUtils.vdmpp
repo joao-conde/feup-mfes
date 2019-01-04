@@ -1,35 +1,32 @@
 class VDMUtils
-	types
-		public String = seq of char;
-	
-	values
-	-- TODO Define values here
-	instance variables
-	operations	
-		-- Returns index where the first substring match starts or -1 if it is not substring
-		public pure static isSubstring: String * String ==> int
-		isSubstring(s, sub) == (
-			if len s < len sub
-				then return -1;
-			for i = 1 to len s - len sub + 1 do
-				if s(i, ..., i + len sub - 1) = sub
-					then return i;
-			return -1;
-		)
-		post if RESULT >= 0 then s(RESULT, ..., RESULT + len sub - 1) = sub else RESULT = -1;
-		
-	functions
-		public static min(s: set of nat) res: nat ==
-		iota n1 in set s & forall n2 in set s & n1 <= n2
-		pre card s > 0;
-	
-		public static max(s: set of nat) res: nat ==
-		iota n1 in set s & forall n2 in set s & n1 >= n2
-		pre card s > 0;
-		
-		public static isAscendingOrder[@T](s: seq of @T) res: bool ==
-		forall i in set {1, ..., len s - 1} & s(i) <= s(i+1);
 
-	traces
-	-- TODO Define Combinatorial Test Traces here
+types
+	public String = seq of char;
+
+instance variables
+operations	
+	-- Returns index where the first substring match starts or -1 if it is not substring
+	public pure static isSubstring: String * String ==> int
+	isSubstring(s, sub) == (
+		if len s < len sub
+			then return -1;
+		for i = 1 to len s - len sub + 1 do
+			if s(i, ..., i + len sub - 1) = sub
+				then return i;
+		return -1;
+	)
+	post if RESULT >= 0 then s(RESULT, ..., RESULT + len sub - 1) = sub else RESULT = -1;
+	
+functions
+	public static min(s: set of nat) res: nat ==
+	iota n1 in set s & forall n2 in set s & n1 <= n2
+	pre card s > 0;
+
+	public static max(s: set of nat) res: nat ==
+	iota n1 in set s & forall n2 in set s & n1 >= n2
+	pre card s > 0;
+	
+	public static isAscendingOrder[@T](s: seq of @T) res: bool ==
+	forall i in set {1, ..., len s - 1} & s(i) <= s(i+1);
+
 end VDMUtils

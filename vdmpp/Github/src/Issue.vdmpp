@@ -1,10 +1,9 @@
 class Issue
+
 types
 	-- Map of message ID to Message
 	public Messages = map VDMUtils`String to Message;
-	
-values
--- TODO Define values here
+
 instance variables
 	public id: VDMUtils`String;
 	public title: VDMUtils`String;
@@ -32,11 +31,10 @@ operations
 	pre not msg.id in set dom messages
 	post messages(msg.id) = msg;
 	
-	--Assign an user to this issue
+	--Assign a User to this issue
 	public assignUser: User ==> ()
 	assignUser(user) == (
 		assignees := assignees union {user};
-		--should user have this issue added to him aswell?
 	)
 	pre not user in set assignees
 	post user in set assignees;
@@ -47,8 +45,4 @@ operations
 	public numAssignees: () ==> nat
 	numAssignees() == return card assignees;
 
-functions
--- TODO Define functions here
-traces
--- TODO Define Combinatorial Test Traces here
 end Issue

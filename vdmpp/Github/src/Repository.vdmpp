@@ -1,103 +1,103 @@
 class Repository
 	
-	instance variables
-		
-		public name: VDMUtils`String;
-		private isPrivate: bool;
-		private description: VDMUtils`String := [];
+instance variables
 	
-		private owner: Account;
-		private defaultBranch: Branch;
-		public tags: set of Tag := {};
-		public collaborators: set of User := {};
-		public releases: seq of Release := [];
-		public branches: map VDMUtils`String to Branch := { |-> };
-			
-		inv defaultBranch in set rng branches;
-		inv branches(defaultBranch.name) = defaultBranch;
+	public name: VDMUtils`String;
+	private isPrivate: bool;
+	private description: VDMUtils`String := [];
+
+	private owner: Account;
+	private defaultBranch: Branch;
+	public tags: set of Tag := {};
+	public collaborators: set of User := {};
+	public releases: seq of Release := [];
+	public branches: map VDMUtils`String to Branch := { |-> };
+		
+	inv defaultBranch in set rng branches;
+	inv branches(defaultBranch.name) = defaultBranch;
+
+	inv forall i1, i2 in set inds releases & 
+		i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
 	
-		inv forall i1, i2 in set inds releases & 
-			i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
-		
-	operations
-		public Repository: VDMUtils`String * Account * bool ==> Repository
-		Repository(n, acc, priv) == (
-			name := n;
-			isPrivate := priv;
-			owner := acc;
-			if isofclass(User, owner) then collaborators := {owner};
-				
-			let master = new Branch("master", true) in ( -- Github creates default branch master
-				defaultBranch := master;
-				branches := { "master" |-> master };
-			);
-			return self;
-		)
-		pre n <> []
-		post name = n and isPrivate = priv and owner = acc and
-			(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
-			defaultBranch.name = "master" and card dom branches = 1;
+operations
+	public Repository: VDMUtils`String * Account * bool ==> Repository
+	Repository(n, acc, priv) == (
+		name := n;
+		isPrivate := priv;
+		owner := acc;
+		if isofclass(User, owner) then collaborators := {owner};
 			
+		let master = new Branch("master", true) in ( -- Github creates default branch master
+			defaultBranch := master;
+			branches := { "master" |-> master };
+		);
+		return self;
+	)
+	pre n <> []
+	post name = n and isPrivate = priv and owner = acc and
+		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
+		defaultBranch.name = "master" and card dom branches = 1;
 		
-		public addRelease: Release ==> ()
-		addRelease(rel) == (
-			releases := releases ^ [rel];
-		)
-		pre rel.name not in set {r.name | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
-		post releases(len releases) = rel;
-		
-		public addTag: Tag ==> ()
-		addTag(tag) == tags := tags union {tag}
-		post tag in set tags;
-			
-		public createBranch: VDMUtils`String * bool ==> Branch
-		createBranch(n, prot) == (
-			let b = new Branch(n, prot) in (
-				branches(n) := b;
-				return b;
-			);
-		)
-		pre n not in set dom branches
-		post let b = branches(n) in b.name = n and b.isProtected = prot;
-		
-		public commit: User * VDMUtils`String * VDMUtils`String * Date ==> ()
-		commit(usr, branchName, hash, date) == (
-			branches(branchName).commit(new Commit(hash, usr, date));
-		)
-		pre (usr in set collaborators or not isPrivate) and
-			branchName in set dom branches;
-			
-		public addCollaborator: User ==> ()
-		addCollaborator(usr) == collaborators := collaborators union {usr}
-		post usr in set collaborators;
-			
-		-- Getters
-		public getDefaultBranch: () ==> Branch
-		getDefaultBranch() == return defaultBranch;
-		
-		public getDescription: () ==> VDMUtils`String
-		getDescription() == return description;
-		
-		public numReleases: () ==> nat
-		numReleases() == return len releases;
-		
-		public pure isRepoPrivate: () ==> bool
-		isRepoPrivate() == return isPrivate;
-		
-		-- Setters
-		public setDefaultBranch: VDMUtils`String ==> ()
-		setDefaultBranch(bName) == defaultBranch := branches(bName)
-		pre bName in set dom branches
-		post defaultBranch.name = bName;
 	
-		public setDescription: Account * VDMUtils`String ==> ()
-		setDescription(acc, desc) == description := desc
-		pre acc = owner
-		post description = desc;
+	public addRelease: Release ==> ()
+	addRelease(rel) == (
+		releases := releases ^ [rel];
+	)
+	pre rel.name not in set {r.name | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
+	post releases(len releases) = rel;
+	
+	public addTag: Tag ==> ()
+	addTag(tag) == tags := tags union {tag}
+	post tag in set tags;
 		
-		public setPrivacy: Account * bool ==> ()
-		setPrivacy(acc, privacy) == isPrivate := privacy
-		pre acc = owner
-		post isPrivate = privacy;
+	public createBranch: VDMUtils`String * bool ==> Branch
+	createBranch(n, prot) == (
+		let b = new Branch(n, prot) in (
+			branches(n) := b;
+			return b;
+		);
+	)
+	pre n not in set dom branches
+	post let b = branches(n) in b.name = n and b.isProtected = prot;
+	
+	public commit: User * VDMUtils`String * VDMUtils`String * Date ==> ()
+	commit(usr, branchName, hash, date) == (
+		branches(branchName).commit(new Commit(hash, usr, date));
+	)
+	pre (usr in set collaborators or not isPrivate) and
+		branchName in set dom branches;
 		
+	public addCollaborator: User ==> ()
+	addCollaborator(usr) == collaborators := collaborators union {usr}
+	post usr in set collaborators;
+		
+	-- Getters
+	public getDefaultBranch: () ==> Branch
+	getDefaultBranch() == return defaultBranch;
+	
+	public getDescription: () ==> VDMUtils`String
+	getDescription() == return description;
+	
+	public numReleases: () ==> nat
+	numReleases() == return len releases;
+	
+	public pure isRepoPrivate: () ==> bool
+	isRepoPrivate() == return isPrivate;
+	
+	-- Setters
+	public setDefaultBranch: VDMUtils`String ==> ()
+	setDefaultBranch(bName) == defaultBranch := branches(bName)
+	pre bName in set dom branches
+	post defaultBranch.name = bName;
+
+	public setDescription: Account * VDMUtils`String ==> ()
+	setDescription(acc, desc) == description := desc
+	pre acc = owner
+	post description = desc;
+	
+	public setPrivacy: Account * bool ==> ()
+	setPrivacy(acc, privacy) == isPrivate := privacy
+	pre acc = owner
+	post isPrivate = privacy;
+	
 end Repository
