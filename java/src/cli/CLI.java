@@ -33,6 +33,11 @@ public class CLI {
 
 		((User) (gh.searchAccounts("andre").iterator().next()))
 				.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
+		
+		((Repository)gh.searchRepos("feup-mfes").iterator().next()).addTag(new Tag("tag1"));
+		((Repository)gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag1"));
+		((Repository)gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag2"));
+		
 	}
 
 	public void run() {
@@ -226,7 +231,8 @@ public class CLI {
 			int i = 1;
 			Iterator<Repository> ite = repos.iterator();
 			while (ite.hasNext()) {
-				System.out.println(i + ". " + ite.next().name);
+				Repository r = ite.next();
+				System.out.println(i + ". " + r.name + " with " + gh.stargazers(r).size() + " stars");
 				i++;
 			}
 		} else
@@ -244,12 +250,14 @@ public class CLI {
 			tags.add(new Tag(t));
 		}
 		
+		System.out.println(tags.size());
 		if(tags.isEmpty()) {
 			System.out.println("No tags specified");
 			return;
 		}
 		
 		try {
+			//TODO find out why this always throws UnsupportedOperationException
 			VDMSet repos = gh.getRepositoriesByTags(tags);
 			System.out.println("Repositories");
 			Iterator<Repository> ite = repos.iterator();
@@ -273,14 +281,17 @@ public class CLI {
 			return;
 		}
 		
-		VDMSet stargazers = this.gh.stargazers((Repository)reposFound.iterator().next());
+		Repository r = (Repository)reposFound.iterator().next();
+		VDMSet stargazers = this.gh.stargazers(r);
 		if(stargazers.isEmpty()) {
-			System.out.println("No stargazers for " + repoName);
+			System.out.println("No stargazers for " + r.name);
 			return;
 		}
 		
+		
 		int i = 1;
 		Iterator<String> ite = stargazers.iterator();
+		System.out.println("Stargazers for repository " + r.name);
 		while(ite.hasNext()) {
 			System.out.println(i + ". " + ite.next());
 			i++;
@@ -309,7 +320,7 @@ public class CLI {
 			return;
 		}
 		
-		System.out.println("Started following " + username);
+		System.out.println("Stopped following " + username);
 		this.user.unfollow((User)usersFound.iterator().next());
 	}
 
@@ -319,6 +330,7 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void viewFollowing() {
+		//TODO fix, after following someone this set is still empty
 		VDMSet following = this.user.getFollowers();
 
 		if(following.isEmpty()) {
@@ -370,18 +382,22 @@ public class CLI {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void starRepos() {
-		String reposName = readNonEmptyString("Search for repository: ");
+		String reposName = readNonEmptyString("Repository name: ");
 		Iterator<Repository> ite = this.gh.getTopRepos().iterator();
 		while (ite.hasNext()) {
 			Repository rep = ite.next();
 			if (rep.name.equals(reposName)) {
 				this.user.star(rep);
-				break;
+				System.out.println("You starred " + rep.name);
+				return;
 			}
 		}
+		System.out.println("No repository '" + reposName + "' found");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void unstarRepos() {
 		String reposName = readNonEmptyString("Search for repository: ");
 		Iterator<Repository> ite = this.gh.getTopRepos().iterator();
@@ -389,9 +405,11 @@ public class CLI {
 			Repository rep = ite.next();
 			if (rep.name.equals(reposName)) {
 				this.user.unstar(rep);
-				break;
+				System.out.println("You unstarred " + rep.name);
+				return;
 			}
 		}
+		System.out.println("No repository '" + reposName + "' found");
 	}
 
 	private void createRepos() {
