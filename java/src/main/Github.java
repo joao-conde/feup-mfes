@@ -31,14 +31,14 @@ public class Github {
 
     VDMSet setCompResult_1 = SetUtil.set();
     VDMSet setCompResult_2 = SetUtil.set();
-    VDMSet set_2 = MapUtil.rng(Utils.copy(accounts));
-    for (Iterator iterator_2 = set_2.iterator(); iterator_2.hasNext(); ) {
-      Account a = ((Account) iterator_2.next());
+    VDMSet set_5 = MapUtil.rng(Utils.copy(accounts));
+    for (Iterator iterator_5 = set_5.iterator(); iterator_5.hasNext(); ) {
+      Account a = ((Account) iterator_5.next());
       setCompResult_2.add(MapUtil.rng(a.repositories));
     }
-    VDMSet set_1 = SetUtil.dunion(Utils.copy(setCompResult_2));
-    for (Iterator iterator_1 = set_1.iterator(); iterator_1.hasNext(); ) {
-      Repository r = ((Repository) iterator_1.next());
+    VDMSet set_4 = SetUtil.dunion(Utils.copy(setCompResult_2));
+    for (Iterator iterator_4 = set_4.iterator(); iterator_4.hasNext(); ) {
+      Repository r = ((Repository) iterator_4.next());
       if (repoMatchesTags(r, Utils.copy(tags))) {
         setCompResult_1.add(r);
       }
@@ -49,9 +49,9 @@ public class Github {
   private VDMSet getUsers() {
 
     VDMSet setCompResult_3 = SetUtil.set();
-    VDMSet set_4 = MapUtil.dom(Utils.copy(accounts));
-    for (Iterator iterator_4 = set_4.iterator(); iterator_4.hasNext(); ) {
-      String un = ((String) iterator_4.next());
+    VDMSet set_7 = MapUtil.dom(Utils.copy(accounts));
+    for (Iterator iterator_7 = set_7.iterator(); iterator_7.hasNext(); ) {
+      String un = ((String) iterator_7.next());
       if (((Account) Utils.get(accounts, un)) instanceof User) {
         setCompResult_3.add(un);
       }
@@ -62,9 +62,9 @@ public class Github {
   public VDMSet stargazers(final Repository repo) {
 
     VDMSet setCompResult_4 = SetUtil.set();
-    VDMSet set_7 = getUsers();
-    for (Iterator iterator_7 = set_7.iterator(); iterator_7.hasNext(); ) {
-      String un = ((String) iterator_7.next());
+    VDMSet set_10 = getUsers();
+    for (Iterator iterator_10 = set_10.iterator(); iterator_10.hasNext(); ) {
+      String un = ((String) iterator_10.next());
       if (SetUtil.inSet(repo, ((User) ((Account) Utils.get(accounts, un))).getStars())) {
         setCompResult_4.add(un);
       }
@@ -76,20 +76,20 @@ public class Github {
 
     VDMSet reposSet = SetUtil.set();
     VDMSeq repos = SeqUtil.seq();
-    for (Iterator iterator_21 = MapUtil.rng(Utils.copy(accounts)).iterator();
-        iterator_21.hasNext();
+    for (Iterator iterator_26 = MapUtil.rng(Utils.copy(accounts)).iterator();
+        iterator_26.hasNext();
         ) {
-      Account acc = (Account) iterator_21.next();
+      Account acc = (Account) iterator_26.next();
       VDMSet setCompResult_7 = SetUtil.set();
-      VDMSet set_11 = SetUtil.diff(MapUtil.rng(acc.repositories), Utils.copy(reposSet));
-      for (Iterator iterator_11 = set_11.iterator(); iterator_11.hasNext(); ) {
-        Repository r = ((Repository) iterator_11.next());
+      VDMSet set_14 = SetUtil.diff(MapUtil.rng(acc.repositories), Utils.copy(reposSet));
+      for (Iterator iterator_14 = set_14.iterator(); iterator_14.hasNext(); ) {
+        Repository r = ((Repository) iterator_14.next());
         setCompResult_7.add(r);
       }
       reposSet = SetUtil.union(Utils.copy(reposSet), Utils.copy(setCompResult_7));
     }
-    for (Iterator iterator_22 = reposSet.iterator(); iterator_22.hasNext(); ) {
-      Repository r = (Repository) iterator_22.next();
+    for (Iterator iterator_27 = reposSet.iterator(); iterator_27.hasNext(); ) {
+      Repository r = (Repository) iterator_27.next();
       repos = SeqUtil.conc(Utils.copy(repos), SeqUtil.seq(r));
     }
     return Utils.copy(repos);
@@ -97,22 +97,22 @@ public class Github {
 
   public VDMSeq getTopRepos() {
 
-    VDMSeq seqCompResult_1 = SeqUtil.seq();
-    VDMSeq set_13 = getAllRepos();
-    for (Iterator iterator_13 = set_13.iterator(); iterator_13.hasNext(); ) {
-      Repository r = ((Repository) iterator_13.next());
+    VDMSeq seqCompResult_2 = SeqUtil.seq();
+    VDMSeq set_16 = getAllRepos();
+    for (Iterator iterator_16 = set_16.iterator(); iterator_16.hasNext(); ) {
+      Repository r = ((Repository) iterator_16.next());
       if (!(r.isRepoPrivate())) {
-        seqCompResult_1.add(r);
+        seqCompResult_2.add(r);
       }
     }
-    VDMSeq l = Utils.copy(seqCompResult_1);
+    VDMSeq l = Utils.copy(seqCompResult_2);
     VDMSeq sorted_list = Utils.copy(l);
-    long toVar_2 = 1L;
-    long byVar_1 = -1L;
-    for (Long i = (long) l.size(); byVar_1 < 0 ? i >= toVar_2 : i <= toVar_2; i += byVar_1) {
-      long toVar_1 = i.longValue() - 1L;
+    long toVar_4 = 1L;
+    long byVar_2 = -1L;
+    for (Long i = (long) l.size(); byVar_2 < 0 ? i >= toVar_4 : i <= toVar_4; i += byVar_2) {
+      long toVar_3 = i.longValue() - 1L;
 
-      for (Long j = 1L; j <= toVar_1; j++) {
+      for (Long j = 1L; j <= toVar_3; j++) {
         if (stargazers(((Repository) Utils.get(sorted_list, j))).size()
             < stargazers(((Repository) Utils.get(sorted_list, j.longValue() + 1L))).size()) {
           Repository temp = ((Repository) Utils.get(sorted_list, j));
@@ -128,18 +128,18 @@ public class Github {
   public VDMSet searchRepos(final String query) {
 
     VDMSet setCompResult_9 = SetUtil.set();
-    VDMSet set_16 = SeqUtil.elems(getAllRepos());
-    for (Iterator iterator_16 = set_16.iterator(); iterator_16.hasNext(); ) {
-      Repository r = ((Repository) iterator_16.next());
-      Boolean andResult_9 = false;
+    VDMSet set_19 = SeqUtil.elems(getAllRepos());
+    for (Iterator iterator_19 = set_19.iterator(); iterator_19.hasNext(); ) {
+      Repository r = ((Repository) iterator_19.next());
+      Boolean andResult_4 = false;
 
       if (!(r.isRepoPrivate())) {
         if (VDMUtils.isSubstring(r.name, query).longValue() >= 0L) {
-          andResult_9 = true;
+          andResult_4 = true;
         }
       }
 
-      if (andResult_9) {
+      if (andResult_4) {
         setCompResult_9.add(r);
       }
     }
@@ -149,9 +149,9 @@ public class Github {
   public VDMSet searchAccounts(final String query) {
 
     VDMSet setCompResult_10 = SetUtil.set();
-    VDMSet set_18 = MapUtil.dom(Utils.copy(accounts));
-    for (Iterator iterator_18 = set_18.iterator(); iterator_18.hasNext(); ) {
-      String acc = ((String) iterator_18.next());
+    VDMSet set_21 = MapUtil.dom(Utils.copy(accounts));
+    for (Iterator iterator_21 = set_21.iterator(); iterator_21.hasNext(); ) {
+      String acc = ((String) iterator_21.next());
       if (VDMUtils.isSubstring(acc, query).longValue() >= 0L) {
         setCompResult_10.add(((Account) Utils.get(accounts, acc)));
       }

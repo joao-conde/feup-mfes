@@ -61,6 +61,11 @@ public class Repository {
     }
   }
 
+  public void delBranch(final User usr, final String n) {
+
+    branches = MapUtil.domResBy(SetUtil.set(n), Utils.copy(branches));
+  }
+
   public void commit(final User usr, final String branchName, final String hash, final Date date) {
 
     ((Branch) Utils.get(branches, branchName)).commit(new Commit(hash, usr, date));
@@ -69,6 +74,15 @@ public class Repository {
   public void addCollaborator(final User usr) {
 
     collaborators = SetUtil.union(Utils.copy(collaborators), SetUtil.set(usr));
+  }
+
+  public void mergeBranches(
+      final User usr, final String dest, final String src, final Boolean delete) {
+
+    ((Branch) Utils.get(branches, dest)).mergeBranch(((Branch) Utils.get(branches, src)));
+    if (delete) {
+      delBranch(usr, src);
+    }
   }
 
   public Branch getDefaultBranch() {

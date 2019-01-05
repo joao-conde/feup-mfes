@@ -45,8 +45,8 @@ public class User extends Account {
 
   public void clearFollowing() {
 
-    for (Iterator iterator_23 = following.iterator(); iterator_23.hasNext(); ) {
-      User us = (User) iterator_23.next();
+    for (Iterator iterator_28 = following.iterator(); iterator_28.hasNext(); ) {
+      User us = (User) iterator_28.next();
       unfollow(us);
     }
   }

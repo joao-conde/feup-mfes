@@ -62,8 +62,21 @@ public class Date {
     public Date date;
 
     public x(final Date _date) {
-
+ 
       date = _date != null ? _date : null;
+    }
+    
+    public boolean after(final x x) {
+    	long year1 = (long) date.year, month1 = (long) date.month, day1 = (long) date.day;
+    	long year2 = (long) x.date.year, month2 = (long) x.date.month, day2 = (long) x.date.day;
+    	
+    	if(year1 > year2) return true;
+    	
+    	if(year1 == year2 && month1 > month2) return true;
+    	
+    	if(year1 == year2 && month1 == month2 && day1 > day2) return true;
+    	
+    	return false;    	
     }
 
     public boolean equals(final Object obj) {

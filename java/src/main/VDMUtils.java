@@ -11,9 +11,9 @@ public class VDMUtils {
       return -1L;
     }
 
-    long toVar_3 = s.length() - sub.length() + 1L;
+    long toVar_5 = s.length() - sub.length() + 1L;
 
-    for (Long i = 1L; i <= toVar_3; i++) {
+    for (Long i = 1L; i <= toVar_5; i++) {
       if (Utils.equals(SeqUtil.subSeq(s, i, i.longValue() + sub.length() - 1L), sub)) {
         return i;
       }
