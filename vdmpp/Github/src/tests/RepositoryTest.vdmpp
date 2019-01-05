@@ -3,6 +3,7 @@ class RepositoryTest
 instance variables
 	o : Account := new Organization("feup");
 	r : Repository := new Repository("mfes", o, true);
+	u : User := new User("contributtor");
 
 operations
 	private testConstructor: () ==> ()
@@ -13,7 +14,7 @@ operations
 			TestUtils`assertTrue(card repo.collaborators = 0);
 		);
 		
-		let usr = new User("usr"), repo = new Repository("test2", usr, false) in (
+		let repo = new Repository("test2", u, false) in (
 			TestUtils`assertTrue(card repo.collaborators = 1);
 		);
 		
@@ -33,12 +34,12 @@ operations
 	
 	private testAddCollaborator: () ==> ()
 	testAddCollaborator() == (
-		let u1 = new User("one"), u2 = new User("two") in (
-			r.addCollaborator(u1);
-			TestUtils`assertTrue(r.collaborators = {u1});
+		let u2 = new User("two") in (
+			r.addCollaborator(u);
+			TestUtils`assertTrue(r.collaborators = {u});
 			
 			r.addCollaborator(u2);
-			TestUtils`assertTrue(r.collaborators = {u1, u2});
+			TestUtils`assertTrue(r.collaborators = {u, u2});
 		);
 	);
 	
@@ -79,6 +80,7 @@ operations
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 			r.commit(usr, r.getDefaultBranch().name, "hash2131434", new Date(2018, 12, 30, 22, 19));
 			r.commit(usr, r.getDefaultBranch().name, "hash2123123", new Date(2018, 12, 30, 22, 20));
+			r.commit(usr, "master", "hash2123199", new Date(2019, 01, 11, 14, 34));
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 2);
 			
 			-- Can also contribute to public repositories
@@ -91,7 +93,7 @@ operations
 	testCommitHistory() == (
 		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 2);
 		r.setDefaultBranch("master");
-		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
+		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 	);
 	
 	private testSetPrivacy: () ==> ()
@@ -113,7 +115,28 @@ operations
 		
 	private testMergeBranches: () ==> ()
 	testMergeBranches() == (
+		TestUtils`assertTrue(card dom r.branches = 2);
+		let c1 = r.branches("develop").getCommits(),
+		c2 = r.getDefaultBranch().getCommits() in (
+			TestUtils`assertTrue(len c1 = 2);
+			TestUtils`assertTrue(len c2 = 1);
+			r.mergeBranches(u, "master", "develop", false);
+			let mc = r.getDefaultBranch().getCommits() in (
+				TestUtils`assertTrue(forall c in set elems c1 & c in set elems mc);
+				TestUtils`assertTrue(forall c in set elems c2 & c in set elems mc);
+				TestUtils`assertTrue(len c1 + len c2 = len mc);
+				TestUtils`assertTrue(len mc = 3);
+			);
+		);
+		TestUtils`assertTrue(card dom r.branches = 2);
+			
+		let branch = r.createBranch("feature", true) in (
+			TestUtils`assertTrue(card dom r.branches = 3);
+			TestUtils`assertTrue(branch in set rng r.branches);
+			r.mergeBranches(u, "develop", "feature", true); --Branch is deleted on merge
 			TestUtils`assertTrue(card dom r.branches = 2);
+			TestUtils`assertTrue(branch not in set rng r.branches);
+		);
 	);
 	
 	public static main: () ==> ()
@@ -129,6 +152,7 @@ operations
 			rt.testCommit();
 			rt.testCommitHistory();
 			rt.testSetPrivacy();
+			rt.testMergeBranches();
 		);
 	);
 

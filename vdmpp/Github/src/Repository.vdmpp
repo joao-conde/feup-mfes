@@ -76,8 +76,7 @@ operations
 	mergeBranches(usr, dest, src, delete) == (
 		branches(dest).mergeBranch(branches(src));
 		if delete then
-			let newDomain : set of VDMUtils`String = dom branches \ {src} in
-				branches := newDomain <-: branches;
+				branches := {src} <-: branches;
 	)
 	pre (usr = owner or usr in set collaborators) and
 		branches(dest) in set rng branches and

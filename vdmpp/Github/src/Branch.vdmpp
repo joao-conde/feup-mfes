@@ -34,7 +34,7 @@ operations
 		dcl sorted_commits: seq of Commit := all_commits;
 		for i = len all_commits to 1 by -1 do
 			for j = 1 to i-1 do
-				if mk_Date`DateComparable(sorted_commits(j).timestamp) < mk_Date`DateComparable(sorted_commits(j+1).timestamp)
+				if mk_Date`DateComparable(sorted_commits(j).timestamp) >= mk_Date`DateComparable(sorted_commits(j+1).timestamp)
 					then (dcl temp: Commit := sorted_commits(j);
 						sorted_commits(j) := sorted_commits(j+1);
 						sorted_commits(j+1) := temp
