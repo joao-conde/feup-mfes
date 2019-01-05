@@ -23,16 +23,20 @@ public class CLI {
 
 	public void populateDB() {
 		this.gh = new Github();
-		gh.addAccount(new User("joao-conde"));
-		gh.addAccount(new User("andre"));
-		gh.addAccount(new User("edgar"));
+		User jc = new User("jc"), andre = new User("andre"), ed = new User("ed");
+		gh.addAccount(jc);
+		gh.addAccount(andre);
+		gh.addAccount(ed);
 		
-		((User) (gh.searchAccounts("joao-conde").iterator().next())).newRepository("why-python-rocks", false);
-		((User) (gh.searchAccounts("andre").iterator().next())).newRepository("feup-mfes", false);
-		((User) (gh.searchAccounts("edgar").iterator().next())).newRepository("frontend-shenanigans", true);
+		jc.follow(andre);
+		ed.follow(andre);
+		andre.follow(ed);
+		
+		jc.newRepository("why-python-rocks", false);
+		andre.newRepository("feup-mfes", false);
+		ed.newRepository("frontend-shenanigans", true);
 
-		((User) (gh.searchAccounts("andre").iterator().next()))
-				.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
+		andre.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
 		
 		((Repository)gh.searchRepos("feup-mfes").iterator().next()).addTag(new Tag("tag1"));
 		((Repository)gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag1"));
@@ -330,8 +334,7 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void viewFollowing() {
-		//TODO fix, after following someone this set is still empty
-		VDMSet following = this.user.getFollowers();
+		VDMSet following = this.user.getFollowing();
 
 		if(following.isEmpty()) {
 			System.out.println("Not following anyone");
@@ -339,7 +342,7 @@ public class CLI {
 		}
 		
 		int i = 1;
-		Iterator<User> ite = this.user.getFollowers().iterator();
+		Iterator<User> ite = following.iterator();
 		System.out.println("I follow:");
 		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next().username);
@@ -357,7 +360,7 @@ public class CLI {
 		}
 		
 		int i = 1;
-		Iterator<User> ite = this.user.getFollowers().iterator();
+		Iterator<User> ite = followers.iterator();
 		System.out.println("My followers:");
 		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next().username);
@@ -419,9 +422,14 @@ public class CLI {
 		if (!isPrivate.equals("y") && !isPrivate.equals("n"))
 			System.out.println("Invalid private setting");
 		else {
-			System.out.println("Repository " + reposName + " successfully created");
+			System.out.println("Repository " + reposName + " successfully created as " + (isPrivate.equals("y") ? "private" : "public"));
 			this.user.newRepository(reposName, (isPrivate.equals("y")));
 		}
+	}
+	
+	
+	private void exit() {
+		this.state = CLIState.EXIT;
 	}
 
 	private String readNonEmptyString(String promptMsg) {
