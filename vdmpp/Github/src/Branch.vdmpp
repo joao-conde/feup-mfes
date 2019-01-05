@@ -30,7 +30,7 @@ operations
 	-- Sort is done using bubblesort
 	public mergeBranch: Branch ==> ()
 	mergeBranch(branch) == (
-		dcl all_commits: seq of Commit := commits ^ branch.getCommits();
+		dcl all_commits: seq of Commit := commits ^ [c | c in seq branch.getCommits() & (forall co in seq commits & co.hash <> c.hash)];
 		dcl sorted_commits: seq of Commit := all_commits;
 		for i = len all_commits to 1 by -1 do
 			for j = 1 to i-1 do
