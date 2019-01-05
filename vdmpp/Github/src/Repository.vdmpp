@@ -60,6 +60,12 @@ operations
 	pre n not in set dom branches
 	post let b = branches(n) in b.name = n and b.isProtected = prot;
 	
+	public delBranch: User * VDMUtils`String ==> ()
+	delBranch(usr, n) ==	branches := {n} <-: branches
+	pre (usr = owner or usr in set collaborators) and
+		n <> defaultBranch.name and n in set dom branches --Can not delete default branch
+	post n not in set dom branches;
+	
 	public commit: User * VDMUtils`String * VDMUtils`String * Date ==> ()
 	commit(usr, branchName, hash, date) == (
 		branches(branchName).commit(new Commit(hash, usr, date));
@@ -75,8 +81,7 @@ operations
 	public mergeBranches: User * VDMUtils`String * VDMUtils`String * bool ==> ()
 	mergeBranches(usr, dest, src, delete) == (
 		branches(dest).mergeBranch(branches(src));
-		if delete then
-				branches := {src} <-: branches;
+		if delete then delBranch(usr, src);
 	)
 	pre (usr = owner or usr in set collaborators) and
 		branches(dest) in set rng branches and

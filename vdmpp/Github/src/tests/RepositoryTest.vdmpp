@@ -139,6 +139,17 @@ operations
 		);
 	);
 	
+	private testDeleteBranch: () ==> ()
+	testDeleteBranch() == (
+		let branch = r.createBranch("other-feature", true) in (
+			TestUtils`assertTrue(card dom r.branches = 3);
+			TestUtils`assertTrue(branch in set rng r.branches);
+			r.delBranch(u, "other-feature");
+			TestUtils`assertTrue(card dom r.branches = 2);
+			TestUtils`assertTrue(branch not in set rng r.branches);
+		);
+	);
+	
 	public static main: () ==> ()
 	main() == (
 		let rt = new RepositoryTest() in (
@@ -153,6 +164,7 @@ operations
 			rt.testCommitHistory();
 			rt.testSetPrivacy();
 			rt.testMergeBranches();
+			rt.testDeleteBranch();
 		);
 	);
 
