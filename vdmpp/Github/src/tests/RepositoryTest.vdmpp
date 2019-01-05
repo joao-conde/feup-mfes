@@ -102,7 +102,7 @@ operations
 	);
 	
 	private testAddRelease: () ==> ()
-		testAddRelease() ==
+	testAddRelease() ==
 		(
 			TestUtils`assertTrue(r.numReleases() = 0);
 			r.addRelease(new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
@@ -110,6 +110,11 @@ operations
 			r.addRelease(new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
 			TestUtils`assertTrue(r.numReleases() = 2);
 		);
+		
+	private testMergeBranches: () ==> ()
+	testMergeBranches() == (
+			TestUtils`assertTrue(card dom r.branches = 2);
+	);
 	
 	public static main: () ==> ()
 	main() == (
