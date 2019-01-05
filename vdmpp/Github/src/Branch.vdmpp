@@ -25,8 +25,25 @@ operations
 	)
 	pre c not in set elems commits
 	post c in set elems commits;
-	
-	public getCommits: () ==> seq of Commit
-	getCommits() == return commits;
 
+	-- Merges branches by adding selected branch commits to this branches commits and sorting them by Date
+	-- Sort is done using bubblesort
+	public mergeBranch: Branch ==> ()
+	mergeBranch(branch) == (
+		dcl all_commits: seq of Commit := commits ^ branch.getCommits();
+		dcl sorted_commits: seq of Commit := all_commits;
+		for i = len all_commits to 1 by -1 do
+			for j = 1 to i-1 do
+				if mk_Date`DateComparable(sorted_commits(j).timestamp) < mk_Date`DateComparable(sorted_commits(j+1).timestamp)
+					then (dcl temp: Commit := sorted_commits(j);
+						sorted_commits(j) := sorted_commits(j+1);
+						sorted_commits(j+1) := temp
+		);
+		commits := sorted_commits;
+	)
+	post forall c in set elems branch.getCommits() & c in set elems commits; -- Commits ordered is assured by invariant
+
+	public pure getCommits: () ==> seq of Commit
+	getCommits() == return commits;
+	
 end Branch
