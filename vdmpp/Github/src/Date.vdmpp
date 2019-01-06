@@ -46,13 +46,13 @@ operations
 functions
 
 	/**
-	 * @return whether the given year is a leap year.
+	 * Whether the given year is a leap year.
 	 */
 	public static isLeapYear(y: nat1) res: bool == y mod 4 = 0
 	pre y >= startYear;
 
 	/**
-	 * @return the number of days in the given month.
+	 * The number of days in the given month.
 	 */
 	public static daysOfMonth(y, m: nat1) res : nat == (
 		cases m :

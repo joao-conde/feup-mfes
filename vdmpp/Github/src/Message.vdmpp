@@ -8,6 +8,10 @@ instance variables
 	public author: User;
 
 operations
+
+	/**
+	 * Constructor for a Message instance.
+	 */
 	public Message:  VDMUtils`String * VDMUtils`String * User * Date ==> Message
 	Message(msgID, cont, auth, date) == (
 		id := msgID;
