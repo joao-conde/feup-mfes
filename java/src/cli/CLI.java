@@ -1,5 +1,6 @@
 package cli;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -149,6 +150,10 @@ public class CLI {
 		System.out.println("18 - Search for users or organizations");
 		System.out.println("19 - View my organizations");
 		System.out.println("20 - Add member to one of my organizations");
+		System.out.println("21 - set repos default branch");
+		System.out.println("22 - set repos description");
+		System.out.println("23 - Repos i can contribute to");
+		System.out.println("24 - changeRepositoryPrivacySetting");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -160,7 +165,7 @@ public class CLI {
 			viewTopRepos();
 			break;
 		case 3:
-			viewReposByTags();
+			viewReposByTags(); // TODO fix exception thrown bug
 			break;
 		case 4:
 			viewReposStargazers();
@@ -213,11 +218,92 @@ public class CLI {
 		case 20:
 			addMemberToOrg();
 			break;
-
+		case 21:
+			setReposDefaultBranch(); // TODO test
+			break;
+		case 22:
+			setReposDescription();
+			break;
+		case 23:
+			viewRepositoriesICanContributeTo();
+			break;
+		case 24:
+			changeRepositoryPrivacySetting();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
 
+	}
+
+	private void changeRepositoryPrivacySetting() {
+		System.out.println("Repositories able to edit");
+		viewRepositoriesICanContributeTo();
+		String repo = readNonEmptyString("Repository name: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+			r.setPrivacy(this.user, !r.isRepoPrivate());
+			System.out.println("Repository " + r.name + " set to " + (r.isRepoPrivate() ? "private" : "public"));
+		} else
+			System.out.println("Repository not found");
+	}
+
+	private void setReposDescription() {
+		System.out.println("Repositories able to edit");
+		viewRepositoriesICanContributeTo();
+		String repo = readNonEmptyString("Repository name: ");
+		String newDescript = readNonEmptyString("New description: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			((Repository) reposFound.iterator().next()).setDescription(this.user, newDescript);
+			System.out.println("Repository " + repo + " description successfully edited");
+		} else
+			System.out.println("Repository not found");
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setReposDefaultBranch() {
+		System.out.println("Repositories able to edit");
+		viewRepositoriesICanContributeTo();
+		String repo = readNonEmptyString("Repository name: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			Repository r = (Repository) reposFound.iterator().next();
+
+			if (r.branches.isEmpty()) {
+				System.out.println("No branches");
+				return;
+			}
+
+			System.out.println(r.name + " branches:");
+			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(r.branches)).iterator(); iter.hasNext();) {
+				printBranch(iter.next());
+			}
+
+			String newDefaultBranch = readNonEmptyString("Select default branch name: ");
+			r.setDefaultBranch(newDefaultBranch);
+			System.out.println("Branch " + newDefaultBranch + " set as new default branch for repository " + r.name);
+		} else
+			System.out.println("Repository not found");
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	private ArrayList<Repository> getReposICanContributeTo() {
+		ArrayList<Repository> myRepos = new ArrayList<Repository>();
+		VDMSeq repos = gh.getTopRepos();
+
+		Iterator<Repository> ite = repos.iterator();
+		while (ite.hasNext()) {
+			Repository r = ite.next();
+			if (r.collaborators.contains(this.user))
+				myRepos.add(r);
+		}
+
+		return myRepos;
 	}
 
 	@SuppressWarnings("unused")
@@ -302,14 +388,15 @@ public class CLI {
 	@SuppressWarnings("unchecked")
 	private void printRepository(Repository r) {
 		System.out.println("\n---Repository " + r.name + "---");
+		System.out.println("Owner: " + r.getOwner());
 		System.out.println("About: " + r.getDescription());
 		System.out.println("Privacy: " + (r.isRepoPrivate() ? "Private" : "Public"));
 		System.out.println("Default branch: " + r.getDefaultBranch().name);
 
 		VDMMap branches = r.branches;
 		if (!branches.isEmpty()) {
-			for (Object k : branches.keySet()) {
-				printBranch((Branch) branches.get(k));
+			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(branches)).iterator(); iter.hasNext();) {
+				printBranch(iter.next());
 			}
 		} else
 			System.out.println("No branches");
@@ -337,7 +424,7 @@ public class CLI {
 			}
 		} else
 			System.out.println("No collaborators");
-		
+
 		VDMSeq releases = r.releases;
 		if (!releases.isEmpty()) {
 			System.out.println("Releases:");
@@ -520,6 +607,7 @@ public class CLI {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void viewMyRepositories() {
 		VDMMap myRepos = this.user.repositories;
 		if (myRepos.isEmpty()) {
@@ -528,8 +616,20 @@ public class CLI {
 		}
 
 		System.out.println("My repositories:");
-		for (Object k : myRepos.keySet()) {
-			printRepository((Repository) myRepos.get(k));
+		for (Iterator<Repository> iter = MapUtil.rng(Utils.copy(myRepos)).iterator(); iter.hasNext();) {
+			printRepository(iter.next());
+		}
+	}
+
+	private void viewRepositoriesICanContributeTo() {
+		ArrayList<Repository> repos = getReposICanContributeTo();
+		if (repos.isEmpty()) {
+			System.out.println("No repositories");
+			return;
+		}
+
+		for (Repository r : repos) {
+			printRepository(r);
 		}
 	}
 

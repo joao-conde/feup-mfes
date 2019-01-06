@@ -5,7 +5,8 @@ import org.overture.codegen.runtime.*;
 
 @SuppressWarnings("all")
 public class Issue {
-  public String id;
+  private String id;
+  private Boolean isClosed = false;
   public String title;
   public String description;
   public VDMMap messages = MapUtil.map();
@@ -35,6 +36,16 @@ public class Issue {
     assignees = SetUtil.union(Utils.copy(assignees), SetUtil.set(user));
   }
 
+  public void close() {
+
+    isClosed = true;
+  }
+
+  public void reopen() {
+
+    isClosed = false;
+  }
+
   public Number numMessages() {
 
     return MapUtil.dom(Utils.copy(messages)).size();
@@ -45,6 +56,11 @@ public class Issue {
     return assignees.size();
   }
 
+  public Boolean isIssueClosed() {
+
+    return isClosed;
+  }
+
   public Issue() {}
 
   public String toString() {
@@ -52,6 +68,8 @@ public class Issue {
     return "Issue{"
         + "id := "
         + Utils.toString(id)
+        + ", isClosed := "
+        + Utils.toString(isClosed)
         + ", title := "
         + Utils.toString(title)
         + ", description := "

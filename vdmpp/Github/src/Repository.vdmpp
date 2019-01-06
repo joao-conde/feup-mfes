@@ -106,6 +106,9 @@ operations
 	public pure getDescription: () ==> VDMUtils`String
 	getDescription() == return description;
 	
+	public pure getOwner: () ==> VDMUtils`String
+	getOwner() == return owner.username;
+	
 	public pure numReleases: () ==> nat
 	numReleases() == return len releases;
 	

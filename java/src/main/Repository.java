@@ -14,6 +14,7 @@ public class Repository {
   public VDMSet collaborators = SetUtil.set();
   public VDMSeq releases = SeqUtil.seq();
   public VDMMap branches = MapUtil.map();
+  public VDMMap issues = MapUtil.map();
 
   public void cg_init_Repository_1(final String n, final Account acc, final Boolean priv) {
 
@@ -85,6 +86,11 @@ public class Repository {
     }
   }
 
+  public void addIssue(final Account acc, final Issue issue) {
+
+    Utils.mapSeqUpdate(issues, issue.title, issue);
+  }
+
   public Branch getDefaultBranch() {
 
     return defaultBranch;
@@ -93,6 +99,11 @@ public class Repository {
   public String getDescription() {
 
     return description;
+  }
+
+  public String getOwner() {
+
+    return owner.username;
   }
 
   public Number numReleases() {
@@ -143,6 +154,8 @@ public class Repository {
         + Utils.toString(releases)
         + ", branches := "
         + Utils.toString(branches)
+        + ", issues := "
+        + Utils.toString(issues)
         + "}";
   }
 }
