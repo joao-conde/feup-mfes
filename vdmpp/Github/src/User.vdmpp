@@ -27,6 +27,7 @@ operations
 	addFollower(follower) == (
 		followers := followers union {follower};
 	)
+	pre follower <> selfUser
 	post follower in set followers;
 	
 	/**
@@ -46,6 +47,7 @@ operations
 		following := following union {us};
 		us.addFollower(self);
 	)
+	pre us <> selfUser
 	post us in set self.following and
 				self in set us.followers;
 
