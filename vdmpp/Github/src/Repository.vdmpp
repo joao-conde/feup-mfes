@@ -12,12 +12,15 @@ instance variables
 	public collaborators: set of User := {};
 	public releases: seq of Release := [];
 	public branches: map VDMUtils`String to Branch := { |-> };
+	public issues: set of Issue := {};
 		
 	inv defaultBranch in set rng branches;
 	inv branches(defaultBranch.name) = defaultBranch;
 
 	inv forall i1, i2 in set inds releases & 
 		i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
+	
+	inv forall issue in set issues & (forall ass in set issue.assignees & ass in set collaborators);
 	
 operations
 	public Repository: VDMUtils`String * Account * bool ==> Repository
@@ -88,6 +91,11 @@ operations
 		branches(src) in set rng branches
 	post (if delete then src not in set dom branches else src in set dom branches) and
 		dest in set dom branches;
+		
+	public addIssue: Account * Issue ==> ()
+	addIssue(acc, issue) == issues := issues union {issue}
+	pre issue not in set issues and acc = owner
+	post issue in set issues;
 		
 	-- Getters
 	public pure getDefaultBranch: () ==> Branch
