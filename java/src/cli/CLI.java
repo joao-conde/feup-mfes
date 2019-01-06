@@ -39,9 +39,9 @@ public class CLI {
 
 		andre.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
 
-		((Repository) gh.searchRepos("feup-mfes").iterator().next()).addTag(new Tag("tag1"));
-		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag1"));
-		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag2"));
+		((Repository) gh.searchRepos("feup-mfes").iterator().next()).addTag(andre, new Tag("tag1"));
+		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag1"));
+		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag2"));
 
 	}
 
@@ -267,7 +267,7 @@ public class CLI {
 	@SuppressWarnings("unchecked")
 	private void setReposDefaultBranch() {
 		System.out.println("Repositories able to edit");
-		viewRepositoriesICanContributeTo();
+		viewMyRepositories();
 		String repo = readNonEmptyString("Repository name: ");
 
 		VDMSet reposFound = gh.searchRepos(repo);
@@ -285,7 +285,7 @@ public class CLI {
 			}
 
 			String newDefaultBranch = readNonEmptyString("Select default branch name: ");
-			r.setDefaultBranch(newDefaultBranch);
+			r.setDefaultBranch(this.user, newDefaultBranch);
 			System.out.println("Branch " + newDefaultBranch + " set as new default branch for repository " + r.name);
 		} else
 			System.out.println("Repository not found");
@@ -695,15 +695,15 @@ public class CLI {
 		}
 
 		String memberName = readNonEmptyString("\nWho to add (username): ");
-		String org = readNonEmptyString("\nWhere: ");
+		String orgName = readNonEmptyString("\nWhere: ");
 
 		try {
-			((Organization) gh.searchAccounts(org).iterator().next())
-					.addMember(((User) gh.searchAccounts(memberName).iterator().next()));
+			Organization org = ((Organization) gh.searchAccounts(orgName).iterator().next());
+			org.addMember(org, ((User) gh.searchAccounts(memberName).iterator().next()));
 		} catch (Exception e) {
 		}
 
-		System.out.println("Member " + memberName + " successfully added to " + org);
+		System.out.println("Member " + memberName + " successfully added to " + orgName);
 	}
 
 	private void exit() {

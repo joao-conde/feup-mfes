@@ -59,9 +59,7 @@ public class Branch {
 					Commit temp = ((Commit) Utils.get(sorted_commits, j));
 					Utils.mapSeqUpdate(sorted_commits, j, ((Commit) Utils.get(sorted_commits, j.longValue() + 1L)));
 					Utils.mapSeqUpdate(sorted_commits, j.longValue() + 1L, temp);
-
 				}
-
 			}
 		}
 		commits = Utils.copy(sorted_commits);

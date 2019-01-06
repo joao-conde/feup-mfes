@@ -41,12 +41,12 @@ public class Repository {
     cg_init_Repository_1(n, acc, priv);
   }
 
-  public void addRelease(final Release rel) {
+  public void addRelease(final Account acc, final Release rel) {
 
     releases = SeqUtil.conc(Utils.copy(releases), SeqUtil.seq(rel));
   }
 
-  public void addTag(final Tag tag) {
+  public void addTag(final Account acc, final Tag tag) {
 
     tags = SetUtil.union(Utils.copy(tags), SetUtil.set(tag));
   }
@@ -72,7 +72,7 @@ public class Repository {
     ((Branch) Utils.get(branches, branchName)).commit(new Commit(hash, usr, date));
   }
 
-  public void addCollaborator(final User usr) {
+  public void addCollaborator(final Account acc, final User usr) {
 
     collaborators = SetUtil.union(Utils.copy(collaborators), SetUtil.set(usr));
   }
@@ -116,7 +116,7 @@ public class Repository {
     return isPrivate;
   }
 
-  public void setDefaultBranch(final String bName) {
+  public void setDefaultBranch(final Account acc, final String bName) {
 
     defaultBranch = ((Branch) Utils.get(branches, bName));
   }

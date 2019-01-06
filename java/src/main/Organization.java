@@ -17,7 +17,7 @@ public class Organization extends Account {
     cg_init_Organization_1(un);
   }
 
-  public void addMember(final User u) {
+  public void addMember(final Organization org, final User u) {
 
     members = SetUtil.union(Utils.copy(members), SetUtil.set(u));
   }
