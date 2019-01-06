@@ -22,11 +22,21 @@ operations
 		TestUtils`assertTrue(issue.numAssignees() = 2);
 	);
 	
+	private testCloseReopen: () ==> ()
+	testCloseReopen() == (
+		TestUtils`assertFalse(issue.isIssueClosed());
+		issue.close();
+		TestUtils`assertTrue(issue.isIssueClosed());
+		issue.reopen();
+		TestUtils`assertFalse(issue.isIssueClosed());
+	);
+	
 	public static main: () ==> ()
 	main() ==	(
 		let i = new IssueTest() in (
 			i.testAddMessage();
 			i.testAsignUser();
+			i.testCloseReopen();
 		);
 	);
 

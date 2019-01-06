@@ -5,7 +5,8 @@ types
 	public Messages = map VDMUtils`String to Message;
 
 instance variables
-	public id: VDMUtils`String;
+	private id: VDMUtils`String;
+	private isClosed: bool := false;
 	public title: VDMUtils`String;
 	public description: VDMUtils`String;
 	
@@ -39,10 +40,23 @@ operations
 	pre not user in set assignees
 	post user in set assignees;
 	
-	public numMessages: () ==> nat
+	public close: () ==> ()
+	close() == isClosed := true
+	pre not isClosed
+	post isClosed;
+	
+	public reopen: () ==> ()
+	reopen() == isClosed := false
+	pre isClosed
+	post not isClosed;
+	
+	public pure numMessages: () ==> nat
 	numMessages() == return card dom messages;
 	
-	public numAssignees: () ==> nat
+	public pure numAssignees: () ==> nat
 	numAssignees() == return card assignees;
+	
+	public pure isIssueClosed: () ==> bool
+	isIssueClosed() == return isClosed;
 
 end Issue
