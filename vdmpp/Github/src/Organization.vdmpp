@@ -9,14 +9,14 @@ operations
 		Account(un);
 	);
 	
-	public addMember: User ==> ()
-	addMember(u) == (
+	public addMember: Organization * User ==> ()
+	addMember(org, u) == (
 		members := members union {u}
 	)
-	pre u.username not in set {us.username | us in set members}
+	pre u.username not in set {us.username | us in set members} and org = self 
 	post u in set members;
 	
-	public numMembers: () ==> nat
+	public pure numMembers: () ==> nat
 	numMembers() == return card members;
 
 end Organization
