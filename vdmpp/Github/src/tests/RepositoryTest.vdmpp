@@ -107,9 +107,10 @@ operations
 	testAddRelease() ==
 		(
 			TestUtils`assertTrue(r.numReleases() = 0);
+			TestUtils`assertTrue(o.username = r.getOwner());
 			r.addRelease(o, new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
 			TestUtils`assertTrue(r.numReleases() = 1);
-			r.addRelease(o, new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
+			r.addRelease(u, new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
 			TestUtils`assertTrue(r.numReleases() = 2);
 		);
 		
