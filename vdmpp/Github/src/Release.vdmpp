@@ -5,6 +5,10 @@ instance variables
 	public timestamp : Date;
 
 operations
+
+	/**
+	 * Constructor for a Release instance.
+	 */
 	public Release: VDMUtils`String * Date ==> Release
 	Release(n, date) == (
 		name := n;

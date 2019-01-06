@@ -4,11 +4,18 @@ instance variables
 	public members: set of User := {};
 
 operations
+
+	/**
+	 * Constructor for an Organization instance.
+	 */
 	public Organization: VDMUtils`String ==> Organization
 	Organization(un) == (
 		Account(un);
 	);
 	
+	/**
+	 * Add a member to this Organization.
+	 */
 	public addMember: Organization * User ==> ()
 	addMember(org, u) == (
 		members := members union {u}
@@ -16,6 +23,9 @@ operations
 	pre u.username not in set {us.username | us in set members} and org = self 
 	post u in set members;
 	
+	/**
+	 * Get the number of members of this Organization.
+	 */
 	public pure numMembers: () ==> nat
 	numMembers() == return card members;
 

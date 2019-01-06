@@ -15,6 +15,10 @@ instance variables
 	public assignees: set of User := {};
 
 operations
+
+	/**
+	 * Constructor for Issue instance.
+	 */
 	public Issue: VDMUtils`String * VDMUtils`String * VDMUtils`String ==> Issue
 	Issue(issueID, issueTitle, issueDesc) == (
 		id := issueID;
@@ -23,8 +27,10 @@ operations
 		return self;
 	)
 	post card dom messages = 0;
-	
-	--Add a message to this issue
+		
+	/**
+	 * Add a message to this Issue.
+	 */
 	public addMessage: Message ==> ()
 	addMessage(msg) == (
 		messages(msg.id) := msg;
@@ -32,7 +38,9 @@ operations
 	pre not msg.id in set dom messages
 	post messages(msg.id) = msg;
 	
-	--Assign a User to this issue
+	/**
+	 * Assign a User to this Issue.
+	 */
 	public assignUser: User ==> ()
 	assignUser(user) == (
 		assignees := assignees union {user};
@@ -40,22 +48,37 @@ operations
 	pre not user in set assignees
 	post user in set assignees;
 	
+	/**
+	 * Mark Issue as closed.
+	 */
 	public close: () ==> ()
 	close() == isClosed := true
 	pre not isClosed
 	post isClosed;
-	
+
+	/**
+	 * Reopen this Issue.
+	 */
 	public reopen: () ==> ()
 	reopen() == isClosed := false
 	pre isClosed
 	post not isClosed;
-	
+
+	/**
+	 * Get the number of messages on this Issue.
+	 */
 	public pure numMessages: () ==> nat
 	numMessages() == return card dom messages;
-	
+
+	/**
+	 * Get the number of Assignees of this Issue.
+	 */
 	public pure numAssignees: () ==> nat
 	numAssignees() == return card assignees;
-	
+
+	/**
+	 * Whether this Issue os closed.
+	 */
 	public pure isIssueClosed: () ==> bool
 	isIssueClosed() == return isClosed;
 
