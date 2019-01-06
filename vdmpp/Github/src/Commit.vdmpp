@@ -7,6 +7,10 @@ instance variables
 	public author: User;
 
 operations
+
+	/**
+	 * Constructor for a Commit instance.
+	 */
 	public Commit: VDMUtils`String * User * Date ==> Commit
 	Commit(str, u, d) == (
 		hash := str;

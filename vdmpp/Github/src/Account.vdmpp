@@ -7,18 +7,31 @@ instance variables
 	private description: VDMUtils`String := [];
 	
 operations
+
+	/**
+	 * Constructor for an Account instance.
+	 */
 	public Account: VDMUtils`String ==> Account
 	Account(un) == (
 		username := un;
 	);
 	
+	/**
+	 * Getter for this Account's description.
+	 */
 	public pure getDescription: () ==> VDMUtils`String
 	getDescription() == return description;
 	
+	/**
+	 * Setter for this Account's description.
+	 */
 	public setDescription: VDMUtils`String ==> ()
 	setDescription(desc) == description := desc
 	post description = desc;
 
+	/**
+	 * Create a new Repository associated with this Account.
+	 */
 	public newRepository: VDMUtils`String * bool ==> Repository
 	newRepository(name, isPriv) == (
 		let r = new Repository(name, self, isPriv) in (

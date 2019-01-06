@@ -6,10 +6,17 @@ instance variables
 
 	private commits: seq of Commit := []; -- Chronological order assured by invariant
 
+	/**
+	 * Commits must be chronologically ordered.
+	 */
 	inv forall i1, i2 in set inds commits & 
 		i1 < i2 => mk_Date`DateComparable(commits(i1).timestamp) < mk_Date`DateComparable(commits(i2).timestamp);
 	
 operations
+
+	/**
+	 * Constructor for a Branch instance.
+	 */
 	public Branch: VDMUtils`String * bool ==> Branch
 	Branch(n, prot) == (
 		name := n;
@@ -19,15 +26,20 @@ operations
 	pre n <> []
 	post name = n and isProtected = prot;
 	
+	/**
+	 * Add a new Commit to this Branch.
+	 */
 	public commit: Commit ==> ()
 	commit(c) == (
 		commits := commits ^ [c];
 	)
 	pre c not in set elems commits
 	post c in set elems commits;
-
-	-- Merges branches by adding selected branch commits to this branches commits and sorting them by Date
-	-- Sort is done using bubblesort
+	
+	/**
+	 * Merges another Branch into this Branch by adding non-repeated
+	 *  Branch Commits to this Branch's Commits and sorting them by Date.
+	 */
 	public mergeBranch: Branch ==> ()
 	mergeBranch(branch) == (
 		dcl all_commits: seq of Commit := commits ^ [c | c in seq branch.getCommits() & (forall co in seq commits & co.hash <> c.hash)];
@@ -43,6 +55,9 @@ operations
 	)
 	post forall c in set elems branch.getCommits() & c in set elems commits; -- Commits ordered is assured by invariant
 
+	/**
+	 * Getter for this Branch's Commits.
+	 */
 	public pure getCommits: () ==> seq of Commit
 	getCommits() == return commits;
 	
