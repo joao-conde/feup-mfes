@@ -43,15 +43,15 @@ operations
 		defaultBranch.name = "master" and card dom branches = 1;
 		
 	
-	public addRelease: Release ==> ()
-	addRelease(rel) == (
-		releases := releases ^ [rel];
-	)
-	pre rel.name not in set {r.name | r in seq releases} -- and rel.timestamp > releases[-1].timestamp
+	public addRelease: Account * Release ==> ()
+	addRelease(acc, rel) == releases := releases ^ [rel]
+	pre (if isofclass(User, acc) then narrow_(acc, User) in set collaborators else acc = owner) and
+		rel.name not in set {r.name | r in seq releases}
 	post releases(len releases) = rel;
 	
-	public addTag: Tag ==> ()
-	addTag(tag) == tags := tags union {tag}
+	public addTag: Account * Tag ==> ()
+	addTag(acc, tag) == tags := tags union {tag}
+	pre acc = owner
 	post tag in set tags;
 		
 	public createBranch: VDMUtils`String * bool ==> Branch
@@ -66,7 +66,7 @@ operations
 	
 	public delBranch: User * VDMUtils`String ==> ()
 	delBranch(usr, n) ==	branches := {n} <-: branches
-	pre (usr = owner or usr in set collaborators) and
+	pre usr in set collaborators and
 		n <> defaultBranch.name and n in set dom branches --Can not delete default branch
 	post n not in set dom branches;
 	
@@ -77,8 +77,9 @@ operations
 	pre (usr in set collaborators or not isPrivate) and
 		branchName in set dom branches;
 		
-	public addCollaborator: User ==> ()
-	addCollaborator(usr) == collaborators := collaborators union {usr}
+	public addCollaborator: Account * User ==> ()
+	addCollaborator(acc, usr) == collaborators := collaborators union {usr}
+	pre acc = owner
 	post usr in set collaborators;
 	
 	-- If delete is true, src shall be deleted after merge
@@ -116,9 +117,9 @@ operations
 	isRepoPrivate() == return isPrivate;
 	
 	-- Setters
-	public setDefaultBranch: VDMUtils`String ==> ()
-	setDefaultBranch(bName) == defaultBranch := branches(bName)
-	pre bName in set dom branches
+	public setDefaultBranch: Account * VDMUtils`String ==> ()
+	setDefaultBranch(acc, bName) == defaultBranch := branches(bName)
+	pre acc = owner and bName in set dom branches
 	post defaultBranch.name = bName;
 
 	public setDescription: Account * VDMUtils`String ==> ()

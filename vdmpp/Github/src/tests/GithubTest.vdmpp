@@ -28,9 +28,9 @@ operations
 	(
 		let r1 = gh.accounts(firstUsername).newRepository("MFES", false),
 				r2 = gh.accounts(secondUsername).newRepository("OVERTURE", false) in (
-			r1.addTag(tagFEUP);
-			r1.addTag(tagVDM);
-			r2.addTag(tagVDM);
+			r1.addTag(gh.accounts(firstUsername), tagFEUP);
+			r1.addTag(gh.accounts(firstUsername), tagVDM);
+			r2.addTag(gh.accounts(secondUsername), tagVDM);
 			
 			TestUtils`assertTrue(r2 not in set gh.getRepositoriesByTags({tagFEUP}));
 			TestUtils`assertTrue(r2 in set gh.getRepositoriesByTags({tagVDM}));

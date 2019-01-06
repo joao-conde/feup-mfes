@@ -6,9 +6,9 @@ operations
 	private testAddMember: () ==> ()
 	testAddMember() == (
 		TestUtils`assertTrue(org.numMembers() = 0);
-		org.addMember(new User("sample-username"));
+		org.addMember(org, new User("sample-username"));
 		TestUtils`assertTrue(org.numMembers() = 1);
-		org.addMember(new User("different-username"));
+		org.addMember(org, new User("different-username"));
 		TestUtils`assertTrue(org.numMembers() = 2);
 	);
 	

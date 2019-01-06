@@ -35,10 +35,10 @@ operations
 	private testAddCollaborator: () ==> ()
 	testAddCollaborator() == (
 		let u2 = new User("two") in (
-			r.addCollaborator(u);
+			r.addCollaborator(o, u);
 			TestUtils`assertTrue(r.collaborators = {u});
 			
-			r.addCollaborator(u2);
+			r.addCollaborator(o ,u2);
 			TestUtils`assertTrue(r.collaborators = {u, u2});
 		);
 	);
@@ -46,10 +46,10 @@ operations
 	private testAddTag: () ==> ()
 	testAddTag() == (
 		let tag1 = new Tag("AI"), tag2 = new Tag("WebDev") in (
-			r.addTag(tag1);
+			r.addTag(o, tag1);
 			TestUtils`assertTrue(r.tags = {tag1});
 			
-			r.addTag(tag2);
+			r.addTag(o, tag2);
 			TestUtils`assertTrue(r.tags = {tag1, tag2});
 		);
 	);
@@ -69,14 +69,14 @@ operations
 	private testSetDefaultBranch: () ==> ()
 	testSetDefaultBranch() == (
 		TestUtils`assertTrue(r.getDefaultBranch().name = "master");
-		r.setDefaultBranch("develop");
+		r.setDefaultBranch(o, "develop");
 		TestUtils`assertTrue(r.getDefaultBranch().name = "develop");
 	);
 	
 	private testCommit: () ==> ()
 	testCommit() == (
 		let usr = new User("contributor"), pub = new Repository("public", o, false) in (
-			r.addCollaborator(usr);
+			r.addCollaborator(o, usr);
 			TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 0);
 			r.commit(usr, r.getDefaultBranch().name, "hash2131434", new Date(2018, 12, 30, 22, 19));
 			r.commit(usr, r.getDefaultBranch().name, "hash2123123", new Date(2018, 12, 30, 22, 20));
@@ -92,7 +92,7 @@ operations
 	private testCommitHistory: () ==> ()
 	testCommitHistory() == (
 		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 2);
-		r.setDefaultBranch("master");
+		r.setDefaultBranch(o, "master");
 		TestUtils`assertTrue(len r.getDefaultBranch().getCommits() = 1);
 	);
 	
@@ -107,9 +107,9 @@ operations
 	testAddRelease() ==
 		(
 			TestUtils`assertTrue(r.numReleases() = 0);
-			r.addRelease(new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
+			r.addRelease(o, new Release("v1.1", new Date(2018, 12, 30, 22, 28)));
 			TestUtils`assertTrue(r.numReleases() = 1);
-			r.addRelease(new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
+			r.addRelease(o, new Release("v1.2", new Date(2018, 12, 30, 22, 29)));
 			TestUtils`assertTrue(r.numReleases() = 2);
 		);
 		

@@ -62,10 +62,10 @@ operations
 	post repo not in set stars;
 	
 	-- Getters
-	public getFollowing: () ==> set of User
+	public pure getFollowing: () ==> set of User
 	getFollowing() == return following;
 	
-	public getFollowers: () ==> set of User
+	public pure getFollowers: () ==> set of User
 	getFollowers() == return followers;
 	
 	public pure getStars: () ==> set of Repository

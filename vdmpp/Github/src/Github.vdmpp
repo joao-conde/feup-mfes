@@ -19,10 +19,10 @@ operations
 	pre acc.username not in set dom accounts
 	post accounts(acc.username) = acc;
 
-	public numAccounts: () ==> nat
+	public pure numAccounts: () ==> nat
 	numAccounts() == (return card dom accounts);
 	
-	public getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
+	public pure getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
 	getRepositoriesByTags(tags) ==
 		return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
 	pre tags <> {};
@@ -51,7 +51,7 @@ operations
 		card dunion { rng acc.repositories | acc in set rng accounts } = len RESULT;
 
 	-- Orders Repositories by number of stars using a bubble-sort like algorithm
-	public getTopRepos: () ==> seq of Repository
+	public pure getTopRepos: () ==> seq of Repository
 	getTopRepos() == (
 		dcl l: seq of Repository := [r | r in seq getAllRepos() & not r.isRepoPrivate()];
 		dcl sorted_list: seq of Repository := l;
@@ -66,12 +66,12 @@ operations
 	)
 	post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
 
-	public searchRepos: VDMUtils`String ==> set of Repository
+	public pure searchRepos: VDMUtils`String ==> set of Repository
 	searchRepos(query) ==
 		return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and VDMUtils`isSubstring(r.name, query) >= 0}
 	post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if VDMUtils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
-	public searchAccounts: VDMUtils`String ==> set of Account
+	public pure searchAccounts: VDMUtils`String ==> set of Account
 	searchAccounts(query) ==
 		return {accounts(acc) | acc in set dom accounts & VDMUtils`isSubstring(acc, query) >= 0}
 	post forall acc in set dom accounts & if VDMUtils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
