@@ -152,13 +152,18 @@ public class CLI {
 		System.out.println("20 - Add member to one of my organizations");
 		System.out.println("21 - set repos default branch");
 		System.out.println("22 - set repos description");
-		// System.out.println("23 - Repos i can contribute to");
+		System.out.println("23 - Repos i can contribute to");
 		System.out.println("24 - changeRepositoryPrivacySetting");
 		System.out.println("25 - addTagToRepository");
 		System.out.println("26 - addReleaseToRepository");
 		System.out.println("27 - commit");
 		System.out.println("28 - addCollaborator");
 		System.out.println("29 - createBranch");
+		System.out.println("30 - deleteBranch");
+		System.out.println("31 - mergeBranch");
+		System.out.println("32 - addIssue");
+		System.out.println("33 - addMessageToIssue");
+		System.out.println("34 - assignUserToIssue");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -224,15 +229,14 @@ public class CLI {
 			addMemberToOrg();
 			break;
 		case 21:
-			setReposDefaultBranch(); // TODO test
+			setReposDefaultBranch(); // TODO test with commit
 			break;
 		case 22:
 			setReposDescription();
 			break;
-		/*
-		 * case 23: viewRepositoriesICanContributeTo(); //TODO necessary since the
-		 * update on only owner can change repo? maybe for commits? break;
-		 */
+		case 23:
+			viewRepositoriesICanContributeTo();
+			break;
 		case 24:
 			changeRepositoryPrivacySetting();
 			break;
@@ -251,9 +255,176 @@ public class CLI {
 		case 29:
 			createBranch();
 			break;
+		case 30:
+			deleteBranch();
+			break;
+		case 31:
+			mergeBranch();
+			break;
+		case 32:
+			addIssue();
+			break;
+		case 33:
+			addMessageToIssue();
+			break;
+		case 34:
+			assignUserToIssue();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
+
+	}
+
+	private void assignUserToIssue() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+
+			VDMMap issues = r.issues;
+			if (!issues.isEmpty()) {
+				System.out.println("Issues:");
+				for (Iterator<Issue> iter = MapUtil.rng(Utils.copy(issues)).iterator(); iter.hasNext();) {
+					printIssue(iter.next());
+				}
+			} else {
+				System.out.println("No issues exist yet");
+				return;
+			}
+
+			String issueTitle = readNonEmptyString("Add message to issue: ");
+
+			if (issues.get(issueTitle) == null)
+				System.out.println("No issue with that title");
+			
+			
+			VDMSet accs = gh.searchAccounts(readNonEmptyString("Assign to user: "));
+			if(!accs.isEmpty()) {
+				User u = ((User)accs.iterator().next());
+				((Issue) issues.get(issueTitle)).assignUser(u);
+				System.out.println("User " + u.username + " assigned to issue " + issueTitle);
+			}
+			else{
+				System.out.println("No user found");
+				return;
+			}
+				
+		} else
+			System.out.println("Repository not found");
+		
+	}
+
+	private void addMessageToIssue() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+
+			VDMMap issues = r.issues;
+			if (!issues.isEmpty()) {
+				System.out.println("Issues:");
+				for (Iterator<Issue> iter = MapUtil.rng(Utils.copy(issues)).iterator(); iter.hasNext();) {
+					printIssue(iter.next());
+				}
+			} else {
+				System.out.println("No issues exist yet");
+				return;
+			}
+
+			String issueTitle = readNonEmptyString("Add message to issue: ");
+
+			if (issues.get(issueTitle) == null)
+				System.out.println("No issue with that title");
+
+			String msgID = readNonEmptyString("New msg ID: ");
+			String msgContent = readNonEmptyString("New msg content: ");
+			Integer msgYear = Integer.parseInt(readNonEmptyString("Message year: "));
+			Integer msgMonth = Integer.parseInt(readNonEmptyString("Message month: "));
+			Integer msgDay = Integer.parseInt(readNonEmptyString("Message day: "));
+			Integer msgHour = Integer.parseInt(readNonEmptyString("Message hour: "));
+			Integer msgMinute = Integer.parseInt(readNonEmptyString("Message minute: "));
+			Date issueDate = new Date(msgYear, msgMonth, msgDay, msgHour, msgMinute);
+
+			((Issue) issues.get(issueTitle)).addMessage(new Message(msgID, msgContent, this.user, issueDate));
+
+			System.out.println("New message added to repository " + r.name);
+		} else
+			System.out.println("Repository not found");
+
+	}
+
+	private void addIssue() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+			String issueID = readNonEmptyString("New issue ID: ");
+			String issueTitle = readNonEmptyString("New issue title: ");
+			String issueDesc = readNonEmptyString("New issue description: ");
+
+			r.addIssue(this.user, new Issue(issueID, issueTitle, issueDesc));
+			System.out.println(issueTitle + " added to repository " + r.name);
+		} else
+			System.out.println("Repository not found");
+	}
+
+	private void mergeBranch() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+
+			VDMMap branches = r.branches;
+			if (branches.size() >= 2) {
+				System.out.println("Branches able to merge:");
+				for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(branches)).iterator(); iter.hasNext();) {
+					printBranch(iter.next());
+				}
+			} else {
+				System.out.println("Requires at least 2 branches to perform merge");
+				return;
+			}
+			String srcBranchName = readNonEmptyString("Source branch name: ");
+			String dstBranchName = readNonEmptyString("Destiny branch name: ");
+
+			boolean deleteSrc = readNonEmptyString("Delete " + srcBranchName + " (y/n)? ").toLowerCase().equals("y");
+
+			r.mergeBranches(this.user, dstBranchName, srcBranchName, deleteSrc);
+			System.out.println(srcBranchName + " merged into " + dstBranchName);
+			if (deleteSrc)
+				System.out.println(srcBranchName + " deleted");
+
+		} else
+			System.out.println("Repository not found");
+	}
+
+	private void deleteBranch() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+
+			VDMMap branches = r.branches;
+			if (!branches.isEmpty()) {
+				System.out.println("Branches able to delete:");
+				for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(branches)).iterator(); iter.hasNext();) {
+					printBranch(iter.next());
+				}
+			} else {
+				System.out.println("No branches");
+				return;
+			}
+			String branchName = readNonEmptyString("Branch name: ");
+			r.delBranch(this.user, branchName);
+			System.out.println(branchName + " deleted from repository " + r.name);
+		} else
+			System.out.println("Repository not found");
 
 	}
 
@@ -263,12 +434,14 @@ public class CLI {
 
 		if (!reposFound.isEmpty()) {
 			Repository r = ((Repository) reposFound.iterator().next());
-			
+
 			String branchName = readNonEmptyString("New branch name: ");
-			boolean isProtected = readNonEmptyString("Protected branch? (y/n) ").toLowerCase().equals("y");;
-						
+			boolean isProtected = readNonEmptyString("Protected branch? (y/n) ").toLowerCase().equals("y");
+			;
+
 			r.createBranch(branchName, isProtected);
-			System.out.println(branchName + " created for repository " + r.name + " as " + (isProtected ? "protected" : "not protected"));
+			System.out.println(branchName + " created for repository " + r.name + " as "
+					+ (isProtected ? "protected" : "not protected"));
 		} else
 			System.out.println("Repository not found");
 	}
@@ -309,6 +482,8 @@ public class CLI {
 			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(r.branches)).iterator(); iter.hasNext();) {
 				printBranch(iter.next());
 			}
+
+			System.out.println("Default branch is " + r.getDefaultBranch().name);
 
 			String branch = readNonEmptyString("Branch to commit to: ");
 
@@ -525,6 +700,7 @@ public class CLI {
 
 		VDMMap branches = r.branches;
 		if (!branches.isEmpty()) {
+			System.out.println("Branches:");
 			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(branches)).iterator(); iter.hasNext();) {
 				printBranch(iter.next());
 			}
@@ -567,8 +743,49 @@ public class CLI {
 			}
 		} else
 			System.out.println("No releases yet");
+
+		VDMMap issues = r.issues;
+		if (!issues.isEmpty()) {
+			System.out.println("Issues:");
+			for (Iterator<Issue> iter = MapUtil.rng(Utils.copy(issues)).iterator(); iter.hasNext();) {
+				printIssue(iter.next());
+			}
+		} else
+			System.out.println("No issues yet");
 	}
 
+	private void printIssue(Issue issue) {
+		System.out.println("Issue " + issue.title);
+		System.out.println("About: " + issue.description);
+
+		VDMSet assignees = issue.assignees;
+		if (!assignees.isEmpty()) {
+			Iterator<User> ite = assignees.iterator();
+			int a = 1;
+			System.out.println("\tAssigned to:");
+			while (ite.hasNext()) {
+				User u = ite.next();
+				System.out.println(a + ". " + u.username);
+				a++;
+			}
+		} else
+			System.out.println("No assigned users yet");
+
+		VDMMap messages = issue.messages;
+		if (!messages.isEmpty()) {
+			System.out.println("Messages:");
+			for (Iterator<Message> iter = MapUtil.rng(Utils.copy(messages)).iterator(); iter.hasNext();) {
+				printMessage(iter.next());
+			}
+		} else
+			System.out.println("No messages");
+	}
+
+	private void printMessage(Message msg) {
+		System.out.println("Message " + msg.id + " by " + msg.author.username + " at " + msg.timestamp);
+		System.out.println(msg.author.username + " said: '" + msg.content + "'");
+	}
+	
 	private void printBranch(Branch branch) {
 		System.out.println("\tBranch: " + branch.name);
 		System.out.println("Protected: " + (branch.isProtected ? "yes" : "no"));
