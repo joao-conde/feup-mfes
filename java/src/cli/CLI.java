@@ -27,21 +27,21 @@ public class CLI {
 		gh.addAccount(jc);
 		gh.addAccount(andre);
 		gh.addAccount(ed);
-		
+
 		jc.follow(andre);
 		ed.follow(andre);
 		andre.follow(ed);
-		
+
 		jc.newRepository("why-python-rocks", false);
 		andre.newRepository("feup-mfes", false);
 		ed.newRepository("frontend-shenanigans", true);
 
 		andre.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
-		
-		((Repository)gh.searchRepos("feup-mfes").iterator().next()).addTag(new Tag("tag1"));
-		((Repository)gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag1"));
-		((Repository)gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag2"));
-		
+
+		((Repository) gh.searchRepos("feup-mfes").iterator().next()).addTag(new Tag("tag1"));
+		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag1"));
+		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(new Tag("tag2"));
+
 	}
 
 	public void run() {
@@ -123,7 +123,7 @@ public class CLI {
 	private void loggedInMenu() {
 		displayLoggedBanner();
 		displayLoggedInMenuOpts();
-		int opt = readUserInputOpt(1, 15); // TODO change to options
+		int opt = readUserInputOpt(1, 100); // TODO change to options
 		if (opt != -1)
 			processLoggedInMenuOpt(opt);
 	}
@@ -142,10 +142,15 @@ public class CLI {
 		System.out.println("11 - Star a repository");
 		System.out.println("12 - Unstar a repository");
 		System.out.println("13 - Create Repository");
+		System.out.println("14 - My Repositories");
+		System.out.println("15 - View my bio");
+		System.out.println("16 - Edit my bio");
+		System.out.println("17 - Create Organization");
+		System.out.println("18 - Search for users or organizations");
+		System.out.println("19 - View my organizations");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
-
 		switch (opt) {
 		case 1:
 			signOut();
@@ -186,6 +191,30 @@ public class CLI {
 		case 13:
 			createRepos();
 			break;
+		case 14:
+			viewMyRepositories();
+			break;
+		case 15:
+			viewMyBio();
+			break;
+		case 16:
+			editMyBio();
+			break;
+		case 17:
+			createOrganization();
+			break;
+		case 18:
+			searchForAccounts();
+			break;
+		case 19:
+			viewMyOrgs();
+			break;
+		case 20:
+			addMemberToOrg();
+			break;
+		/*
+		 * case 21: viewRepository(); break;
+		 */
 		default:
 			System.out.println("Invalid option");
 		}
@@ -230,14 +259,11 @@ public class CLI {
 	@SuppressWarnings("unchecked")
 	private void viewTopRepos() {
 		VDMSeq repos = gh.getTopRepos();
-		if (repos.size() != 0) {
+		if (!repos.isEmpty()) {
 			System.out.println("Top Repositories");
-			int i = 1;
 			Iterator<Repository> ite = repos.iterator();
 			while (ite.hasNext()) {
-				Repository r = ite.next();
-				System.out.println(i + ". " + r.name + " with " + gh.stargazers(r).size() + " stars");
-				i++;
+				printRepository(ite.next());
 			}
 		} else
 			System.out.println("No repositories");
@@ -253,23 +279,21 @@ public class CLI {
 				break;
 			tags.add(new Tag(t));
 		}
-		
+
 		System.out.println(tags.size());
-		if(tags.isEmpty()) {
+		if (tags.isEmpty()) {
 			System.out.println("No tags specified");
 			return;
 		}
-		
+
 		try {
-			//TODO find out why this always throws UnsupportedOperationException
+			// TODO find out why this always throws UnsupportedOperationException
 			VDMSet repos = gh.getRepositoriesByTags(tags);
 			System.out.println("Repositories");
 			Iterator<Repository> ite = repos.iterator();
 			while (ite.hasNext()) {
-				System.out.println("[" + tags.toString() + "]");
-				int i = 1;
-				System.out.println(i + ". " + ite.next().name);
-				i++;
+				//print tags? TODO System.out.println("[" + tags.toString() + "]");
+				printRepository(ite.next());
 			}
 		} catch (UnsupportedOperationException e) {
 			System.out.println("No repositories match those tags");
@@ -277,26 +301,71 @@ public class CLI {
 	}
 
 	@SuppressWarnings("unchecked")
+	private void printRepository(Repository r) {
+		System.out.println("\n---Repository " + r.name + "---");
+		System.out.println("About: " + r.getDescription());
+		System.out.println("Privacy: " + (r.isRepoPrivate() ? "Private" : "Public"));
+		System.out.println("Default branch: " + r.getDefaultBranch().name);
+		
+		VDMMap branches = r.branches;
+		if(!branches.isEmpty()) {
+			for(Object k: branches.keySet()) {
+				printBranch((Branch)branches.get(k));
+			}
+		} else System.out.println("No branches");
+		
+		VDMSet tags = r.tags;
+		if (!tags.isEmpty()) {
+			System.out.println("Tags:");
+			Iterator<Tag> ite = tags.iterator();
+			int t = 1;
+			while(ite.hasNext()) {
+				System.out.println(t + ". " + ite.next().name);
+				t++;
+			}
+		} else 
+			System.out.println("\tNo tags");
+		
+		/*VDMSet collabs = r.collaborators;
+		VDMSeq releases = r.releases;*/
+	}
+	
+	private void printBranch(Branch branch) {
+		System.out.println("\tBranch: "  + branch.name);
+		System.out.println("Protected: " + (branch.isProtected ? "yes" : "no"));
+		
+		VDMSeq commits = branch.getCommits();
+		if(!commits.isEmpty()) {
+			Iterator<Commit> ite = commits.iterator();
+			System.out.println("Commits");
+			while(ite.hasNext()) {
+				Commit c = ite.next();
+				System.out.println("\tCommit " + c.hash + " by " + c.author + " at " + c.timestamp);
+			}
+		}
+		else System.out.println("No commmits");
+	}
+
+	@SuppressWarnings("unchecked")
 	private void viewReposStargazers() {
 		String repoName = readNonEmptyString("Repository name: ");
 		VDMSet reposFound = gh.searchRepos(repoName);
-		if(reposFound.isEmpty()) {
+		if (reposFound.isEmpty()) {
 			System.out.println("No repository found");
 			return;
 		}
-		
-		Repository r = (Repository)reposFound.iterator().next();
+
+		Repository r = (Repository) reposFound.iterator().next();
 		VDMSet stargazers = this.gh.stargazers(r);
-		if(stargazers.isEmpty()) {
+		if (stargazers.isEmpty()) {
 			System.out.println("No stargazers for " + r.name);
 			return;
 		}
-		
-		
+
 		int i = 1;
 		Iterator<String> ite = stargazers.iterator();
 		System.out.println("Stargazers for repository " + r.name);
-		while(ite.hasNext()) {
+		while (ite.hasNext()) {
 			System.out.println(i + ". " + ite.next());
 			i++;
 		}
@@ -305,27 +374,27 @@ public class CLI {
 	private void followUser() {
 		String username = readNonEmptyString("User: ");
 		VDMSet usersFound = gh.searchAccounts(username);
-		
-		if(usersFound.isEmpty()) {
+
+		if (usersFound.isEmpty()) {
 			System.out.println("No user found");
 			return;
 		}
-		
+
 		System.out.println("Started following " + username);
-		this.user.follow((User)usersFound.iterator().next());
+		this.user.follow((User) usersFound.iterator().next());
 	}
 
 	private void unfollowUser() {
 		String username = readNonEmptyString("User: ");
 		VDMSet usersFound = gh.searchAccounts(username);
-		
-		if(usersFound.isEmpty()) {
+
+		if (usersFound.isEmpty()) {
 			System.out.println("No user found");
 			return;
 		}
-		
+
 		System.out.println("Stopped following " + username);
-		this.user.unfollow((User)usersFound.iterator().next());
+		this.user.unfollow((User) usersFound.iterator().next());
 	}
 
 	private void unfollowAllUsers() {
@@ -336,11 +405,11 @@ public class CLI {
 	private void viewFollowing() {
 		VDMSet following = this.user.getFollowing();
 
-		if(following.isEmpty()) {
+		if (following.isEmpty()) {
 			System.out.println("Not following anyone");
 			return;
 		}
-		
+
 		int i = 1;
 		Iterator<User> ite = following.iterator();
 		System.out.println("I follow:");
@@ -354,11 +423,11 @@ public class CLI {
 	private void viewFollowers() {
 		VDMSet followers = this.user.getFollowers();
 
-		if(followers.isEmpty()) {
+		if (followers.isEmpty()) {
 			System.out.println("No followers :(");
 			return;
 		}
-		
+
 		int i = 1;
 		Iterator<User> ite = followers.iterator();
 		System.out.println("My followers:");
@@ -368,14 +437,15 @@ public class CLI {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void viewMyStars() {
 		VDMSet myStars = this.user.getStars();
 
-		if(myStars.isEmpty()) {
+		if (myStars.isEmpty()) {
 			System.out.println("No stars :(");
 			return;
 		}
-		
+
 		int i = 1;
 		Iterator<Repository> ite = myStars.iterator();
 		System.out.println("My stars:");
@@ -422,12 +492,98 @@ public class CLI {
 		if (!isPrivate.equals("y") && !isPrivate.equals("n"))
 			System.out.println("Invalid private setting");
 		else {
-			System.out.println("Repository " + reposName + " successfully created as " + (isPrivate.equals("y") ? "private" : "public"));
+			System.out.println("Repository " + reposName + " successfully created as "
+					+ (isPrivate.equals("y") ? "private" : "public"));
 			this.user.newRepository(reposName, (isPrivate.equals("y")));
 		}
 	}
-	
-	
+
+	private void viewMyRepositories() {
+		VDMMap myRepos = this.user.repositories;
+		if (myRepos.isEmpty()) {
+			System.out.println("You don't have any repositories");
+			return;
+		}
+
+		System.out.println("My repositories:");
+		for (Object k : myRepos.keySet()) {
+			printRepository((Repository)myRepos.get(k));
+		}
+	}
+
+	private void viewMyBio() {
+		System.out.println("About me\n" + this.user.getDescription());
+	}
+
+	private void editMyBio() {
+		String newBio = readNonEmptyString("New bio: ");
+		this.user.setDescription(newBio);
+		System.out.println("Bio successfully updated");
+	}
+
+	@SuppressWarnings("unchecked")
+	private void searchForAccounts() {
+		String str = readNonEmptyString("acc: ");
+		VDMSet set = gh.searchAccounts(str);
+		Iterator<Account> ite = set.iterator();
+		while (ite.hasNext()) {
+			Account acc = ite.next();
+			if (acc instanceof User)
+				System.out.println("User: " + acc.username);
+			else if (acc instanceof Organization)
+				System.out.println("Org: " + acc.username);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean viewMyOrgs() {
+		int orgs = 0;
+		for (Object k : gh.accounts.keySet()) {
+			if (gh.accounts.get(k) instanceof Organization) {
+				if (orgs == 0)
+					System.out.println("Your organizations:");
+				orgs++;
+				Organization o = ((Organization) gh.accounts.get(k));
+				System.out.println(orgs + ". " + o.username);
+
+				VDMSet members = o.members;
+				if (!members.isEmpty()) {
+					int u = 1;
+					Iterator<User> ite = members.iterator();
+					while (ite.hasNext()) {
+						System.out.println("\t" + u + ". " + ite.next().username);
+						u++;
+					}
+				} else {
+					System.out.println("\tNo members yet");
+				}
+
+			}
+		}
+		if (orgs == 0)
+			System.out.println("You do not own any organizations");
+
+		return (orgs > 0);
+	}
+
+	private void addMemberToOrg() {
+		if (!viewMyOrgs()) {
+			System.out.println("No orgs, please create one first");
+			return;
+		}
+
+		String memberName = readNonEmptyString("\nWho to add (username): ");
+		String org = readNonEmptyString("\nWhere: ");
+
+		try {
+			((Organization) gh.searchAccounts(org).iterator().next())
+					.addMember(((User) gh.searchAccounts(memberName).iterator().next()));
+		} catch (Exception e) {
+		}
+
+		System.out.println("Member " + memberName + " successfully added to " + org);
+	}
+
 	private void exit() {
 		this.state = CLIState.EXIT;
 	}
