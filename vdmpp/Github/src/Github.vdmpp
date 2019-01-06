@@ -8,10 +8,17 @@ instance variables
 	public accounts: AccountsMap := { |-> };
 	
 operations
+
+	/**
+	 * Constructor for a GitHub instance.
+	 */
 	public Github: () ==> Github
 	Github() == (return self)
 	post card dom accounts = 0;
 	
+	/**
+	 * Add/register an Account on this GitHub instance.
+	 */
 	public addAccount: Account ==> ()
 	addAccount(acc) == (
 		accounts(acc.username) := acc;
@@ -19,26 +26,39 @@ operations
 	pre acc.username not in set dom accounts
 	post accounts(acc.username) = acc;
 
+	/**
+	 * The number of accounts.
+	 */
 	public pure numAccounts: () ==> nat
 	numAccounts() == (return card dom accounts);
 	
+	/**
+	 * All repositories whose tags match the given tags.
+	 */
 	public pure getRepositoriesByTags: set of Tag | set of VDMUtils`String ==> set of Repository
 	getRepositoriesByTags(tags) ==
 		return {r | r in set dunion {rng a.repositories | a in set rng accounts} & repoMatchesTags(r, tags)}
 	pre tags <> {};
 	
-	-- Get name of the User accounts
+	/**
+	 * Usernames of all registered Users.
+	 */
 	private pure getUsers: () ==> set of VDMUtils`String
 	getUsers() == return {un | un in set dom accounts & isofclass(User, accounts(un))}		
 	post forall un in set RESULT & isofclass(User, accounts(un));
 
+	/**
+	 * Stargares of a given Repository (Users that stared that Repository).
+	 */
 	public pure stargazers: Repository ==> set of VDMUtils`String
 	stargazers(repo) ==
 		return {un | un in set getUsers() & repo in set narrow_(accounts(un), User).getStars()}
 	post (forall un in set RESULT & repo in set narrow_(accounts(un), User).getStars()) and
 		(forall un in set getUsers() \ RESULT & repo not in set narrow_(accounts(un), User).getStars());
 
-	-- Gets sequence containing all Repositories
+	/**
+	 * Gets sequence containing all Repositories.
+	 */
 	private pure getAllRepos: () ==> seq of Repository
 	getAllRepos() == (
 		dcl reposSet: set of Repository := {}, repos: seq of Repository := [];
@@ -50,7 +70,9 @@ operations
 	post forall e in set dunion { rng acc.repositories | acc in set rng accounts } & e in set elems RESULT and
 		card dunion { rng acc.repositories | acc in set rng accounts } = len RESULT;
 
-	-- Orders Repositories by number of stars using a bubble-sort like algorithm
+	/**
+	 * Orders Repositories by number of stars using a bubble-sort-like algorithm.
+	 */
 	public pure getTopRepos: () ==> seq of Repository
 	getTopRepos() == (
 		dcl l: seq of Repository := [r | r in seq getAllRepos() & not r.isRepoPrivate()];
@@ -66,17 +88,27 @@ operations
 	)
 	post forall i in set {1, ..., len RESULT - 1} & card stargazers(RESULT(i)) >= card stargazers(RESULT(i + 1));
 
+	/**
+	 * Search Repositories by name.
+	 */
 	public pure searchRepos: VDMUtils`String ==> set of Repository
 	searchRepos(query) ==
 		return {r | r in set elems getAllRepos() & not r.isRepoPrivate() and VDMUtils`isSubstring(r.name, query) >= 0}
 	post forall r in set {r | r in set elems getAllRepos() & not r.isRepoPrivate()} & if VDMUtils`isSubstring(r.name, query) >= 0 then r in set RESULT else r not in set RESULT;
 
+	/**
+	 * Search Accounts by username.
+	 */
 	public pure searchAccounts: VDMUtils`String ==> set of Account
 	searchAccounts(query) ==
 		return {accounts(acc) | acc in set dom accounts & VDMUtils`isSubstring(acc, query) >= 0}
 	post forall acc in set dom accounts & if VDMUtils`isSubstring(acc, query) >= 0 then accounts(acc) in set RESULT else accounts(acc) not in set RESULT;		
 
 functions
+
+	/**
+	 * Whether the given Repository matches the given set of Tags.
+	 */
 	public static repoMatchesTags(r: Repository, tags: set of VDMUtils`String | set of Tag) res: bool ==
 	forall t in set tags & (if isofclass(Tag, t) then t.name else t) in set {tInner.name | tInner in set r.tags};
 		

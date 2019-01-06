@@ -18,6 +18,9 @@ instance variables
 	private hour: nat;
 	private minute: nat;
 	
+	/**
+	 * Invariants to ensure Date consistency.
+	 */
 	inv year >= startYear;
 	inv month >= 1 and month <= 12;
 	inv day >= 1 and day <= daysOfMonth(year, month);
@@ -25,6 +28,10 @@ instance variables
 	inv minute >= 0 and minute < 60;
 	
 operations
+
+	/**
+	 * Constructor for a Date instance.
+	 */
 	public Date: nat1 * nat1 * nat1 * nat * nat ==> Date
 	Date(y, mo, d, h, mi) == (
 		year := y;
@@ -37,9 +44,16 @@ operations
 	post year = y and month = mo and day = day and hour = h and minute = mi;
 
 functions
+
+	/**
+	 * @return whether the given year is a leap year.
+	 */
 	public static isLeapYear(y: nat1) res: bool == y mod 4 = 0
 	pre y >= startYear;
 
+	/**
+	 * @return the number of days in the given month.
+	 */
 	public static daysOfMonth(y, m: nat1) res : nat == (
 		cases m :
 			1, 3, 5, 7, 8, 10, 12 -> 31,
