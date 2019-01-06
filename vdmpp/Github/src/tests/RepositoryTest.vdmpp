@@ -157,14 +157,14 @@ operations
 			r.addIssue(o, issue); --No problem adding so invariant verified
 			TestUtils`assertTrue(card dom r.issues = 1);
 			TestUtils`assertTrue(r.issues(issue.title) = issue);
-			
-			let pub : Repository = new Repository("pub", o, false) in (
-				pub.addIssue(u, issue); -- Can also add issues to public repos
-				TestUtils`assertTrue(card dom pub.issues = 1);
-				TestUtils`assertTrue(pub.issues(issue.title) = issue);
-			);
 		);
 		
+		let pub : Repository = new Repository("pub", o, false),
+		issue: Issue = new Issue("#7401", "test title", "test description") in (
+			pub.addIssue(u, issue); -- Can also add issues to public repos
+			TestUtils`assertTrue(card dom pub.issues = 1);
+			TestUtils`assertTrue(pub.issues(issue.title) = issue);
+		);
 	);
 	
 	public static main: () ==> ()
