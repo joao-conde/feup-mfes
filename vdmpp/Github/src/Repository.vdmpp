@@ -24,6 +24,10 @@ instance variables
 		i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
 	
 operations
+
+	/**
+	 * Constructor for a Repository instance.
+	 */
 	public Repository: VDMUtils`String * Account * bool ==> Repository
 	Repository(n, acc, priv) == (
 		name := n;
@@ -42,13 +46,18 @@ operations
 		(isofclass(Organization, owner) or (isofclass(User, owner) and owner in set collaborators)) and
 		defaultBranch.name = "master" and card dom branches = 1;
 		
-	
+	/**
+	 * Add a Release to this Repository.
+	 */
 	public addRelease: Account * Release ==> ()
 	addRelease(acc, rel) == releases := releases ^ [rel]
 	pre (if isofclass(User, acc) then narrow_(acc, User) in set collaborators else acc = owner) and
 		rel.name not in set {r.name | r in seq releases}
 	post releases(len releases) = rel;
 	
+	/**
+	 * Add a Tag to this Repository.
+	 */
 	public addTag: Account * Tag ==> ()
 	addTag(acc, tag) == tags := tags union {tag}
 	pre acc = owner
@@ -64,12 +73,18 @@ operations
 	pre n not in set dom branches
 	post let b = branches(n) in b.name = n and b.isProtected = prot;
 	
+	/**
+	 * Delete one of this Repository's Branches.
+	 */
 	public delBranch: User * VDMUtils`String ==> ()
 	delBranch(usr, n) ==	branches := {n} <-: branches
 	pre usr in set collaborators and
 		n <> defaultBranch.name and n in set dom branches --Can not delete default branch
 	post n not in set dom branches;
 	
+	/**
+	 * Add a Commit, from a given author, to a given Branch from this Repository.
+	 */
 	public commit: User * VDMUtils`String * VDMUtils`String * Date ==> ()
 	commit(usr, branchName, hash, date) == (
 		branches(branchName).commit(new Commit(hash, usr, date));
@@ -77,12 +92,18 @@ operations
 	pre (usr in set collaborators or not isPrivate) and
 		branchName in set dom branches;
 		
+	/**
+	 * Add a new collaborator to this Repository.
+	 */
 	public addCollaborator: Account * User ==> ()
 	addCollaborator(acc, usr) == collaborators := collaborators union {usr}
 	pre acc = owner
 	post usr in set collaborators;
 	
-	-- If delete is true, src shall be deleted after merge
+	/**
+	 * Merges two Branches.
+	 * Deletes the one being merged if flag delete is set to True.
+	 */
 	public mergeBranches: User * VDMUtils`String * VDMUtils`String * bool ==> ()
 	mergeBranches(usr, dest, src, delete) == (
 		branches(dest).mergeBranch(branches(src));
@@ -93,7 +114,10 @@ operations
 		branches(src) in set rng branches
 	post (if delete then src not in set dom branches else src in set dom branches) and
 		dest in set dom branches;
-		
+
+	/**
+	 * Adds an Issue to this Repository.
+	 */
 	public addIssue: Account * Issue ==> ()
 	addIssue(acc, issue) == issues(issue.title) := issue
 	pre issue.title not in set dom issues and issue not in set rng issues and

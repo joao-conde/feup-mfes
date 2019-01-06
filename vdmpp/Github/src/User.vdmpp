@@ -10,24 +10,37 @@ instance variables
 	inv selfUser not in set following; -- makes pre self <> user unecessary
 	
 operations
+
+	/**
+	 * Constructor for a User instance.
+	 */
 	public User: VDMUtils`String ==> User
 	User(un) == (
 		selfUser := self;
 		Account(un);
 	);
 	
+	/**
+	 * Add a new follower.
+	 */
 	private addFollower: User ==> ()
 	addFollower(follower) == (
 		followers := followers union {follower};
 	)
 	post follower in set followers;
 	
+	/**
+	 * Remove a follower.
+	 */
 	private removeFollower: User ==> ()
 	removeFollower(us) == (
 		followers := followers \ {us};
 	)
 	post us not in set followers;
-	
+
+	/**
+	 * Mark this User as following another.
+	 */
 	public follow: User ==> ()
 	follow(us) == (
 		following := following union {us};
@@ -35,7 +48,10 @@ operations
 	)
 	post us in set self.following and
 				self in set us.followers;
-	
+
+	/**
+	 * Unfollow another User.
+	 */
 	public unfollow: User ==> ()
 	unfollow(us) == (
 		following := following \ {us};
@@ -43,7 +59,10 @@ operations
 	)
 	pre us in set following and self in set us.followers
 	post us not in set following and self not in set us.followers;
-	
+
+	/**
+	 * Clear all Users that this User follows.
+	 */
 	public clearFollowing: () ==> ()
 	clearFollowing() == (
 	 for all us in set following
@@ -51,11 +70,17 @@ operations
 	)
 	post card following = 0;
 	
+	/**
+	 * Star a Repository.
+	 */
 	public star: Repository ==> ()
 	star(repo) == stars := stars union {repo}
 	pre repo not in set stars
 	post repo in set stars;
 	
+	/**
+	 * Unstar a Repository.
+	 */
 	public unstar: Repository ==> ()
 	unstar(repo) == stars:= stars \ {repo}
 	pre repo in set stars

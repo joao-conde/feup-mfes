@@ -4,6 +4,10 @@ instance variables
 	public name: VDMUtils`String;
 
 operations
+
+	/**
+	 * Constructor for a Tag instance.
+	 */
 	public Tag: VDMUtils`String ==> Tag
 	Tag(tag) == (
 		name := tag;
