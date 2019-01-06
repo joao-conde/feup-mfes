@@ -152,11 +152,13 @@ public class CLI {
 		System.out.println("20 - Add member to one of my organizations");
 		System.out.println("21 - set repos default branch");
 		System.out.println("22 - set repos description");
-		//System.out.println("23 - Repos i can contribute to");
+		// System.out.println("23 - Repos i can contribute to");
 		System.out.println("24 - changeRepositoryPrivacySetting");
 		System.out.println("25 - addTagToRepository");
 		System.out.println("26 - addReleaseToRepository");
 		System.out.println("27 - commit");
+		System.out.println("28 - addCollaborator");
+		System.out.println("29 - createBranch");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -227,9 +229,10 @@ public class CLI {
 		case 22:
 			setReposDescription();
 			break;
-		/*case 23:
-			viewRepositoriesICanContributeTo(); //TODO necessary since the update on only owner can change repo? maybe for commits?
-			break;*/
+		/*
+		 * case 23: viewRepositoriesICanContributeTo(); //TODO necessary since the
+		 * update on only owner can change repo? maybe for commits? break;
+		 */
 		case 24:
 			changeRepositoryPrivacySetting();
 			break;
@@ -242,20 +245,61 @@ public class CLI {
 		case 27:
 			commit();
 			break;
+		case 28:
+			addCollaborator();
+			break;
+		case 29:
+			createBranch();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
 
 	}
 
-	private void commit() {
-		viewMyRepositories();
-		String repo = readNonEmptyString("Repository name: ");
-		
-		VDMSet reposFound = gh.searchRepos(repo);
+	private void createBranch() {
+		viewRepositoriesICanContributeTo();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
 		if (!reposFound.isEmpty()) {
 			Repository r = ((Repository) reposFound.iterator().next());
 			
+			String branchName = readNonEmptyString("New branch name: ");
+			boolean isProtected = readNonEmptyString("Protected branch? (y/n) ").toLowerCase().equals("y");;
+						
+			r.createBranch(branchName, isProtected);
+			System.out.println(branchName + " created for repository " + r.name + " as " + (isProtected ? "protected" : "not protected"));
+		} else
+			System.out.println("Repository not found");
+	}
+
+	private void addCollaborator() {
+		viewMyRepositories();
+		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
+
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+			VDMSet usersFound = gh.searchAccounts(readNonEmptyString("Invite(Username): "));
+
+			if (usersFound.isEmpty()) {
+				System.out.println("No user found");
+				return;
+			}
+			User u = ((User) usersFound.iterator().next());
+			r.addCollaborator(this.user, u);
+			System.out.println(u.username + " added as a collaborator to repository " + r.name);
+		} else
+			System.out.println("Repository not found");
+	}
+
+	private void commit() {
+		viewRepositoriesICanContributeTo();
+		String repo = readNonEmptyString("Repository name: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+
 			if (r.branches.isEmpty()) {
 				System.out.println("No branches");
 				return;
@@ -265,14 +309,14 @@ public class CLI {
 			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(r.branches)).iterator(); iter.hasNext();) {
 				printBranch(iter.next());
 			}
-			
+
 			String branch = readNonEmptyString("Branch to commit to: ");
-			
-			if(r.branches.get(branch) == null) {
+
+			if (r.branches.get(branch) == null) {
 				System.out.println("Not a valid branch");
 				return;
 			}
-			
+
 			String commitHash = readNonEmptyString("Commit hash: ");
 			Integer commitYear = Integer.parseInt(readNonEmptyString("Release year: "));
 			Integer commitMonth = Integer.parseInt(readNonEmptyString("Release month: "));
@@ -280,9 +324,9 @@ public class CLI {
 			Integer commitHour = Integer.parseInt(readNonEmptyString("Release hour: "));
 			Integer commitMinute = Integer.parseInt(readNonEmptyString("Release minute: "));
 			Date commitDate = new Date(commitYear, commitMonth, commitDay, commitHour, commitMinute);
-			
+
 			r.commit(this.user, branch, commitHash, commitDate);
-			//System.out.println("New release created for repository " + r.name + " at " + releaseDate.toString());
+			System.out.println("[" + commitHash + "]" + " commited at " + branch + " at " + commitDate);
 		} else
 			System.out.println("Repository not found");
 	}
@@ -294,7 +338,7 @@ public class CLI {
 		VDMSet reposFound = gh.searchRepos(repo);
 		if (!reposFound.isEmpty()) {
 			Repository r = ((Repository) reposFound.iterator().next());
-	
+
 			String releaseName = readNonEmptyString("Release name/version: ");
 			Integer releaseYear = Integer.parseInt(readNonEmptyString("Release year: "));
 			Integer releaseMonth = Integer.parseInt(readNonEmptyString("Release month: "));
@@ -302,13 +346,13 @@ public class CLI {
 			Integer releaseHour = Integer.parseInt(readNonEmptyString("Release hour: "));
 			Integer releaseMinute = Integer.parseInt(readNonEmptyString("Release minute: "));
 			Date releaseDate = new Date(releaseYear, releaseMonth, releaseDay, releaseHour, releaseMinute);
-			
+
 			r.addRelease(this.user, new Release(releaseName, releaseDate));
-			
-			System.out.println("New release created for repository " + r.name + " at " + releaseDate.toString());
+
+			System.out.println("New release created for repository " + r.name + " at " + releaseDate);
 		} else
 			System.out.println("Repository not found");
-		
+
 	}
 
 	private void addTagToRepository() {
@@ -359,7 +403,7 @@ public class CLI {
 		VDMSet reposFound = gh.searchRepos(repo);
 		if (!reposFound.isEmpty()) {
 			Repository r = (Repository) reposFound.iterator().next();
-			
+
 			if (r.branches.isEmpty()) {
 				System.out.println("No branches");
 				return;
@@ -503,8 +547,8 @@ public class CLI {
 		if (!collabs.isEmpty()) {
 			System.out.println("Collaborators:");
 			Iterator<User> ite = collabs.iterator();
+			int c = 1;
 			while (ite.hasNext()) {
-				int c = 1;
 				System.out.println(c + ". " + ite.next().username);
 				c++;
 			}
@@ -535,12 +579,11 @@ public class CLI {
 			System.out.println("Commits");
 			while (ite.hasNext()) {
 				Commit c = ite.next();
-				System.out.println("\tCommit " + c.hash + " by " + c.author + " at " + c.timestamp);
+				System.out.println("\tCommit " + c.hash + " by " + c.author.username + " at " + c.timestamp);
 			}
 		} else
 			System.out.println("No commmits");
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	private void viewReposStargazers() {
@@ -708,7 +751,7 @@ public class CLI {
 		}
 	}
 
-/*	private void viewRepositoriesICanContributeTo() {
+	private void viewRepositoriesICanContributeTo() {
 		ArrayList<Repository> repos = getReposICanContributeTo();
 		if (repos.isEmpty()) {
 			System.out.println("No repositories");
@@ -718,7 +761,7 @@ public class CLI {
 		for (Repository r : repos) {
 			printRepository(r);
 		}
-	}*/
+	}
 
 	private void viewMyBio() {
 		System.out.println("About me\n" + this.user.getDescription());
