@@ -156,6 +156,7 @@ public class CLI {
 		System.out.println("24 - changeRepositoryPrivacySetting");
 		System.out.println("25 - addTagToRepository");
 		System.out.println("26 - addReleaseToRepository");
+		System.out.println("27 - commit");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -227,7 +228,7 @@ public class CLI {
 			setReposDescription();
 			break;
 		/*case 23:
-			viewRepositoriesICanContributeTo();
+			viewRepositoriesICanContributeTo(); //TODO necessary since the update on only owner can change repo? maybe for commits?
 			break;*/
 		case 24:
 			changeRepositoryPrivacySetting();
@@ -238,10 +239,52 @@ public class CLI {
 		case 26:
 			addReleaseToRepository();
 			break;
+		case 27:
+			commit();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
 
+	}
+
+	private void commit() {
+		viewMyRepositories();
+		String repo = readNonEmptyString("Repository name: ");
+		
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+			
+			if (r.branches.isEmpty()) {
+				System.out.println("No branches");
+				return;
+			}
+
+			System.out.println(r.name + " branches:");
+			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(r.branches)).iterator(); iter.hasNext();) {
+				printBranch(iter.next());
+			}
+			
+			String branch = readNonEmptyString("Branch to commit to: ");
+			
+			if(r.branches.get(branch) == null) {
+				System.out.println("Not a valid branch");
+				return;
+			}
+			
+			String commitHash = readNonEmptyString("Commit hash: ");
+			Integer commitYear = Integer.parseInt(readNonEmptyString("Release year: "));
+			Integer commitMonth = Integer.parseInt(readNonEmptyString("Release month: "));
+			Integer commitDay = Integer.parseInt(readNonEmptyString("Release day: "));
+			Integer commitHour = Integer.parseInt(readNonEmptyString("Release hour: "));
+			Integer commitMinute = Integer.parseInt(readNonEmptyString("Release minute: "));
+			Date commitDate = new Date(commitYear, commitMonth, commitDay, commitHour, commitMinute);
+			
+			r.commit(this.user, branch, commitHash, commitDate);
+			//System.out.println("New release created for repository " + r.name + " at " + releaseDate.toString());
+		} else
+			System.out.println("Repository not found");
 	}
 
 	private void addReleaseToRepository() {
