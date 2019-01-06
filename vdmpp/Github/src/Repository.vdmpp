@@ -12,15 +12,16 @@ instance variables
 	public collaborators: set of User := {};
 	public releases: seq of Release := [];
 	public branches: map VDMUtils`String to Branch := { |-> };
-	public issues: set of Issue := {};
+	public issues: map VDMUtils`String to Issue := { |-> };
 		
 	inv defaultBranch in set rng branches;
 	inv branches(defaultBranch.name) = defaultBranch;
-
+	
+	-- All issues' assignees are contributors
+	inv forall issue in set rng issues & (forall ass in set issue.assignees & ass in set collaborators);
+	
 	inv forall i1, i2 in set inds releases & 
 		i1 < i2 => mk_Date`DateComparable(releases(i1).timestamp) < mk_Date`DateComparable(releases(i2).timestamp);
-	
-	inv forall issue in set issues & (forall ass in set issue.assignees & ass in set collaborators);
 	
 operations
 	public Repository: VDMUtils`String * Account * bool ==> Repository
@@ -86,16 +87,17 @@ operations
 		branches(dest).mergeBranch(branches(src));
 		if delete then delBranch(usr, src);
 	)
-	pre (usr = owner or usr in set collaborators) and
+	pre usr in set collaborators and
 		branches(dest) in set rng branches and
 		branches(src) in set rng branches
 	post (if delete then src not in set dom branches else src in set dom branches) and
 		dest in set dom branches;
 		
 	public addIssue: Account * Issue ==> ()
-	addIssue(acc, issue) == issues := issues union {issue}
-	pre issue not in set issues and acc = owner
-	post issue in set issues;
+	addIssue(acc, issue) == issues(issue.title) := issue
+	pre issue.title not in set dom issues and issue not in set rng issues and
+		((if isofclass(User, acc) then narrow_(acc, User) in set collaborators else acc = owner) or not isPrivate)
+	post issues(issue.title) = issue;
 		
 	-- Getters
 	public pure getDefaultBranch: () ==> Branch

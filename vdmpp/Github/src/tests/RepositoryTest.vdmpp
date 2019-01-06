@@ -150,6 +150,23 @@ operations
 		);
 	);
 	
+	private testAddIssue: () ==> ()
+	testAddIssue() == (
+		let issue: Issue = new Issue("#7400", "test title", "test description") in (
+			issue.assignUser(u);
+			r.addIssue(o, issue); --No problem adding so invariant verified
+			TestUtils`assertTrue(card dom r.issues = 1);
+			TestUtils`assertTrue(r.issues(issue.title) = issue);
+			
+			let pub : Repository = new Repository("pub", o, false) in (
+				pub.addIssue(u, issue); -- Can also add issues to public repos
+				TestUtils`assertTrue(card dom pub.issues = 1);
+				TestUtils`assertTrue(pub.issues(issue.title) = issue);
+			);
+		);
+		
+	);
+	
 	public static main: () ==> ()
 	main() == (
 		let rt = new RepositoryTest() in (
@@ -165,6 +182,7 @@ operations
 			rt.testSetPrivacy();
 			rt.testMergeBranches();
 			rt.testDeleteBranch();
+			rt.testAddIssue();
 		);
 	);
 

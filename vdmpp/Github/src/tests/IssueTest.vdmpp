@@ -1,7 +1,8 @@
 class IssueTest
 
 instance variables
-	issue: Issue := new Issue("#7400", "test title", "test description")
+	issue: Issue := new Issue("#7400", "test title", "test description");
+	
 operations
 	private testAddMessage: () ==> ()
 	testAddMessage() == (
