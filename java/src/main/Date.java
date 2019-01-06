@@ -41,21 +41,10 @@ public class Date {
   }
 
   public String toString() {
-
-    return "Date{"
-        + "startYear = "
-        + Utils.toString(startYear)
-        + ", year := "
-        + Utils.toString(year)
-        + ", month := "
-        + Utils.toString(month)
-        + ", day := "
-        + Utils.toString(day)
-        + ", hour := "
-        + Utils.toString(hour)
-        + ", minute := "
-        + Utils.toString(minute)
-        + "}";
+    return "" + ((int)this.hour < 10 ? "0"+this.hour : this.hour) 
+    		+ ":" + ((int)this.minute < 10 ? "0" + this.minute : this.minute) + " of " + 
+    		((int)this.day < 10 ? "0" + this.day : this.day) + "/" 
+    		+ ((int)this.month < 10 ? "0" + this.month : this.month) + "/" + this.year;
   }
 
   public static class x implements Record {

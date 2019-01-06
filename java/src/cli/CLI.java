@@ -152,8 +152,10 @@ public class CLI {
 		System.out.println("20 - Add member to one of my organizations");
 		System.out.println("21 - set repos default branch");
 		System.out.println("22 - set repos description");
-		System.out.println("23 - Repos i can contribute to");
+		//System.out.println("23 - Repos i can contribute to");
 		System.out.println("24 - changeRepositoryPrivacySetting");
+		System.out.println("25 - addTagToRepository");
+		System.out.println("26 - addReleaseToRepository");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -224,11 +226,17 @@ public class CLI {
 		case 22:
 			setReposDescription();
 			break;
-		case 23:
+		/*case 23:
 			viewRepositoriesICanContributeTo();
-			break;
+			break;*/
 		case 24:
 			changeRepositoryPrivacySetting();
+			break;
+		case 25:
+			addTagToRepository();
+			break;
+		case 26:
+			addReleaseToRepository();
 			break;
 		default:
 			System.out.println("Invalid option");
@@ -236,9 +244,46 @@ public class CLI {
 
 	}
 
+	private void addReleaseToRepository() {
+		viewMyRepositories();
+		String repo = readNonEmptyString("Repository name: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			Repository r = ((Repository) reposFound.iterator().next());
+	
+			String releaseName = readNonEmptyString("Release name/version: ");
+			Integer releaseYear = Integer.parseInt(readNonEmptyString("Release year: "));
+			Integer releaseMonth = Integer.parseInt(readNonEmptyString("Release month: "));
+			Integer releaseDay = Integer.parseInt(readNonEmptyString("Release day: "));
+			Integer releaseHour = Integer.parseInt(readNonEmptyString("Release hour: "));
+			Integer releaseMinute = Integer.parseInt(readNonEmptyString("Release minute: "));
+			Date releaseDate = new Date(releaseYear, releaseMonth, releaseDay, releaseHour, releaseMinute);
+			
+			r.addRelease(this.user, new Release(releaseName, releaseDate));
+			
+			System.out.println("New release created for repository " + r.name + " at " + releaseDate.toString());
+		} else
+			System.out.println("Repository not found");
+		
+	}
+
+	private void addTagToRepository() {
+		viewMyRepositories();
+		String repo = readNonEmptyString("Repository name: ");
+
+		VDMSet reposFound = gh.searchRepos(repo);
+		if (!reposFound.isEmpty()) {
+			String tag = readNonEmptyString("Specify a new tag: ");
+			Repository r = ((Repository) reposFound.iterator().next());
+			r.addTag(this.user, new Tag(tag));
+			System.out.println(tag + " tag added to repository " + r.name);
+		} else
+			System.out.println("Repository not found");
+	}
+
 	private void changeRepositoryPrivacySetting() {
-		System.out.println("Repositories able to edit");
-		viewRepositoriesICanContributeTo();
+		viewMyRepositories();
 		String repo = readNonEmptyString("Repository name: ");
 
 		VDMSet reposFound = gh.searchRepos(repo);
@@ -251,8 +296,7 @@ public class CLI {
 	}
 
 	private void setReposDescription() {
-		System.out.println("Repositories able to edit");
-		viewRepositoriesICanContributeTo();
+		viewMyRepositories();
 		String repo = readNonEmptyString("Repository name: ");
 		String newDescript = readNonEmptyString("New description: ");
 
@@ -266,14 +310,13 @@ public class CLI {
 
 	@SuppressWarnings("unchecked")
 	private void setReposDefaultBranch() {
-		System.out.println("Repositories able to edit");
 		viewMyRepositories();
 		String repo = readNonEmptyString("Repository name: ");
 
 		VDMSet reposFound = gh.searchRepos(repo);
 		if (!reposFound.isEmpty()) {
 			Repository r = (Repository) reposFound.iterator().next();
-
+			
 			if (r.branches.isEmpty()) {
 				System.out.println("No branches");
 				return;
@@ -454,6 +497,7 @@ public class CLI {
 		} else
 			System.out.println("No commmits");
 	}
+	
 
 	@SuppressWarnings("unchecked")
 	private void viewReposStargazers() {
@@ -621,7 +665,7 @@ public class CLI {
 		}
 	}
 
-	private void viewRepositoriesICanContributeTo() {
+/*	private void viewRepositoriesICanContributeTo() {
 		ArrayList<Repository> repos = getReposICanContributeTo();
 		if (repos.isEmpty()) {
 			System.out.println("No repositories");
@@ -631,7 +675,7 @@ public class CLI {
 		for (Repository r : repos) {
 			printRepository(r);
 		}
-	}
+	}*/
 
 	private void viewMyBio() {
 		System.out.println("About me\n" + this.user.getDescription());
