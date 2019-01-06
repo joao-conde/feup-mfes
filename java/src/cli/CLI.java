@@ -148,6 +148,7 @@ public class CLI {
 		System.out.println("17 - Create Organization");
 		System.out.println("18 - Search for users or organizations");
 		System.out.println("19 - View my organizations");
+		System.out.println("20 - Add member to one of my organizations");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -212,9 +213,7 @@ public class CLI {
 		case 20:
 			addMemberToOrg();
 			break;
-		/*
-		 * case 21: viewRepository(); break;
-		 */
+
 		default:
 			System.out.println("Invalid option");
 		}
@@ -292,7 +291,7 @@ public class CLI {
 			System.out.println("Repositories");
 			Iterator<Repository> ite = repos.iterator();
 			while (ite.hasNext()) {
-				//print tags? TODO System.out.println("[" + tags.toString() + "]");
+				// print tags? TODO System.out.println("[" + tags.toString() + "]");
 				printRepository(ite.next());
 			}
 		} catch (UnsupportedOperationException e) {
@@ -306,44 +305,67 @@ public class CLI {
 		System.out.println("About: " + r.getDescription());
 		System.out.println("Privacy: " + (r.isRepoPrivate() ? "Private" : "Public"));
 		System.out.println("Default branch: " + r.getDefaultBranch().name);
-		
+
 		VDMMap branches = r.branches;
-		if(!branches.isEmpty()) {
-			for(Object k: branches.keySet()) {
-				printBranch((Branch)branches.get(k));
+		if (!branches.isEmpty()) {
+			for (Object k : branches.keySet()) {
+				printBranch((Branch) branches.get(k));
 			}
-		} else System.out.println("No branches");
-		
+		} else
+			System.out.println("No branches");
+
 		VDMSet tags = r.tags;
 		if (!tags.isEmpty()) {
 			System.out.println("Tags:");
 			Iterator<Tag> ite = tags.iterator();
 			int t = 1;
-			while(ite.hasNext()) {
+			while (ite.hasNext()) {
 				System.out.println(t + ". " + ite.next().name);
 				t++;
 			}
-		} else 
+		} else
 			System.out.println("\tNo tags");
+
+		VDMSet collabs = r.collaborators;
+		if (!collabs.isEmpty()) {
+			System.out.println("Collaborators:");
+			Iterator<User> ite = collabs.iterator();
+			while (ite.hasNext()) {
+				int c = 1;
+				System.out.println(c + ". " + ite.next().username);
+				c++;
+			}
+		} else
+			System.out.println("No collaborators");
 		
-		/*VDMSet collabs = r.collaborators;
-		VDMSeq releases = r.releases;*/
+		VDMSeq releases = r.releases;
+		if (!releases.isEmpty()) {
+			System.out.println("Releases:");
+			Iterator<Release> ite = releases.iterator();
+			while (ite.hasNext()) {
+				int c = 1;
+				Release rel = ite.next();
+				System.out.println(c + ". " + rel.name + " made at " + rel.timestamp);
+				c++;
+			}
+		} else
+			System.out.println("No releases yet");
 	}
-	
+
 	private void printBranch(Branch branch) {
-		System.out.println("\tBranch: "  + branch.name);
+		System.out.println("\tBranch: " + branch.name);
 		System.out.println("Protected: " + (branch.isProtected ? "yes" : "no"));
-		
+
 		VDMSeq commits = branch.getCommits();
-		if(!commits.isEmpty()) {
+		if (!commits.isEmpty()) {
 			Iterator<Commit> ite = commits.iterator();
 			System.out.println("Commits");
-			while(ite.hasNext()) {
+			while (ite.hasNext()) {
 				Commit c = ite.next();
 				System.out.println("\tCommit " + c.hash + " by " + c.author + " at " + c.timestamp);
 			}
-		}
-		else System.out.println("No commmits");
+		} else
+			System.out.println("No commmits");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -507,7 +529,7 @@ public class CLI {
 
 		System.out.println("My repositories:");
 		for (Object k : myRepos.keySet()) {
-			printRepository((Repository)myRepos.get(k));
+			printRepository((Repository) myRepos.get(k));
 		}
 	}
 
