@@ -1,2 +1,3 @@
 # feup-mfes
-Modelling GitHub in VDM
+
+Formal modelling of Github in VDM++ using the Overture Tool.
