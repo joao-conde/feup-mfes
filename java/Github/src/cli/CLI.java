@@ -44,10 +44,10 @@ public class CLI {
 		andre.newRepository("feup-mfes", false);
 		andre.newRepository("tum-AI-III", false);
 		ed.newRepository("frontend-shenanigans", true);
-		ed.newRepository("why-react-is-awesome", false);
+		ed.newRepository("react-is-awesome", false);
 
 		andre.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
-		andre.star((Repository) gh.searchRepos("why-react-is-awesome").iterator().next());
+		andre.star((Repository) gh.searchRepos("react-is-awesome").iterator().next());
 
 		jc.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
 		
@@ -100,17 +100,18 @@ public class CLI {
 	private void mainMenu() {
 		displayWelcomeBanner();
 		displayMainMenuOpts();
-		int opt = readUserInputOpt(1, 5); // TODO change to options
+		int opt = readUserInputOpt(1, 6);
 		if (opt != -1)
 			processMainMenuOpt(opt);
 	}
 
 	private void displayMainMenuOpts() {
-		System.out.println("1 - SignIn");
-		System.out.println("2 - SignUp");
+		System.out.println("1 - Sign in");
+		System.out.println("2 - Sign up");
 		System.out.println("3 - View public repositories ranked by rating");
 		System.out.println("4 - View public repositories filtered by a set of tags");
 		System.out.println("5 - View stargazers of a repository");
+		System.out.println("\n6 - Exit");
 	}
 
 	private void processMainMenuOpt(int opt) {
@@ -130,6 +131,9 @@ public class CLI {
 		case 5:
 			viewReposStargazers();
 			break;
+		case 6:
+			exit();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
@@ -138,13 +142,13 @@ public class CLI {
 	private void loggedInMenu() {
 		displayLoggedBanner();
 		displayLoggedInMenuOpts();
-		int opt = readUserInputOpt(1, 100); // TODO change to options
+		int opt = readUserInputOpt(1, 35);
 		if (opt != -1)
 			processLoggedInMenuOpt(opt);
 	}
 
 	private void displayLoggedInMenuOpts() {
-		System.out.println(" 1 - SignOut");
+		System.out.println(" 1 - Sign out");
 		System.out.println(" 2 - View public repositories ranked by rating");
 		System.out.println(" 3 - View public repositories filtered by a set of tags");
 		System.out.println(" 4 - View stargazers of a repository");
@@ -178,6 +182,7 @@ public class CLI {
 		System.out.println("32 - Add an issue to a repository");
 		System.out.println("33 - Add a message to an issue");
 		System.out.println("34 - Assign an issue to a user");
+		System.out.println("\n35 - Exit");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
@@ -189,7 +194,7 @@ public class CLI {
 			viewTopRepos();
 			break;
 		case 3:
-			viewReposByTags(); // TODO fix exception thrown bug
+			viewReposByTags();
 			break;
 		case 4:
 			viewReposStargazers();
@@ -284,12 +289,16 @@ public class CLI {
 		case 34:
 			assignUserToIssue();
 			break;
+		case 35:
+			exit();
+			break;
 		default:
 			System.out.println("Invalid option");
 		}
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void assignUserToIssue() {
 		viewRepositoriesICanContributeTo();
 		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
@@ -330,6 +339,7 @@ public class CLI {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	private void addMessageToIssue() {
 		viewRepositoriesICanContributeTo();
 		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
@@ -386,6 +396,7 @@ public class CLI {
 			System.out.println("Repository not found");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void mergeBranch() {
 		viewRepositoriesICanContributeTo();
 		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
@@ -417,6 +428,7 @@ public class CLI {
 			System.out.println("Repository not found");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void deleteBranch() {
 		viewRepositoriesICanContributeTo();
 		VDMSet reposFound = gh.searchRepos(readNonEmptyString("Repository name: "));
@@ -479,6 +491,7 @@ public class CLI {
 			System.out.println("Repository not found");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void commit() {
 		viewRepositoriesICanContributeTo();
 		String repo = readNonEmptyString("Repository name: ");
@@ -666,8 +679,12 @@ public class CLI {
 		if (!repos.isEmpty()) {
 			System.out.println("Top Repositories");
 			Iterator<Repository> ite = repos.iterator();
+			int rank = 1;
 			while (ite.hasNext()) {
-				printRepository(ite.next());
+				Repository r = ite.next();
+				System.out.print("\n\nRank " + rank + "with " + gh.stargazers(r).size() + " stargazers");
+				printRepository(r);
+				rank++;
 			}
 		} else
 			System.out.println("No repositories");
@@ -684,7 +701,6 @@ public class CLI {
 			tags.add(new Tag(t));
 		}
 
-		System.out.println(tags.size());
 		if (tags.isEmpty()) {
 			System.out.println("No tags specified");
 			return;
@@ -723,11 +739,11 @@ public class CLI {
 
 		VDMSet tags = r.tags;
 		if (!tags.isEmpty()) {
-			System.out.println("Tags:");
+			System.out.println("\tTags:");
 			Iterator<Tag> ite = tags.iterator();
 			int t = 1;
 			while (ite.hasNext()) {
-				System.out.println(t + ". " + ite.next().name);
+				System.out.println("\t" + t + ". " + ite.next().name);
 				t++;
 			}
 		} else
@@ -735,42 +751,43 @@ public class CLI {
 
 		VDMSet collabs = r.collaborators;
 		if (!collabs.isEmpty()) {
-			System.out.println("Collaborators:");
+			System.out.println("\tCollaborators:");
 			Iterator<User> ite = collabs.iterator();
 			int c = 1;
 			while (ite.hasNext()) {
-				System.out.println(c + ". " + ite.next().username);
+				System.out.println("\t" + c + ". " + ite.next().username);
 				c++;
 			}
 		} else
-			System.out.println("No collaborators");
+			System.out.println("\tNo collaborators");
 
 		VDMSeq releases = r.releases;
 		if (!releases.isEmpty()) {
-			System.out.println("Releases:");
+			System.out.println("\tReleases:");
 			Iterator<Release> ite = releases.iterator();
 			while (ite.hasNext()) {
 				int c = 1;
 				Release rel = ite.next();
-				System.out.println(c + ". " + rel.name + " made at " + rel.timestamp);
+				System.out.println("\t" + c + ". " + rel.name + " made at " + rel.timestamp);
 				c++;
 			}
 		} else
-			System.out.println("No releases yet");
+			System.out.println("\tNo releases yet");
 
 		VDMMap issues = r.issues;
 		if (!issues.isEmpty()) {
-			System.out.println("Issues:");
+			System.out.println("\tIssues:");
 			for (Iterator<Issue> iter = MapUtil.rng(Utils.copy(issues)).iterator(); iter.hasNext();) {
 				printIssue(iter.next());
 			}
 		} else
-			System.out.println("No issues yet");
+			System.out.println("\tNo issues yet");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void printIssue(Issue issue) {
-		System.out.println("Issue " + issue.title);
-		System.out.println("About: " + issue.description);
+		System.out.println("\tIssue " + issue.title);
+		System.out.println("\tAbout: " + issue.description);
 
 		VDMSet assignees = issue.assignees;
 		if (!assignees.isEmpty()) {
@@ -779,41 +796,42 @@ public class CLI {
 			System.out.println("\tAssigned to:");
 			while (ite.hasNext()) {
 				User u = ite.next();
-				System.out.println(a + ". " + u.username);
+				System.out.println("\t" + a + ". " + u.username);
 				a++;
 			}
 		} else
-			System.out.println("No assigned users yet");
+			System.out.println("\tNo assigned users yet");
 
 		VDMMap messages = issue.messages;
 		if (!messages.isEmpty()) {
-			System.out.println("Messages:");
+			System.out.println("\tMessages:");
 			for (Iterator<Message> iter = MapUtil.rng(Utils.copy(messages)).iterator(); iter.hasNext();) {
 				printMessage(iter.next());
 			}
 		} else
-			System.out.println("No messages");
+			System.out.println("\tNo messages");
 	}
 
 	private void printMessage(Message msg) {
-		System.out.println("Message " + msg.id + " by " + msg.author.username + " at " + msg.timestamp);
-		System.out.println(msg.author.username + " said: '" + msg.content + "'");
+		System.out.println("\tMessage " + msg.id + " by " + msg.author.username + " at " + msg.timestamp);
+		System.out.println("\t" + msg.author.username + " said: '" + msg.content + "'");
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void printBranch(Branch branch) {
 		System.out.println("\tBranch: " + branch.name);
-		System.out.println("Protected: " + (branch.isProtected ? "yes" : "no"));
+		System.out.println("\tProtected: " + (branch.isProtected ? "yes" : "no"));
 
 		VDMSeq commits = branch.getCommits();
 		if (!commits.isEmpty()) {
 			Iterator<Commit> ite = commits.iterator();
-			System.out.println("Commits");
+			System.out.println("\tCommits");
 			while (ite.hasNext()) {
 				Commit c = ite.next();
 				System.out.println("\tCommit " + c.hash + " by " + c.author.username + " at " + c.timestamp);
 			}
 		} else
-			System.out.println("No commmits");
+			System.out.println("\tNo commmits");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1083,7 +1101,7 @@ public class CLI {
 	private int readUserInputOpt(int lb, int ub) {
 		int opt;
 
-		System.out.print("Option (between " + lb + " and " + ub + "): ");
+		System.out.print("\nOption (between " + lb + " and " + ub + "): ");
 		try {
 			opt = Integer.parseInt(scanner.nextLine());
 		} catch (NumberFormatException e) {
