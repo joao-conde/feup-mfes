@@ -23,18 +23,20 @@ public class CLI {
 	}
 
 	public void populateDB() {
+		System.out.println("\nCreating testing examples...\n");
+
 		this.gh = new Github();
-		
+
 		Organization inesc = new Organization("INESC");
-		
+
 		User jc = new User("jc"), andre = new User("andre"), ed = new User("ed");
 		gh.addAccount(jc);
 		gh.addAccount(andre);
 		gh.addAccount(ed);
-		
+
 		inesc.addMember(inesc, ed);
 		inesc.addMember(inesc, andre);
-		
+
 		jc.follow(andre);
 		ed.follow(andre);
 		andre.follow(ed);
@@ -50,13 +52,21 @@ public class CLI {
 		andre.star((Repository) gh.searchRepos("react-is-awesome").iterator().next());
 
 		jc.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
-		
+
 		ed.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
-		
+
 		((Repository) gh.searchRepos("feup-mfes").iterator().next()).addTag(andre, new Tag("tag1"));
 		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag1"));
 		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag2"));
 
+		((Repository) gh.searchRepos("feup-mfes").iterator().next()).createBranch("develop", false);
+
+		Date commitDate = new Date(2018, 12, 2, 14, 3);
+		((Repository) gh.searchRepos("feup-mfes").iterator().next()).commit(jc, "develop", "#123", commitDate);
+
+		System.out.println("\nFinished");
+		cls();
+		cls();
 	}
 
 	public void run() {
@@ -321,22 +331,20 @@ public class CLI {
 
 			if (issues.get(issueTitle) == null)
 				System.out.println("No issue with that title");
-			
-			
+
 			VDMSet accs = gh.searchAccounts(readNonEmptyString("Assign to user: "));
-			if(!accs.isEmpty()) {
-				User u = ((User)accs.iterator().next());
+			if (!accs.isEmpty()) {
+				User u = ((User) accs.iterator().next());
 				((Issue) issues.get(issueTitle)).assignUser(u);
 				System.out.println("User " + u.username + " assigned to issue " + issueTitle);
-			}
-			else{
+			} else {
 				System.out.println("No user found");
 				return;
 			}
-				
+
 		} else
 			System.out.println("Repository not found");
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -682,7 +690,7 @@ public class CLI {
 			int rank = 1;
 			while (ite.hasNext()) {
 				Repository r = ite.next();
-				System.out.print("\n\nRank " + rank + "with " + gh.stargazers(r).size() + " stargazers");
+				System.out.print("\n\nRank " + rank + " with " + gh.stargazers(r).size() + " stargazers");
 				printRepository(r);
 				rank++;
 			}
@@ -720,7 +728,7 @@ public class CLI {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	private void printRepository(Repository r) {
 		System.out.println("\n---Repository " + r.name + "---");
 		System.out.println("Owner: " + r.getOwner());
@@ -730,16 +738,16 @@ public class CLI {
 
 		VDMMap branches = r.branches;
 		if (!branches.isEmpty()) {
-			System.out.println("Branches:");
+			System.out.println("\nBranches:");
 			for (Iterator<Branch> iter = MapUtil.rng(Utils.copy(branches)).iterator(); iter.hasNext();) {
 				printBranch(iter.next());
 			}
 		} else
-			System.out.println("No branches");
+			System.out.println("\nNo branches");
 
 		VDMSet tags = r.tags;
 		if (!tags.isEmpty()) {
-			System.out.println("\tTags:");
+			System.out.println("\nTags:");
 			Iterator<Tag> ite = tags.iterator();
 			int t = 1;
 			while (ite.hasNext()) {
@@ -747,11 +755,11 @@ public class CLI {
 				t++;
 			}
 		} else
-			System.out.println("\tNo tags");
+			System.out.println("\nNo tags");
 
 		VDMSet collabs = r.collaborators;
 		if (!collabs.isEmpty()) {
-			System.out.println("\tCollaborators:");
+			System.out.println("\nCollaborators:");
 			Iterator<User> ite = collabs.iterator();
 			int c = 1;
 			while (ite.hasNext()) {
@@ -759,11 +767,11 @@ public class CLI {
 				c++;
 			}
 		} else
-			System.out.println("\tNo collaborators");
+			System.out.println("\nNo collaborators");
 
 		VDMSeq releases = r.releases;
 		if (!releases.isEmpty()) {
-			System.out.println("\tReleases:");
+			System.out.println("\nReleases:");
 			Iterator<Release> ite = releases.iterator();
 			while (ite.hasNext()) {
 				int c = 1;
@@ -772,16 +780,28 @@ public class CLI {
 				c++;
 			}
 		} else
-			System.out.println("\tNo releases yet");
+			System.out.println("\nNo releases yet");
 
 		VDMMap issues = r.issues;
 		if (!issues.isEmpty()) {
-			System.out.println("\tIssues:");
+			System.out.println("\nIssues:");
 			for (Iterator<Issue> iter = MapUtil.rng(Utils.copy(issues)).iterator(); iter.hasNext();) {
 				printIssue(iter.next());
 			}
 		} else
-			System.out.println("\tNo issues yet");
+			System.out.println("\nNo issues yet");
+
+		VDMSet stargazers = gh.stargazers(r);
+		if (!stargazers.isEmpty()) {
+			System.out.println("\nStargazers:");
+			Iterator<String> ite = stargazers.iterator();
+			int s = 1;
+			while (ite.hasNext()) {
+				System.out.println("\t" + s + ". " + ite.next());
+				s++;
+			}
+		} else
+			System.out.println("\nNo stargazers of this repository");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -816,22 +836,22 @@ public class CLI {
 		System.out.println("\tMessage " + msg.id + " by " + msg.author.username + " at " + msg.timestamp);
 		System.out.println("\t" + msg.author.username + " said: '" + msg.content + "'");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void printBranch(Branch branch) {
-		System.out.println("\tBranch: " + branch.name);
-		System.out.println("\tProtected: " + (branch.isProtected ? "yes" : "no"));
+		System.out.println("\n\tBranch: " + branch.name);
+		System.out.println("\t\tProtected: " + (branch.isProtected ? "yes" : "no"));
 
 		VDMSeq commits = branch.getCommits();
 		if (!commits.isEmpty()) {
 			Iterator<Commit> ite = commits.iterator();
-			System.out.println("\tCommits");
+			System.out.println("\n\t\tCommits:");
 			while (ite.hasNext()) {
 				Commit c = ite.next();
-				System.out.println("\tCommit " + c.hash + " by " + c.author.username + " at " + c.timestamp);
+				System.out.println("\t\t\tCommit " + c.hash + " by " + c.author.username + " at " + c.timestamp);
 			}
 		} else
-			System.out.println("\tNo commmits");
+			System.out.println("\n\t\tNo commmits");
 	}
 
 	@SuppressWarnings("unchecked")

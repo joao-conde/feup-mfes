@@ -143,6 +143,8 @@ public class Github {
         setCompResult_9.add(r);
       }
     }
+    
+    System.out.println("Best match is " + ((Repository)setCompResult_9.iterator().next()).name);
     return Utils.copy(setCompResult_9);
   }
 
