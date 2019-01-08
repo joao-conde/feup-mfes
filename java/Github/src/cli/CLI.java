@@ -24,21 +24,35 @@ public class CLI {
 
 	public void populateDB() {
 		this.gh = new Github();
+		
+		Organization inesc = new Organization("INESC");
+		
 		User jc = new User("jc"), andre = new User("andre"), ed = new User("ed");
 		gh.addAccount(jc);
 		gh.addAccount(andre);
 		gh.addAccount(ed);
-
+		
+		inesc.addMember(inesc, ed);
+		inesc.addMember(inesc, andre);
+		
 		jc.follow(andre);
 		ed.follow(andre);
 		andre.follow(ed);
 
 		jc.newRepository("why-python-rocks", false);
+		jc.newRepository("competitive-programming", true);
 		andre.newRepository("feup-mfes", false);
+		andre.newRepository("tum-AI-III", false);
 		ed.newRepository("frontend-shenanigans", true);
+		ed.newRepository("why-react-is-awesome", false);
 
 		andre.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
+		andre.star((Repository) gh.searchRepos("why-react-is-awesome").iterator().next());
 
+		jc.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
+		
+		ed.star((Repository) gh.searchRepos("feup-mfes").iterator().next());
+		
 		((Repository) gh.searchRepos("feup-mfes").iterator().next()).addTag(andre, new Tag("tag1"));
 		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag1"));
 		((Repository) gh.searchRepos("why-python-rocks").iterator().next()).addTag(jc, new Tag("tag2"));
@@ -130,15 +144,15 @@ public class CLI {
 	}
 
 	private void displayLoggedInMenuOpts() {
-		System.out.println("1 - SignOut");
-		System.out.println("2 - View public repositories ranked by rating");
-		System.out.println("3 - View public repositories filtered by a set of tags");
-		System.out.println("4 - View stargazers of a repository");
-		System.out.println("5 - Follow an user");
-		System.out.println("6 - Unfollow an user");
-		System.out.println("7 - Unfollow all users");
-		System.out.println("8 - View who I follow");
-		System.out.println("9 - View my followers");
+		System.out.println(" 1 - SignOut");
+		System.out.println(" 2 - View public repositories ranked by rating");
+		System.out.println(" 3 - View public repositories filtered by a set of tags");
+		System.out.println(" 4 - View stargazers of a repository");
+		System.out.println(" 5 - Follow an user");
+		System.out.println(" 6 - Unfollow an user");
+		System.out.println(" 7 - Unfollow all users");
+		System.out.println(" 8 - View who I follow");
+		System.out.println(" 9 - View my followers");
 		System.out.println("10 - View my stars");
 		System.out.println("11 - Star a repository");
 		System.out.println("12 - Unstar a repository");
@@ -150,20 +164,20 @@ public class CLI {
 		System.out.println("18 - Search for users or organizations");
 		System.out.println("19 - View my organizations");
 		System.out.println("20 - Add member to one of my organizations");
-		System.out.println("21 - set repos default branch");
-		System.out.println("22 - set repos description");
-		System.out.println("23 - Repos i can contribute to");
-		System.out.println("24 - changeRepositoryPrivacySetting");
-		System.out.println("25 - addTagToRepository");
-		System.out.println("26 - addReleaseToRepository");
-		System.out.println("27 - commit");
-		System.out.println("28 - addCollaborator");
-		System.out.println("29 - createBranch");
-		System.out.println("30 - deleteBranch");
-		System.out.println("31 - mergeBranch");
-		System.out.println("32 - addIssue");
-		System.out.println("33 - addMessageToIssue");
-		System.out.println("34 - assignUserToIssue");
+		System.out.println("21 - Set repository default branch");
+		System.out.println("22 - Set repository description");
+		System.out.println("23 - View repositories I can contribute to");
+		System.out.println("24 - Change repository privacy");
+		System.out.println("25 - Add tag to repository");
+		System.out.println("26 - Add release to repository");
+		System.out.println("27 - Commit to a repository");
+		System.out.println("28 - Add collaborator to a repository");
+		System.out.println("29 - Create a branch in a repository");
+		System.out.println("30 - Delete a branch from a repository");
+		System.out.println("31 - Merge branches in a repository");
+		System.out.println("32 - Add an issue to a repository");
+		System.out.println("33 - Add a message to an issue");
+		System.out.println("34 - Assign an issue to a user");
 	}
 
 	private void processLoggedInMenuOpt(int opt) {
