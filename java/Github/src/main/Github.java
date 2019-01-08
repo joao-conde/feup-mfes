@@ -131,15 +131,15 @@ public class Github {
     VDMSet set_19 = SeqUtil.elems(getAllRepos());
     for (Iterator iterator_19 = set_19.iterator(); iterator_19.hasNext(); ) {
       Repository r = ((Repository) iterator_19.next());
-      Boolean andResult_4 = false;
+      Boolean andResult_9 = false;
 
       if (!(r.isRepoPrivate())) {
         if (VDMUtils.isSubstring(r.name, query).longValue() >= 0L) {
-          andResult_4 = true;
+          andResult_9 = true;
         }
       }
 
-      if (andResult_4) {
+      if (andResult_9) {
         setCompResult_9.add(r);
       }
     }

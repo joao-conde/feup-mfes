@@ -23,21 +23,6 @@ public class VDMUtils {
 
   public VDMUtils() {}
 
-  public static Number min(final VDMSet s) {
-
-    throw new UnsupportedOperationException();
-  }
-
-  public static Number max(final VDMSet s) {
-
-    throw new UnsupportedOperationException();
-  }
-
-  public static <T> Boolean isAscendingOrder(final VDMSeq s) {
-
-    throw new UnsupportedOperationException();
-  }
-
   public String toString() {
 
     return "VDMUtils{}";

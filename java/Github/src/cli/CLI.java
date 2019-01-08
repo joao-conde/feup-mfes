@@ -229,7 +229,7 @@ public class CLI {
 			addMemberToOrg();
 			break;
 		case 21:
-			setReposDefaultBranch(); // TODO test with commit
+			setReposDefaultBranch();
 			break;
 		case 22:
 			setReposDescription();
